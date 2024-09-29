@@ -47,19 +47,19 @@
                                 </div>
 
                                 <div class="galleryGrid__item position-relative">
-                                    <a href="{{@$domain.'/'.$m_photo[0]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[0]}}"
+                                    <a href="{{@$domain.'/'.@$m_photo[0]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[0]}}"
                                                                                                             alt="image" class="rounded-2 img-fluid"></a>
                                     <div class="position-absolute end-0 bottom-0 mb-3 me-3">
-                                        <a href="{{@$domain.'/'.$m_photo[1]}}" data-lightbox="roadtrip"
+                                        <a href="{{@$domain.'/'.@$m_photo[1]}}" data-lightbox="roadtrip"
                                            class="btn btn-md btn-whites fw-medium text-dark"><i class="fa-solid fa-caret-right me-1"></i></a>
                                     </div>
                                 </div>
                                 <div class="galleryGrid__item">
-                                    <a href="{{@$domain.'/'.$m_photo[2]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[2]}}"
+                                    <a href="{{@$domain.'/'.@$m_photo[2]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[2]}}"
                                                                                                             alt="image" class="rounded-2 img-fluid"></a>
                                 </div>
                                 <div class="galleryGrid__item">
-                                    <a href="{{@$domain.'/'.$m_photo[3]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[3]}}"
+                                    <a href="{{@$domain.'/'.@$m_photo[3]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[3]}}"
                                                                                                             alt="image" class="rounded-2 img-fluid"></a>
                                 </div>
                             </div>
@@ -169,6 +169,13 @@
                             <!-- Sidebar -->
                             <div class="col-xl-3 col-lg-3 col-md-12">
                                 <div class="sides-block">
+                                    <div class="card border rounded-3 mb-4">
+                                        <div class="single-card px-3 py-3">
+                                            <p class="font10 lh-1 mb-0"><b>For Booking Please Contact Us: </b></p><hr>
+                                            <p class="font10 lh-1 mb-0"><b>Phone: </b> {{$c_info->phone1}}</p><hr>
+                                            <p class="font10 lh-1 mb-0"><b>Email: </b>{{$c_info->email}}</p>
+                                        </div>
+                                    </div>
                                     <div class="card border rounded-3 mb-4">
                                         <div class="single-card px-3 py-3">
 {{--                                            <p class="text-sm mb-0 lh-0"><del>$75,000</del></p>--}}

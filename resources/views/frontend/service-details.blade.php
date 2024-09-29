@@ -1,5 +1,5 @@
 @extends('frontend.layout.body')
-@section('title','Trip Designer - Visa  - The Best Visa Service Provider in Bangladesh.')
+@section('title','Trip Designer - Service  - The Best Ticket, Visa, Manpower Service Provider in Bangladesh.')
 @section('content')
     <div id="main-wrapper">
         <br>
@@ -14,7 +14,7 @@
                 <div class="row justify-content-center align-items-center">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="search-wrap position-relative my-3">
-                            {{ Form::open(array('url' => 'search-visa',  'method' => 'get' ,'class' =>'form-horizontal')) }}
+                            {{ Form::open(array('url' => 'service',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                             <div class="row align-items-end gy-3 gx-md-3 gx-sm-2">
                                 <div class="col-xl-8 col-lg-7 col-md-12">
                                     <div class="row gy-3 gx-md-3 gx-sm-2">
@@ -26,15 +26,15 @@
                                             </div>
                                         </div>
                                         <?php
-                                            if(@$visa->country)
-                                                $_GET['country'] = $visa->country;
+                                        if(@$ser->name)
+                                            $_GET['name'] = $ser->name;
                                         ?>
                                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                                             <div class="form-group hdd-arrow mb-0">
-                                                <select class="goingto form-control fw-bold" name="country" required>
-                                                    <option value="">Select Country</option>
-                                                    @foreach($v_country as $country)
-                                                        <option value="{{$country->name}}" <?php if($country->name == $_GET['country']) echo 'selected';  ?>>{{$country->name}}</option>
+                                                <select class="goingto form-control fw-bold" name="name" required>
+                                                    <option value="">Select Service</option>
+                                                    @foreach($services as $service)
+                                                        <option value="{{$service->name}}" <?php if($service->name == $_GET['name']) echo 'selected';  ?>>{{$service->name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -68,8 +68,8 @@
                             role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link rounded-2 active" id="pills-overview-tab" data-bs-toggle="pill"
-                                        data-bs-target="#pills-overview" type="button" role="tab" aria-controls="pills-overview"
-                                        aria-selected="true"><h4 style="color: white;">{{$visa->title}}</h4></button>
+                                        data-bs-target="#pills-overview" type="button" role="tab" aria-controls="pills-overview" aria-selected="true">
+                                    <h4 style="color: white;">{{@$ser->title}}</h4></button>
                                 <p>{{$c_info->name}} Authorized Visa Submitting Agents of Embassy in Dhaka, Bangladesh</p>
                             </li>
                         </ul>
@@ -84,28 +84,42 @@
                                         <div class="overview-wrap full-width">
                                             <div class="card mb-4 border rounded-3">
                                                 <div class="card-header">
-                                                    <h4 class="fs-5">Documents Required for {{$_GET['country']}}  Tourist Visa</h4>
+                                                    <h4 class="fs-5">Service Details</h4>
                                                 </div>
                                                 <div class="card-body">
-                                                    {!! json_decode(@$visa->requirements) !!}
+                                                    {!! nl2br(json_decode($ser->s_details)) !!}
                                                 </div>
                                             </div>
-                                            <div class="card border rounded-3 mb-4">
-                                                <div class="card-header">
-                                                    <h4 class="fs-5"> Price Details</h4>
+                                            @if(json_decode($ser->p_method) !=null)
+                                                <div class="card border rounded-3 mb-4">
+                                                    <div class="card-header">
+                                                        <h4 class="fs-5">Payment Method</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        {!! nl2br(json_decode($ser->p_method)) !!}
+                                                    </div>
                                                 </div>
-                                                <div class="card-body">
-                                                    {!! json_decode(@$visa->price_details) !!}
+                                            @endif
+                                            @if(json_decode($ser->exclusion) !=null)
+                                                <div class="card border rounded-3 mb-4">
+                                                    <div class="card-header">
+                                                        <h4 class="fs-5">Exclusion</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        {!! nl2br(json_decode($ser->exclusion)) !!}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="card border rounded-3 mb-4">
-                                                <div class="card-header">
-                                                    <h4 class="fs-5"> Embassy Information</h4>
+                                            @endif
+                                            @if(json_decode($ser->tnt) !=null)
+                                                <div class="card border rounded-3 mb-4">
+                                                    <div class="card-header">
+                                                        <h4 class="fs-5">Terms and Conditions</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        {!! nl2br(json_decode($ser->tnt)) !!}
+                                                    </div>
                                                 </div>
-                                                <div class="card-body">
-                                                    {!! json_decode(@$visa->em_info) !!}
-                                                </div>
-                                            </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -123,27 +137,26 @@
                                     </div>
                                     <div class="card border rounded-3 mb-4">
                                         <div class="single-card px-3 py-3">
-                                            <button class="btn btn-sm btn-primary full-width fw-medium text-uppercase mb-2"
-                                                    type="button">proceed to book </button>
+                                            <button class="btn btn-sm btn-primary full-width fw-medium text-uppercase mb-2" type="button">proceed to book </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row justify-content-center gy-3 gx-xl-3 gx-lg-4 gx-4">
-                                @foreach($visas as $visa)
+                                @foreach($services as $visa)
                                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                         <div class="pop-touritem">
-                                            <a href="{{url('visa/'.$visa->slug)}}" class="card rounded-3 border br-dashed m-0">
+                                            <a href="{{url('services/'.$visa->slug)}}" class="card rounded-3 border br-dashed m-0">
                                                 <div class="flight-thumb-wrapper p-2 pb-0">
                                                     <div class="popFlights-item-overHidden rounded-3">
-                                                        <img src="{{@$domain.'/'.$visa->v_c_photo}}" class="img-fluid" alt="">
+                                                        <img src="{{@$domain.'/'.$visa->c_photo}}" class="img-fluid" alt="">
                                                     </div>
                                                 </div>
                                                 <div class="touritem-middle position-relative p-3">
                                                     <div class="touritem-flexxer">
                                                         <div class="explot">
                                                             <h4 class="city fs-6 m-0 fw-bold">
-                                                                <span>{{$visa->country}} Visa</span>
+                                                                <span>{{$visa->name}}</span>
                                                             </h4>
                                                         </div>
                                                     </div>

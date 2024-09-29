@@ -145,6 +145,7 @@ class usersController extends Controller
     public function contacts(Request $request){
         try{
             $rows1 = DB::table('contacts')
+                ->where('agent_id',Session::get('user_id'))
                 ->orderBy('id','desc')
                 ->get();
             return view('contacts.contacts',['passengers' => $rows1]);

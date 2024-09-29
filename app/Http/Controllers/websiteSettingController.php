@@ -670,7 +670,7 @@ class websiteSettingController extends Controller
             $rows = DB::table('b2c_manpower')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
             if($request->c_photo){
                 $fileName = time() . '.' . $request->c_photo->extension();
-                $request->p_c_photo->move(public_path('images/upload/manpower/'), $fileName);
+                $request->c_photo->move(public_path('images/upload/manpower/'), $fileName);
                 $c_photo = 'public/images/upload/manpower/'.$fileName;
             }
             else{
@@ -716,6 +716,114 @@ class websiteSettingController extends Controller
                         return redirect()->to('b2cManpowerManagement')->with('successMessage', 'Manpower Package deleted successfully!!');
                     } else {
                         dd('ok');
+                        return back()->with('errorMessage', 'Please try again!!');
+                    }
+                }
+                else {
+                    return back()->with('errorMessage', 'Bad Request!!');
+                }
+            }
+            else{
+                return back()->with('errorMessage', 'Please fill up the form');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function b2cServiceManagement(Request $request){
+        try{
+            $rows = DB::table('b2c_service')->where('agent_id',Session::get('user_id'))->get();
+            return view('websiteSetting.b2cServiceManagement',['services' => $rows]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function addB2CServices(Request $request){
+        try{
+            //dd($request);
+            $fileName = time() . '.' . $request->c_photo->extension();
+            $request->c_photo->move(public_path('images/upload/services/'), $fileName);
+            $c_photo = 'public/images/upload/services/'.$fileName;
+            //dd($request);
+            $result = DB::table('b2c_service')->insert([
+                'agent_id' => Session::get('user_id'),
+                'name' => $request->name,
+                'title' => $request->title,
+                'slug' => $request->slug,
+                'c_photo' => $c_photo,
+                's_details' => json_encode($request->s_details),
+                'p_method' => json_encode($request->p_method),
+                'exclusion' => json_encode($request->exclusion),
+                'tnt' => json_encode($request->tnt),
+            ]);
+            if($result){
+                return back()->with('successMessage', 'New Service Added Successfully!!');
+            }
+            else{
+                return back()->with('errorMessage', 'Please Try Again!!');
+            }
+
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function editB2CServicePage(Request $request){
+        try{
+            $rows = DB::table('b2c_service')->where('id',$request->id)->first();
+            return view('websiteSetting.editB2CServicePage',['package' => $rows,]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function editB2CService  (Request $request){
+        try{
+            $rows = DB::table('b2c_service')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            if($request->c_photo){
+                $fileName = time() . '.' . $request->c_photo->extension();
+                $request->c_photo->move(public_path('images/upload/services/'), $fileName);
+                $c_photo = 'public/images/upload/services/'.$fileName;
+            }
+            else{
+                $c_photo = $rows->c_photo;
+            }
+            $result = DB::table('b2c_service')
+                ->where('id',$request->id)
+                ->where('agent_id',Session::get('user_id'))
+                ->update([
+                    'name' => $request->name,
+                    'title' => $request->title,
+                    'slug' => $request->slug,
+                    'c_photo' => $c_photo,
+                    's_details' => json_encode($request->s_details),
+                    'p_method' => json_encode($request->p_method),
+                    'exclusion' => json_encode($request->exclusion),
+                    'tnt' => json_encode($request->tnt),
+                ]);
+            if ($result) {
+                return redirect()->to('b2cServiceManagement')->with('successMessage', 'Service Updated Successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function deleteB2CService(Request $request){
+        try{
+            if($request) {
+                if($request->id) {
+                    $result =DB::table('b2c_service')
+                        ->where('id', $request->id)
+                        ->where('agent_id',Session::get('user_id'))
+                        ->delete();
+                    if ($result) {
+                        return redirect()->to('b2cServiceManagement')->with('successMessage', 'Service  deleted successfully!!');
+                    } else {
                         return back()->with('errorMessage', 'Please try again!!');
                     }
                 }
@@ -817,7 +925,6 @@ class websiteSettingController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-
     public function deleteB2CBlog(Request $request){
         try{
             if($request) {

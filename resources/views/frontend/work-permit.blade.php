@@ -14,7 +14,7 @@
                 <div class="row justify-content-center align-items-center">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="search-wrap position-relative my-3">
-                            {{ Form::open(array('url' => 'search-visa',  'method' => 'get' ,'class' =>'form-horizontal')) }}
+                            {{ Form::open(array('url' => 'search-manpower',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                             <div class="row align-items-end gy-3 gx-md-3 gx-sm-2">
                                 <div class="col-xl-8 col-lg-7 col-md-12">
                                     <div class="row gy-3 gx-md-3 gx-sm-2">

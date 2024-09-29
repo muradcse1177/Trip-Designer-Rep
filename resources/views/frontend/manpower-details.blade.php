@@ -175,8 +175,8 @@
                                     <div class="card border rounded-3 mb-4">
                                         <div class="single-card px-3 py-3">
                                             <p class="font10 lh-1 mb-0"><b>For Booking Please Contact Us: </b></p><hr>
-                                            <p class="font10 lh-1 mb-0"><b>Phone: </b> {{'+8801707-01156'}}</p><hr>
-                                            <p class="font10 lh-1 mb-0"><b>Email: </b>{{'tripdesiger.xyz@gmail.com'}}</p>
+                                            <p class="font10 lh-1 mb-0"><b>Phone: </b> {{$c_info->phone1}}</p><hr>
+                                            <p class="font10 lh-1 mb-0"><b>Email: </b>{{$c_info->email}}</p>
                                         </div>
                                     </div>
                                     <div class="card border rounded-3 mb-4">

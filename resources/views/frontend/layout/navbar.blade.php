@@ -78,7 +78,21 @@ if(@$c_info->agent_id) {
                         </li>
                         <li><a href="{{url('about-us')}}">Hajj & Umrah </a></li>
                         <li><a href="{{url('about-us')}}">Education</a></li>
-                        <li><a href="{{url('about-us')}}">Services</a></li>
+                        <li>
+                            <a href="{{url('services')}}">Services</a>
+                            <ul class="nav-dropdown nav-submenu">
+                                    <?php
+                                    $rows2 = DB::table('b2c_service')->where('agent_id',@$c_info->agent_id)->get();
+                                foreach ($rows2 as  $row){
+                                    ?>
+                                <li>
+                                    <a href="{{url('service?name='.$row->name)}}">{{$row->name}}</a>
+                                </li>
+                                    <?php
+                                }
+                                    ?>
+                            </ul>
+                        </li>
                         <li><a href="{{url('about-us')}}">About</a></li>
                         <li><a href="{{url('contact-us')}}">Contact</a></li>
                     </ul>

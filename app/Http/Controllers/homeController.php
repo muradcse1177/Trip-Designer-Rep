@@ -160,6 +160,23 @@ class homeController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function service(Request $request){
+        try{
+            $domain =$this->domainCheck();
+            if($domain['agent_id'])  {
+                $count = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get()->count();
+                $rows3 = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get();
+                $rows4 = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->where('name', $request->name)->first();
+                return view('frontend.service-details', ['services' => $rows3,'ser' => $rows4, 'count' => $count,]);
+            }
+            else{
+                return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public function searchTourPackageBySlug(Request $request){
         try{
             $domain =$this->domainCheck();
@@ -201,6 +218,25 @@ class homeController extends Controller
                 $rows2 = DB::table('b2c_manpower_country')->where('agent_id', $domain['agent_id'])->get();
                 $rows3 = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
                 return view('frontend.manpower-details', ['visa' => $rows1, 'v_country' => $rows2, 'visas' => $rows3]);
+            }
+            else{
+                return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function searchServiceBySlug(Request $request){
+        try{
+            $domain =$this->domainCheck();
+
+
+             if($domain['agent_id'])  {
+                 $count = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get()->count();
+                 $rows3 = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get();
+                 $rows4 = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->where('slug', $request->slug)->first();
+                 return view('frontend.service-details', ['services' => $rows3,'ser' => $rows4, 'count' => $count,]);
             }
             else{
                 return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);

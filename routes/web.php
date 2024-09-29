@@ -38,6 +38,8 @@ Route::get('visa/{slug}', 'App\Http\Controllers\homeController@searchVisaBySlug'
 Route::get('work-permit', 'App\Http\Controllers\homeController@manpower');
 Route::get('search-manpower', 'App\Http\Controllers\homeController@searchManpower');
 Route::get('manpower/{slug}', 'App\Http\Controllers\homeController@searchManpowerBySlug');
+Route::get('service', 'App\Http\Controllers\homeController@service');
+Route::get('services/{slug}', 'App\Http\Controllers\homeController@searchServiceBySlug');
 Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug');
 Route::get('about-us', 'App\Http\Controllers\homeController@aboutUs');
 Route::post('contactUS', 'App\Http\Controllers\homeController@contactUS');
@@ -218,6 +220,11 @@ Route::middleware(['role'])->group(function () {
     Route::get('editB2CManpowerPackagePage', 'App\Http\Controllers\websiteSettingController@editB2CManpowerPackagePage');
     Route::post('editB2CManpowerPackage', 'App\Http\Controllers\websiteSettingController@editB2CManpowerPackage');
     Route::post('deleteB2CManpowerPackage', 'App\Http\Controllers\websiteSettingController@deleteB2CManpowerPackage');
+    Route::get('b2cServiceManagement', 'App\Http\Controllers\websiteSettingController@b2cServiceManagement');
+    Route::post('addB2CServices', 'App\Http\Controllers\websiteSettingController@addB2CServices');
+    Route::get('editB2CServicePage', 'App\Http\Controllers\websiteSettingController@editB2CServicePage');
+    Route::post('editB2CService', 'App\Http\Controllers\websiteSettingController@editB2CService');
+    Route::post('deleteB2CService', 'App\Http\Controllers\websiteSettingController@deleteB2CService');
 });
 //----------------------------------------------------------
 

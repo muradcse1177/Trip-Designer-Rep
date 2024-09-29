@@ -337,6 +337,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{url('b2cServiceManagement')}}" class="nav-link  @yield('b2cServiceManagement')">
+                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                <p>Services</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{url('b2cManpowerCountry')}}" class="nav-link  @yield('b2cManpowerCountry')">
                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
                                 <p>Manpower Country</p>

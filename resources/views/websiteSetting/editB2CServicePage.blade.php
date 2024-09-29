@@ -1,7 +1,7 @@
 @extends('mainLayout.layout')
 @section('title','Trip Designer || Manpower Management')
 @section('webSettings','active')
-@section('b2cManpowerManagement','active')
+@section('b2cServiceManagement','active')
 @section('websiteMenu','menu-open')
 @section('css')
     <!-- summernote -->
@@ -19,14 +19,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Manpower Management</h1>
+                        <h1>Service Management</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{url('/')}}">Home</a>
                             </li>
-                            <li class="breadcrumb-item active">Manpower Management</li>
+                            <li class="breadcrumb-item active">Service Management</li>
                         </ol>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     <div class="col-md-12">
                         <div class="card card-warning">
                             <div class="card-header">
-                                <h3 class="card-title">Manpower Package </h3>
+                                <h3 class="card-title">Service Package </h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
                                     </button>
@@ -49,18 +49,19 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body" style="display: block;">
-                                {{ Form::open(array('url' => 'editB2CManpowerPackage',  'method' => 'post' ,'class' =>'form-horizontal' ,'enctype'=>"multipart/form-data")) }}
+                                {{ Form::open(array('url' => 'editB2CService',  'method' => 'post' ,'class' =>'form-horizontal' ,'enctype'=>"multipart/form-data")) }}
                                 {{ csrf_field() }}
                                 <div class="card-body row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Country Name</label>
-                                            <select class="form-control select2bs4" name="c_name" id="c_name" style="width: 100%;" required>
-                                                <option value="">Select Country Name</option>
-                                                @foreach($countries as $country)
-                                                    <option value="{{$country->name}}" <?php if($country->name == $package->country) echo 'selected'; ?> >{{$country->name}} </option>
-                                                @endforeach
-                                            </select>
+                                            <label>Service Name</label>
+                                            <input type="text" class="form-control" id="name" value="{{@$package->name}}" name="name" placeholder="Enter Service Name" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Service Title</label>
+                                            <input type="text" class="form-control" id="title" value="{{@$package->title}}"  name="title" placeholder="Enter Service Title" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
@@ -69,70 +70,44 @@
                                             <input type="file" class="form-control" id="c_photo" accept="image/*"  name="c_photo" placeholder="Enter Package Cover Photo" <?php if($package->c_photo) echo ''; else echo 'required'; ?>>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label>Salary (Approximate)</label>
-                                            <input type="text" class="form-control" id="salary" value="{{@$package->salary}}" name="salary" placeholder="Enter Package Salary" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label>Contact Period</label>
-                                            <input type="text" class="form-control" id="period" value="{{@$package->period}}"  name="period" placeholder="Enter Contact Period" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label>Accommodation</label>
-                                            <input type="text" class="form-control" id="accommodation" value="{{@$package->accommodation}}"  name="accommodation" placeholder="Enter Accommodation Type" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Slug</label>
-                                            <input type="text" class="form-control" id="slug" name="slug" value="{{@$package->slug}}" placeholder="Enter Slug" required>
+                                            <input type="text" class="form-control" id="slug" value="{{@$package->slug}}" name="slug" placeholder="Enter Slug" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <select class="form-control select2bs4" name="status" id="status" style="width: 100%;" <?php if($package->c_photo) echo ''; else echo 'required'; ?>>
+                                                <option value="">Select Status</option>
+                                                <option value="1" <?php if($package->status == 1) echo 'selected'; ?>>Active</option>
+                                                <option value="0" <?php if($package->status == 0) echo 'selected'; ?>>In Active</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-12" >
                                         <div class="form-group">
-                                            <label>Requirements</label>
-                                            <textarea class="form-control" name="requirements"> {{json_decode($package->requirements)}}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12" >
-                                        <div class="form-group">
-                                            <label>Responsibilities</label>
-                                            <textarea class="form-control" name="responsibilities">{{json_decode($package->responsibilities)}}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12" >
-                                        <div class="form-group">
-                                            <label>Process Time</label>
-                                            <textarea class="summernote" name="p_time">{{json_decode($package->p_time)}}</textarea>
+                                            <label>Service Details</label>
+                                            <textarea class="summernote" name="s_details"> {{json_decode($package->s_details)}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12" >
                                         <div class="form-group">
                                             <label>Payment Method</label>
-                                            <textarea class="summernote" name="p_method">{{json_decode($package->p_method)}}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12" >
-                                        <div class="form-group">
-                                            <label>Refund Policy</label>
-                                            <textarea class="summernote" name="r_policy">{{json_decode($package->r_policy)}}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12" >
-                                        <div class="form-group">
-                                            <label>Terms & Conditions</label>
-                                            <textarea class="summernote" name="tnt">{{json_decode($package->tnt)}}</textarea>
+                                            <textarea class="summernote" name="p_method"> {{json_decode($package->p_method)}} </textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12" >
                                         <div class="form-group">
                                             <label>Package  Exclusion</label>
-                                            <textarea class="summernote" name="exclusion">{{json_decode($package->exclusion)}}</textarea>
+                                            <textarea class="summernote" name="exclusion"> {{json_decode($package->exclusion)}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" >
+                                        <div class="form-group">
+                                            <label>Terms & Conditions</label>
+                                            <textarea class="summernote" name="tnt">{{json_decode($package->tnt)}} </textarea>
                                         </div>
                                     </div>
                                 </div>
