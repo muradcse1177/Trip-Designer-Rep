@@ -230,8 +230,6 @@ class homeController extends Controller
     public function searchServiceBySlug(Request $request){
         try{
             $domain =$this->domainCheck();
-
-
              if($domain['agent_id'])  {
                  $count = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get()->count();
                  $rows3 = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get();
@@ -262,7 +260,62 @@ class homeController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function contactUS(Request $request){
+    public function orderRequest(Request $request){
+        try{
+            $domain =$this->domainCheck();
+            $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
+             if($domain['agent_id'])  {
+                 //dd($request);
+                $result = DB::table('order_request')->insert([
+                    'agent_id' => $domain['agent_id'],
+                    'r_ref' => $num,
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'person' => $request->person,
+                    'date' => date('Y-m-d'),
+                    'r_type' => $request->r_type,
+                    'status' => 'Requested',
+                    'remarks' => json_encode($request->remarks),
+                ]);
+                $to = 'tripdesigner.xyz@gmail.com';
+                $email_cus = [$request->email];
+                $email_admin = [$to];
+                $data = [
+                    'tracking' => $num,
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'person' => $request->person,
+                    'r_type' => $request->r_type,
+                    'status' => 'Requested',
+                    'remarks' => json_encode($request->remarks),
+                ];
+                if ($result) {
+                    Mail::send('email.customer-order-request', $data, function ($message) use ($email_cus) {
+                        $message->subject("Trip Designer: Order Request Confirmation");
+                        $message->from('sales@tripdesigner.net', 'Sales-Trip Designer');
+                        $message->to($email_cus);
+                    });
+                    Mail::send('email.admin-order-request', $data, function ($message) use ($email_admin,$data) {
+                        $message->subject("Order Request Confirmation Type - ".$data['r_type']);
+                        $message->from('sales@tripdesigner.net', 'Sales-Trip Designer');
+                        $message->to($email_admin);
+                    });
+                    return view('frontend.success-order-request', ['data' => $data,'successMessage' => 'Your Request Sent Successfully!! Please check your email']);
+
+                } else {
+                    return back()->with('errorMessage', 'Please try again!!');
+                }
+            }
+            else{
+                return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }public function contactUS(Request $request){
         try{
             $domain =$this->domainCheck();
              if($domain['agent_id'])  {

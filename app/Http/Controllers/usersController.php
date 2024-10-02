@@ -431,4 +431,44 @@ class usersController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function orderReceiver(Request $request){
+        try{
+            $rows1 = DB::table('order_request')
+                ->where('agent_id',Session::get('user_id'))
+                ->orderBy('id','desc')
+                ->get();
+            return view('orderReceiver.orderReceiver',['orders' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function changeB2COrderStatus(Request $request){
+        try{
+            if($request) {
+                if($request->id) {
+                    if($request->status)
+                        $result =DB::table('order_request')
+                            ->where('id', $request->id)
+                            ->update([
+                                'status' => $request->status,
+                            ]);
+                    if ($result) {
+                        return redirect()->to('orderReceiver')->with('successMessage', 'Order status updated successfully!!');
+                    } else {
+                        return back()->with('errorMessage', 'Please try again!!');
+                    }
+                }
+                else {
+                    return back()->with('errorMessage', 'Bad Request!!');
+                }
+            }
+            else{
+                return back()->with('errorMessage', 'Please fill up the form');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
 }

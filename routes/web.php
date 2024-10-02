@@ -41,6 +41,8 @@ Route::get('manpower/{slug}', 'App\Http\Controllers\homeController@searchManpowe
 Route::get('service', 'App\Http\Controllers\homeController@service');
 Route::get('services/{slug}', 'App\Http\Controllers\homeController@searchServiceBySlug');
 Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug');
+Route::get('order-request', 'App\Http\Controllers\homeController@orderRequest');
+Route::get('success-order-request', 'App\Http\Controllers\homeController@successOrderRequest');
 Route::get('about-us', 'App\Http\Controllers\homeController@aboutUs');
 Route::post('contactUS', 'App\Http\Controllers\homeController@contactUS');
 Route::post('subscribe', 'App\Http\Controllers\homeController@subscribe');
@@ -64,11 +66,20 @@ Route::middleware(['role'])->group(function () {
     Route::post('insertGInvoice', 'App\Http\Controllers\accountsController@insertGInvoice');
     Route::get('printGInvoice', 'App\Http\Controllers\accountsController@printGInvoice');
     Route::post('deleteGInvoice', 'App\Http\Controllers\accountsController@deleteGInvoice');
+    //----------------------------------------------------------
+
     //Contacts-------------------------------------------------------------
     Route::get('contacts', 'App\Http\Controllers\usersController@contacts');
     Route::post('createNewContacts', 'App\Http\Controllers\usersController@createNewContacts');
     Route::get('editContactsPage', 'App\Http\Controllers\usersController@editContactsPage');
     Route::post('updateContacts', 'App\Http\Controllers\usersController@updateContacts');
+    //----------------------------------------------------------
+
+    //B2C Order Request
+    Route::get('orderReceiver', 'App\Http\Controllers\usersController@orderReceiver');
+    Route::post('changeB2COrderStatus', 'App\Http\Controllers\usersController@changeB2COrderStatus');
+    //----------------------------------------------------------
+
     //Air Ticket Management------------------------------------------------
     Route::get('newAirTicket', 'App\Http\Controllers\airTicketController@newAirTicket');
     Route::post('createNewAirTicket', 'App\Http\Controllers\airTicketController@createNewAirTicket');

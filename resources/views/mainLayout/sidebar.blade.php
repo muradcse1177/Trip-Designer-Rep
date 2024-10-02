@@ -33,6 +33,12 @@
                         <p>Contacts</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{url('/orderReceiver')}}" class="nav-link @yield('orderReceiver')">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>B2C Order Request</p>
+                    </a>
+                </li>
                 <li class="nav-item @yield('ticketMenu')">
                     <a href="#" class="nav-link @yield('airTicket')">
                         <i class="nav-icon fas fa-plane"></i>
