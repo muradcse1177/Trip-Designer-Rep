@@ -206,6 +206,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <input type="hidden" name="view" value="{{url()->full()}}">
                                 <input type="hidden" name="r_type" value="Visa">
                                 <button type="submit" class="btn btn-primary full-width font--bold btn-lg">Send Query</button>
                             </div>

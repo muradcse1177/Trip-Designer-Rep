@@ -1,5 +1,5 @@
 @extends('frontend.layout.body')
-@section('title','Trip Designer - Visa  - The Best Visa Service Provider in Bangladesh.')
+@section('title','Trip Designer - Services  - The Best Visa Service Provider in Bangladesh.')
 @section('content')
     <div id="main-wrapper">
         <br>
@@ -14,7 +14,7 @@
                 <div class="row justify-content-center align-items-center">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="search-wrap position-relative my-3">
-                            {{ Form::open(array('url' => 'search-visa',  'method' => 'get' ,'class' =>'form-horizontal')) }}
+                            {{ Form::open(array('url' => 'search-manpower',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                             <div class="row align-items-end gy-3 gx-md-3 gx-sm-2">
                                 <div class="col-xl-8 col-lg-7 col-md-12">
                                     <div class="row gy-3 gx-md-3 gx-sm-2">
@@ -29,8 +29,8 @@
                                             <div class="form-group hdd-arrow mb-0">
                                                 <select class="goingto form-control fw-bold" name="country" required>
                                                     <option value="">Select Country</option>
-                                                    @foreach($v_country as $country)
-                                                        <option value="{{$country->name}}">{{$country->name}}</option>
+                                                    @foreach($services as $service)
+                                                        <option value="{{$service->name}}">{{$service->name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -105,25 +105,25 @@
 
                     <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="row justify-content-center gy-4 gx-xl-3 gx-lg-4 gx-4">
-                            @foreach($visas as $visa)
+                            @foreach($services as $service)
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="pop-touritem">
-                                        <a href="{{url('visa/'.$visa->slug)}}" class="card rounded-3 border br-dashed m-0">
+                                        <a href="{{url('service/'.$service->slug)}}" class="card rounded-3 border br-dashed m-0">
                                             <div class="flight-thumb-wrapper p-2 pb-0">
                                                 <div class="popFlights-item-overHidden rounded-3">
-                                                    <img src="{{@$domain.'/'.$visa->v_c_photo}}" class="img-fluid" alt="">
+                                                    <img src="{{@$domain.'/'.$service->c_photo}}" class="img-fluid" alt="">
                                                 </div>
                                             </div>
                                             <div class="touritem-middle position-relative p-3">
                                                 <div class="touritem-flexxer">
                                                     <div class="explot">
                                                         <h4 class="city fs-6 m-0 fw-bold">
-                                                            <span>{{$visa->country}} Visa</span>
+                                                            <span>{{$service->name}}</span>
                                                         </h4>
                                                     </div>
                                                 </div>
                                                 <div class="booking-wrapes d-flex align-items-center mt-3">
-                                                    <button class="btn btn-md btn-light-primary fw-medium rounded full-width me-2">View Requirements</button>
+                                                    <button class="btn btn-md btn-light-primary fw-medium rounded full-width me-2">View Details</button>
                                                 </div>
                                             </div>
                                         </a>
@@ -134,7 +134,7 @@
                         <div class="row align-items-center justify-content-center">
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="text-center position-relative mt-5">
-                                    <a href="{{url('visa')}}" type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i class="fa-solid fa-arrow-trend-up ms-2"></i></a>
+                                    <a href="{{url('services')}}" type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i class="fa-solid fa-arrow-trend-up ms-2"></i></a>
                                 </div>
                             </div>
                         </div>

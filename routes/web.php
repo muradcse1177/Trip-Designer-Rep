@@ -39,6 +39,7 @@ Route::get('work-permit', 'App\Http\Controllers\homeController@manpower');
 Route::get('search-manpower', 'App\Http\Controllers\homeController@searchManpower');
 Route::get('manpower/{slug}', 'App\Http\Controllers\homeController@searchManpowerBySlug');
 Route::get('service', 'App\Http\Controllers\homeController@service');
+Route::get('services', 'App\Http\Controllers\homeController@services');
 Route::get('services/{slug}', 'App\Http\Controllers\homeController@searchServiceBySlug');
 Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug');
 Route::get('order-request', 'App\Http\Controllers\homeController@orderRequest');

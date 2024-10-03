@@ -46,6 +46,7 @@
                                         <th>S.L</th>
                                         <th>Date</th>
                                         <th>Order Ref.</th>
+                                        <th>View</th>
                                         <th>Status</th>
                                         <th>Client Details</th>
                                         <th>Query Type</th>
@@ -62,6 +63,9 @@
                                             <td>{{$i}}</td>
                                             <td>{{$order->date}}</td>
                                             <td>{{$order->r_ref}}</td>
+                                            <td>
+                                                <a href="{{url(''.$order->view)}}" target="_blank">View Details</a>
+                                            </td>
                                             <td>
                                                 @if($order->status == 'Requested')
                                                     <button type="button" class="btn btn-primary">Requested</button>

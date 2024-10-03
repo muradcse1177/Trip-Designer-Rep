@@ -177,6 +177,23 @@ class homeController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function services(Request $request){
+        try{
+            $domain =$this->domainCheck();
+            if($domain['agent_id'])  {
+                $count = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get()->count();
+                $rows3 = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->get();
+                $rows4 = DB::table('b2c_service')->where('agent_id', $domain['agent_id'])->where('name', $request->name)->first();
+                return view('frontend.services', ['services' => $rows3,'ser' => $rows4, 'count' => $count,]);
+            }
+            else{
+                return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public function searchTourPackageBySlug(Request $request){
         try{
             $domain =$this->domainCheck();
@@ -262,6 +279,7 @@ class homeController extends Controller
     }
     public function orderRequest(Request $request){
         try{
+            //dd($request);
             $domain =$this->domainCheck();
             $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
              if($domain['agent_id'])  {
@@ -273,6 +291,7 @@ class homeController extends Controller
                     'email' => $request->email,
                     'phone' => $request->phone,
                     'person' => $request->person,
+                    'view' => $request->view,
                     'date' => date('Y-m-d'),
                     'r_type' => $request->r_type,
                     'status' => 'Requested',

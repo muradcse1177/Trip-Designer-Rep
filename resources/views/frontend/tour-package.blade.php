@@ -194,7 +194,7 @@
                         <div class="row align-items-center justify-content-center">
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="text-center position-relative mt-5">
-                                    <button type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i class="fa-solid fa-arrow-trend-up ms-2"></i></button>
+                                    <a href="{{url('tour-package')}}" type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i class="fa-solid fa-arrow-trend-up ms-2"></i></a>
                                 </div>
                             </div>
                         </div>
