@@ -113,10 +113,11 @@ class homeController extends Controller
         try{
             $domain =$this->domainCheck();
              if($domain['agent_id'])  {
-                $rows1 = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->where('country', $request->country)->first();
-                $rows2 = DB::table('b2c_manpower_country')->where('agent_id', $domain['agent_id'])->get();
-                $rows3 = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
-                return view('frontend.manpower-details', ['visa' => $rows1, 'v_country' => $rows2, 'visas' => $rows3]);
+                 $count = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->get()->count();
+                 $rows1 = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->where('country', $request->country)->get();
+                 $rows2 = DB::table('b2c_manpower_country')->where('agent_id', $domain['agent_id'])->get();
+                 $rows3 = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
+                 return view('frontend.work-permit-country', ['visa' => $rows1, 'v_country' => $rows2, 'visas' => $rows3,'count' => $count,]);
             }
             else{
                 return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
@@ -177,6 +178,22 @@ class homeController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function hajjUmrah(Request $request){
+        try{
+            $domain =$this->domainCheck();
+            if($domain['agent_id'])  {
+                $count = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->get()->count();
+                $rows3 = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->get();
+                return view('frontend.hajj-umrah', ['t_package' => $rows3, 'count' => $count,]);
+            }
+            else{
+                return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public function services(Request $request){
         try{
             $domain =$this->domainCheck();
@@ -218,6 +235,22 @@ class homeController extends Controller
                 $rows2 = DB::table('b2c_visa_country')->where('agent_id', $domain['agent_id'])->get();
                 $rows3 = DB::table('b2c_visa')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
                 return view('frontend.visa-details', ['visa' => $rows1, 'v_country' => $rows2, 'visas' => $rows3]);
+            }
+            else{
+                return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function searchHajjUmrahBySlug(Request $request){
+        try{
+            $domain =$this->domainCheck();
+             if($domain['agent_id'])  {
+                $rows1 = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->where('slug', $request->slug)->first();
+                $rows3 = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
+                return view('frontend.hajj-umrah-details', ['package' => $rows1, 't_package' => $rows3]);
             }
             else{
                 return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);

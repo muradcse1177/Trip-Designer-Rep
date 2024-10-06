@@ -181,7 +181,7 @@
                                     </div>
                                     <div class="card border rounded-3 mb-4">
                                         <div class="single-card px-3 py-3">
-                                            <button class="btn btn-sm btn-primary full-width fw-medium text-uppercase mb-2" type="button">proceed to book </button>
+                                            <button  data-bs-toggle="modal" data-bs-target="#tour-request" class="btn btn-sm btn-primary full-width fw-medium text-uppercase mb-2" type="button">proceed to book </button>
                                         </div>
                                     </div>
                                 </div>
@@ -218,6 +218,60 @@
                 </div>
             </div>
         </section>
+    </div>
+    <div class="modal fade" id="tour-request" tabindex="-1" role="dialog" aria-labelledby="loginmodal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered login-pop-form" role="document">
+            <div class="modal-content" id="loginmodal">
+                <div class="modal-header">
+                    <h4 class="modal-title fs-6">Request for Your Booking.</h4>
+                    <a href="#" class="text-muted fs-4" data-bs-dismiss="modal" aria-label="Close"><i
+                            class="fa-solid fa-square-xmark"></i></a>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-login-form py-4 px-md-3 px-0">
+                        {{ Form::open(array('url' => 'order-request',  'method' => 'get' ,'class' =>'form-horizontal')) }}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control" name="name" placeholder="Write Full Name" required>
+                                    <label>Name*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input type="number" class="form-control" min="11"  name="phone" placeholder="Write Phone Number" required>
+                                    <label>Phone*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input type="email" class="form-control"  name="email" placeholder="Write Email" required>
+                                    <label>Email*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control"  name="person" placeholder="Write Person Number" required>
+                                    <label>Person*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-floating mb-4">
+                                    <textarea  class="form-control" rows="3" name="remarks" placeholder="Write Remarks..."></textarea>
+                                    <label>Remarks*</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="view" value="{{url()->full()}}">
+                            <input type="hidden" name="r_type" value="Work Permit">
+                            <button type="submit" class="btn btn-primary full-width font--bold btn-lg">Send Query</button>
+                        </div>
+                        {{ Form::close() }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('js')

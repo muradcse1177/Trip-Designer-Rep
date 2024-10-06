@@ -361,6 +361,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{url('b2cHajjUmrahManagememt')}}" class="nav-link  @yield('b2cHajjUmrahManagememt')">
+                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                <p>Hajj & Umrah Package</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{url('blogManagement')}}" class="nav-link  @yield('blogManagement')">
                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
                                 <p>Blog Management</p>

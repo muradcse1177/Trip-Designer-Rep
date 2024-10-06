@@ -76,7 +76,7 @@ if(@$c_info->agent_id) {
                                 ?>
                             </ul>
                         </li>
-                        <li><a href="{{url('about-us')}}">Hajj & Umrah </a></li>
+                        <li><a href="{{url('hajj-umrah')}}">Hajj & Umrah </a></li>
                         <li><a href="{{url('about-us')}}">Education</a></li>
                         <li>
                             <a href="{{url('services')}}">Services</a>

@@ -1,5 +1,5 @@
 @extends('frontend.layout.body')
-@section('title','Trip Designer - Services  - The Best Visa Service Provider in Bangladesh.')
+@section('title','Trip Designer - Work Permit  - The Best Visa Service Provider in Bangladesh.')
 @section('content')
     <div id="main-wrapper">
         <br>
@@ -29,8 +29,8 @@
                                             <div class="form-group hdd-arrow mb-0">
                                                 <select class="goingto form-control fw-bold" name="country" required>
                                                     <option value="">Select Country</option>
-                                                    @foreach($services as $service)
-                                                        <option value="{{$service->name}}">{{$service->name}}</option>
+                                                    @foreach($v_country as $country)
+                                                        <option value="{{$country->name}}" <?php if($country->name == $_GET['country']) echo 'selected';  ?> >{{$country->name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -105,20 +105,20 @@
 
                     <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="row justify-content-center gy-4 gx-xl-3 gx-lg-4 gx-4">
-                            @foreach($services as $service)
+                            @foreach($visas as $visa)
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="pop-touritem">
-                                        <a href="{{url('services/'.$service->slug)}}" class="card rounded-3 border br-dashed m-0">
+                                        <a href="{{url('manpower/'.$visa->slug)}}" class="card rounded-3 border br-dashed m-0">
                                             <div class="flight-thumb-wrapper p-2 pb-0">
                                                 <div class="popFlights-item-overHidden rounded-3">
-                                                    <img src="{{@$domain.'/'.$service->c_photo}}" class="img-fluid" alt="">
+                                                    <img src="{{@$domain.'/'.$visa->c_photo}}" class="img-fluid" alt="">
                                                 </div>
                                             </div>
                                             <div class="touritem-middle position-relative p-3">
                                                 <div class="touritem-flexxer">
                                                     <div class="explot">
                                                         <h4 class="city fs-6 m-0 fw-bold">
-                                                            <span>{{$service->name}}</span>
+                                                            <span>{{$visa->country}} Work Permit Visa</span>
                                                         </h4>
                                                     </div>
                                                 </div>
@@ -134,7 +134,7 @@
                         <div class="row align-items-center justify-content-center">
                             <div class="col-xl-12 col-lg-12 col-md-12">
                                 <div class="text-center position-relative mt-5">
-                                    <a href="{{url('services')}}" type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i class="fa-solid fa-arrow-trend-up ms-2"></i></a>
+                                    <a href="{{url('work-permit')}}"type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i class="fa-solid fa-arrow-trend-up ms-2"></i></a>
                                 </div>
                             </div>
                         </div>

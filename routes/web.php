@@ -41,6 +41,8 @@ Route::get('manpower/{slug}', 'App\Http\Controllers\homeController@searchManpowe
 Route::get('service', 'App\Http\Controllers\homeController@service');
 Route::get('services', 'App\Http\Controllers\homeController@services');
 Route::get('services/{slug}', 'App\Http\Controllers\homeController@searchServiceBySlug');
+Route::get('hajj-umrah', 'App\Http\Controllers\homeController@hajjUmrah');
+Route::get('hajj-umrah/{slug}', 'App\Http\Controllers\homeController@searchHajjUmrahBySlug');
 Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug');
 Route::get('order-request', 'App\Http\Controllers\homeController@orderRequest');
 Route::get('success-order-request', 'App\Http\Controllers\homeController@successOrderRequest');
@@ -237,6 +239,11 @@ Route::middleware(['role'])->group(function () {
     Route::get('editB2CServicePage', 'App\Http\Controllers\websiteSettingController@editB2CServicePage');
     Route::post('editB2CService', 'App\Http\Controllers\websiteSettingController@editB2CService');
     Route::post('deleteB2CService', 'App\Http\Controllers\websiteSettingController@deleteB2CService');
+    Route::get('b2cHajjUmrahManagememt', 'App\Http\Controllers\websiteSettingController@b2cHajjUmrahManagememt');
+    Route::post('addB2CHajjUmrahPackage', 'App\Http\Controllers\websiteSettingController@addB2CHajjUmrahPackage');
+    Route::get('editB2CHajjUmrahPage', 'App\Http\Controllers\websiteSettingController@editB2CHajjUmrahPage');
+    Route::post('editB2CHajjUmrahPackage', 'App\Http\Controllers\websiteSettingController@editB2CHajjUmrahPackage');
+    Route::post('deleteB2CHajjUmrahPackage', 'App\Http\Controllers\websiteSettingController@deleteB2CHajjUmrahPackage');
 });
 //----------------------------------------------------------
 

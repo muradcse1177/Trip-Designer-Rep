@@ -9,7 +9,7 @@
         <!-- ============================ Articles Thumb Section ================================== -->
         <section class="p-0">
             <div class="thumb-wrap">
-                <img src="{{url('public/b2c/assets/img/banner-7.jpg')}}" class="img-fluid full-width ht-500 object-fit" alt="" height="50%">
+                <img src="{{url('public/b2c/assets/img/banner-7.jpg')}}" class="img-fluid full-width ht-500 object-fit" alt="" height="20%">
             </div>
         </section>
         <!-- ============================ Articles Thumb Section ================================== -->
@@ -85,7 +85,6 @@
                                     <div class="d-flex align-items-center mb-1"><span
                                             class="label text-success bg-light-success">{{$blo->b_category}}</span></div>
                                     <h4 class="fw-bold fs-6 lh-base"><a href="{{url('/blog/'.$blo->slug)}}" class="text-dark">{{$blo->b_title}}</a></h4>
-                                    <p class="mb-3" style="text-align: justify;">{{$blog->s_description.'...'}}</p>
                                     <a class="text-primary fw-medium" href="{{url('/blog/'.$blo->slug)}}">Read More<i class="fa-solid fa-arrow-trend-up ms-2"></i></a>
                                 </div>
                             </div>

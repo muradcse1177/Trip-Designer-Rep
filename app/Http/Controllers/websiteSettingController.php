@@ -740,6 +740,7 @@ class websiteSettingController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
     public function addB2CServices(Request $request){
         try{
             //dd($request);
@@ -823,6 +824,154 @@ class websiteSettingController extends Controller
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cServiceManagement')->with('successMessage', 'Service  deleted successfully!!');
+                    } else {
+                        return back()->with('errorMessage', 'Please try again!!');
+                    }
+                }
+                else {
+                    return back()->with('errorMessage', 'Bad Request!!');
+                }
+            }
+            else{
+                return back()->with('errorMessage', 'Please fill up the form');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function b2cHajjUmrahManagememt(Request $request){
+        try{
+            $rows = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('user_id'))->get();
+            return view('websiteSetting.b2cHajjUmrahManagememt',['packages' => $rows]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function addB2CHajjUmrahPackage(Request $request){
+        try{
+            $fileName = time() . '.' . $request->p_c_photo->extension();
+            $request->p_c_photo->move(public_path('images/upload/hajj/'), $fileName);
+            $p_c_photo = 'public/images/upload/hajj/'.$fileName;
+            $i = 0;
+            foreach ($request->p_m_photo as $photos){
+                $fileName = $i.time() . '.' . $photos->extension();
+                $photos->move(public_path('images/upload/hajj/'), $fileName);
+                $p_m_photo[$i] = 'public/images/upload/hajj/'.$fileName;
+                $i++;
+                echo $i;
+            }
+            $p_m_photos = json_encode($p_m_photo);
+            $result = DB::table('b2c_hajj_umrah')->insert([
+                'agent_id' => Session::get('user_id'),
+                'type' => $request->type,
+                'p_name' => $request->p_name,
+                'p_code' => $request->p_code,
+                'night' => $request->night,
+                'p_c_photo' => $p_c_photo,
+                'p_m_photo' => $p_m_photos,
+                'p_p_adult' => $request->p_p_adult,
+                'p_p_child' => $request->p_p_child,
+                'p_p_infant' => $request->p_p_infant,
+                'slug' => $request->slug,
+                'highlights' => json_encode($request->highlights),
+                'title' => json_encode($request->title),
+                'itinary' => json_encode($request->description),
+                'inclusion' => json_encode($request->inclusion),
+                'exclusion' => json_encode($request->exclusion),
+                'tnt' => json_encode($request->tnt),
+                'include' => json_encode($request->include),
+            ]);
+            if($result){
+                return back()->with('successMessage', 'Hajj & Umrah Package Added Successfully!!');
+            }
+            else{
+                return back()->with('errorMessage', 'Please Try Again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function  editB2CHajjUmrahPage(Request $request){
+        try{
+            $rows = DB::table('b2c_hajj_umrah')->where('id',$request->id)->first();
+            return view('websiteSetting.editB2CHajjUmrahPage',['package' => $rows]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function editB2CHajjUmrahPackage (Request $request){
+        try{
+            $rows = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            if($request->p_c_photo){
+                $fileName = time() . '.' . $request->p_c_photo->extension();
+                $request->p_c_photo->move(public_path('images/upload/hajj/'), $fileName);
+                $p_c_photo = 'public/images/upload/hajj/'.$fileName;
+            }
+            else{
+                $p_c_photo = $rows->p_c_photo;
+            }
+            if($request->p_m_photo){
+                $i = 0;
+                foreach ($request->p_m_photo as $photos){
+                    $fileName = $i.time() . '.' . $photos->extension();
+                    $photos->move(public_path('images/upload/hajj/'), $fileName);
+                    $p_m_photo[$i] = 'public/images/upload/hajj/'.$fileName;
+                    $i++;
+                    echo $i;
+                }
+                $p_m_photos = json_encode($p_m_photo);
+            }
+            else{
+                $p_m_photos = $rows->p_m_photo;
+            }
+            //dd($request);
+            $result = DB::table('b2c_hajj_umrah')
+                ->where('id',$request->id)
+                ->where('agent_id',Session::get('user_id'))
+                ->update([
+                    'type' => $request->type,
+                    'p_name' => $request->p_name,
+                    'p_code' => $request->p_code,
+                    'night' => $request->night,
+                    'p_c_photo' => $p_c_photo,
+                    'p_m_photo' => $p_m_photos,
+                    'p_p_adult' => $request->p_p_adult,
+                    'p_p_child' => $request->p_p_child,
+                    'p_p_infant' => $request->p_p_infant,
+                    'slug' => $request->slug,
+                    'highlights' => json_encode($request->highlights),
+                    'title' => json_encode($request->title),
+                    'itinary' => json_encode($request->description),
+                    'inclusion' => json_encode($request->inclusion),
+                    'exclusion' => json_encode($request->exclusion),
+                    'tnt' => json_encode($request->tnt),
+                    'include' => json_encode($request->include),
+                ]);
+            if ($result) {
+                return redirect()->to('b2cHajjUmrahManagememt')->with('successMessage', 'Hajj & Umrah Package Updated Successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function deleteB2CHajjUmrahPackage(Request $request){
+        try{
+            if($request) {
+                if($request->id) {
+                    $result =DB::table('b2c_hajj_umrah')
+                        ->where('id', $request->id)
+                        ->where('agent_id',Session::get('user_id'))
+                        ->delete();
+                    if ($result) {
+                        return redirect()->to('b2cHajjUmrahManagememt')->with('successMessage', 'ajj & Umrah Package deleted successfully!!');
                     } else {
                         return back()->with('errorMessage', 'Please try again!!');
                     }
