@@ -43,6 +43,7 @@ Route::get('services', 'App\Http\Controllers\homeController@services');
 Route::get('services/{slug}', 'App\Http\Controllers\homeController@searchServiceBySlug');
 Route::get('hajj-umrah', 'App\Http\Controllers\homeController@hajjUmrah');
 Route::get('hajj-umrah/{slug}', 'App\Http\Controllers\homeController@searchHajjUmrahBySlug');
+Route::get('search-hajj-umrah-package', 'App\Http\Controllers\homeController@searchHajjUmrahPackage');
 Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug');
 Route::get('order-request', 'App\Http\Controllers\homeController@orderRequest');
 Route::get('success-order-request', 'App\Http\Controllers\homeController@successOrderRequest');

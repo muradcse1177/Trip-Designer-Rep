@@ -14,7 +14,7 @@ class authController extends Controller
             return redirect()->to('dashboard');
         }
         else{
-            return view('userAuth.login');
+            return view('frontend.userAuth.all-login-page');
         }
     }
     public  function allLogin(Request $request){

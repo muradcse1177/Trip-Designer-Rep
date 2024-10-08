@@ -22,6 +22,6 @@ class RouteMiddleware
         if(Session::get('user_id')){
             return $next($request);
         }
-        return redirect()->to('login');
+        return redirect()->to('all-login');
     }
 }

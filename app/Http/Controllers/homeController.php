@@ -29,11 +29,17 @@ class homeController extends Controller
             if($domain['agent_id']) {
                 $rows1 = DB::table('airport_details')->get();
                 $rows2 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
-                $rows3 = DB::table('b2c_tour_package')->where('agent_id',$domain['agent_id'])->get();
-                $rows4 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->get();
+                $rows3 = DB::table('b2c_tour_package')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(12);
+
+                $rows4 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(12);
                 $rows5 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
-                $rows6 = DB::table('b2c_blog')->where('agent_id',$domain['agent_id'])->get();
-                return view('home', ['airports' => $rows1, 't_country' => $rows2, 't_package' => $rows3, 'visas' => $rows4, 'v_country' => $rows5, 'blogs' => $rows6]);
+
+                $rows9 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
+                $rows7 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(12);
+
+                $rows8 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->get()->take(12);
+                $rows6 = DB::table('b2c_blog')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(8);
+                return view('home', ['airports' => $rows1, 't_country' => $rows2, 't_package' => $rows3, 'visas' => $rows4,'permits' => $rows7,'u_packages' => $rows8, 'v_country' => $rows5, 'm_country' => $rows9, 'blogs' => $rows6]);
             }
             else{
                 return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
@@ -116,8 +122,7 @@ class homeController extends Controller
                  $count = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->get()->count();
                  $rows1 = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->where('country', $request->country)->get();
                  $rows2 = DB::table('b2c_manpower_country')->where('agent_id', $domain['agent_id'])->get();
-                 $rows3 = DB::table('b2c_manpower')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
-                 return view('frontend.work-permit-country', ['visa' => $rows1, 'v_country' => $rows2, 'visas' => $rows3,'count' => $count,]);
+                 return view('frontend.work-permit-country', ['v_country' => $rows2, 'visas' => $rows1,'count' => $count,]);
             }
             else{
                 return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
@@ -251,6 +256,23 @@ class homeController extends Controller
                 $rows1 = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->where('slug', $request->slug)->first();
                 $rows3 = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
                 return view('frontend.hajj-umrah-details', ['package' => $rows1, 't_package' => $rows3]);
+            }
+            else{
+                return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function searchHajjUmrahPackage(Request $request){
+        try{
+             $domain =$this->domainCheck();
+             if($domain['agent_id'])  {
+                $rows1 = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->where('type', $request->type)->get();
+                $rows3 = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->inRandomOrder()->limit(5)->get();
+                 $count = DB::table('b2c_hajj_umrah')->where('agent_id', $domain['agent_id'])->get()->count();
+                return view('frontend.hajj-umrah', ['package' => $rows1, 't_package' => $rows3,'count' => $count]);
             }
             else{
                 return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);

@@ -17,296 +17,308 @@
                                 $a = 'a';
                             ?>
 
+{{--                            <li class="nav-item">--}}
+{{--                                <a class="nav-link active" data-bs-toggle="tab" href="#flights"><i class="fa-solid fa-jet-fighter me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Flights';?></a>--}}
+{{--                            </li>--}}
                             <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#flights"><i class="fa-solid fa-jet-fighter me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Flights';?></a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tours"><i class="fa-solid fa-umbrella-beach me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Tour Package';?></a>
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tours"><i class="fa-solid fa-umbrella-beach me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Tour Package';?></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link " data-bs-toggle="tab" href="#visa"><i class="fa-solid fa-passport me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Visa';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " data-bs-toggle="tab" href="#hotels"><i class="fa-solid fa-hotel me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Hotels';?></a>
+                                <a class="nav-link " data-bs-toggle="tab" href="#work-permit"><i class="fa-solid fa-solid fa-user-secret me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Work Permit';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#cabs"><i class="fa-solid fa-car me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Cab';?></a>
+                                <a class="nav-link" data-bs-toggle="tab" href="#hajj-umrah"><i class="fa-solid fa-kaaba me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Hajj Umrah';?></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#education"><i class="fa-solid fa-graduation-cap me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Education';?></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#services"><i class="fa-solid fa-kaaba me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'services';?></a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane show active" id="flights">
-                                <ul class="nav nav-pills primary-soft medium justify-content-center mb-3" id="tour-pills-tab" role="tablist">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#oneWay"> One Way</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#round"> Round Trip</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#multi"> Multi City</a>
-                                    </li>
-                                </ul>
+{{--                            <div class="tab-pane show active" id="flights">--}}
+{{--                                <ul class="nav nav-pills primary-soft medium justify-content-center mb-3" id="tour-pills-tab" role="tablist">--}}
+{{--                                    <li class="nav-item">--}}
+{{--                                        <a class="nav-link active" data-bs-toggle="tab" href="#oneWay"> One Way</a>--}}
+{{--                                    </li>--}}
+{{--                                    <li class="nav-item">--}}
+{{--                                        <a class="nav-link" data-bs-toggle="tab" href="#round"> Round Trip</a>--}}
+{{--                                    </li>--}}
+{{--                                    <li class="nav-item">--}}
+{{--                                        <a class="nav-link" data-bs-toggle="tab" href="#multi"> Multi City</a>--}}
+{{--                                    </li>--}}
+{{--                                </ul>--}}
 
-                                <div class="tab-content">
-                                    <div class="tab-pane show active" id="oneWay">
-                                        {{ Form::open(array('url' => '',  'method' => 'get' ,'class' =>'form-horizontal')) }}
-                                        <div class="row gx-lg-2 g-3">
-                                            <div class="col-xl-6 col-lg-6 col-md-12">
-                                                <div class="row gy-3 gx-lg-2 gx-3">
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">
-                                                        <div class="form-group hdd-arrow mb-0">
-                                                            <input class="form-control fw-bold" type="text" id="departure" name="departure" value="DAC,Dhaka" placeholder="Enter City or Airport Name">
-                                                        </div>
-                                                        <div class="btn-flip-icon mt-md-0">
-                                                            <button class="p-0 m-0 text-primary"><i class="fa-solid fa-right-left"></i></button>
-                                                        </div>
-                                                        <div id="suggesstion-box"></div>
-                                                    </div>
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                        <div class="form-groupp hdd-arrow mb-0">
-                                                            <input class="form-control fw-bold " type="text" id="arrival" name="arrival" value="CXB,Cox's Bazar" placeholder="Enter City or Airport Name">
-                                                            <div id="suggesstion-box1"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-12">
-                                                <div class="row gy-3 gx-lg-2 gx-3">
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                        <div class="form-group mb-0">
-                                                            <input class="form-control fw-bold choosedate" name="dep_date" type="text" value="<?php echo date("Y-m-d", time() + 86400); ?>" placeholder="Departure Date.." readonly="readonly">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                        <div class="form-group mb-0">
-                                                            <div class="booking-form__input guests-input mixer-auto">
-                                                                <button name="guests-btn" id="guests-input-btn">1 Guest</button>
-                                                                <input type="hidden" name="adult" id="adult" value="">
-                                                                <input type="hidden" name="child" id="child" value="">
-                                                                <input type="hidden" name="infant" id="infant" value="">
-                                                                <div class="guests-input__options" id="guests-input-options">
-                                                                    <div>
-                                                                        <span class="guests-input__ctrl minus" id="adults-subs-btn"><i
-                                                                                class="fa-solid fa-minus"></i></span>
-                                                                            <span class="guests-input__value"><span id="guests-count-adults">1</span>Adults</span>
-                                                                            <span class="guests-input__ctrl plus" id="adults-add-btn"><i
-                                                                                    class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <span class="guests-input__ctrl minus" id="children-subs-btn"><i
-                                                                                class="fa-solid fa-minus"></i></span>
-                                                                            <span class="guests-input__value"><span id="guests-count-children">0</span>Children 0-12 Years</span>
-                                                                            <span class="guests-input__ctrl plus" id="children-add-btn"><i
-                                                                                    class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <span class="guests-input__ctrl minus" id="room-subs-btn"><i
-                                                                                class="fa-solid fa-minus"></i></span>
-                                                                            <span class="guests-input__value"><span id="guests-count-room">0</span>Infant</span>
-                                                                            <span class="guests-input__ctrl plus" id="room-add-btn"><i
-                                                                                    class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-1 col-lg-1 col-md-12">
-                                                <div class="form-group hdd-arrow mb-0">
-                                                    <select class="Infant form-control fw-bold" name="f_class">
-                                                        <option value="Economy">Economy</option>
-                                                        <option value="Premium Economy">Premium Economy</option>
-                                                        <option value="Business">Business</option>
-                                                        <option value="FirstClass">First Class</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-1 col-lg-1 col-md-12">
-                                                <div class="form-group mb-0">
-                                                    <input type="hidden" name="f_type" value="Oneway">
-                                                    <button type="submit" class="btn btn-primary full-width fw-medium loadingstart"><i
-                                                            class="fa-solid fa-magnifying-glass fs-5"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {{ Form::close() }}
-                                    </div>
+{{--                                <div class="tab-content">--}}
+{{--                                    <div class="tab-pane show active" id="oneWay">--}}
+{{--                                        {{ Form::open(array('url' => '',  'method' => 'get' ,'class' =>'form-horizontal')) }}--}}
+{{--                                        <div class="row gx-lg-2 g-3">--}}
+{{--                                            <div class="col-xl-6 col-lg-6 col-md-12">--}}
+{{--                                                <div class="row gy-3 gx-lg-2 gx-3">--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">--}}
+{{--                                                        <div class="form-group hdd-arrow mb-0">--}}
+{{--                                                            <input class="form-control fw-bold" type="text" id="departure" name="departure" value="DAC,Dhaka" placeholder="Enter City or Airport Name">--}}
+{{--                                                        </div>--}}
+{{--                                                        <div class="btn-flip-icon mt-md-0">--}}
+{{--                                                            <button class="p-0 m-0 text-primary"><i class="fa-solid fa-right-left"></i></button>--}}
+{{--                                                        </div>--}}
+{{--                                                        <div id="suggesstion-box"></div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">--}}
+{{--                                                        <div class="form-groupp hdd-arrow mb-0">--}}
+{{--                                                            <input class="form-control fw-bold " type="text" id="arrival" name="arrival" value="CXB,Cox's Bazar" placeholder="Enter City or Airport Name">--}}
+{{--                                                            <div id="suggesstion-box1"></div>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-4 col-lg-4 col-md-12">--}}
+{{--                                                <div class="row gy-3 gx-lg-2 gx-3">--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">--}}
+{{--                                                        <div class="form-group mb-0">--}}
+{{--                                                            <input class="form-control fw-bold choosedate" name="dep_date" type="text" value="<?php echo date("Y-m-d", time() + 86400); ?>" placeholder="Departure Date.." readonly="readonly">--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">--}}
+{{--                                                        <div class="form-group mb-0">--}}
+{{--                                                            <div class="booking-form__input guests-input mixer-auto">--}}
+{{--                                                                <button name="guests-btn" id="guests-input-btn">1 Guest</button>--}}
+{{--                                                                <input type="hidden" name="adult" id="adult" value="">--}}
+{{--                                                                <input type="hidden" name="child" id="child" value="">--}}
+{{--                                                                <input type="hidden" name="infant" id="infant" value="">--}}
+{{--                                                                <div class="guests-input__options" id="guests-input-options">--}}
+{{--                                                                    <div>--}}
+{{--                                                                        <span class="guests-input__ctrl minus" id="adults-subs-btn"><i--}}
+{{--                                                                                class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                            <span class="guests-input__value"><span id="guests-count-adults">1</span>Adults</span>--}}
+{{--                                                                            <span class="guests-input__ctrl plus" id="adults-add-btn"><i--}}
+{{--                                                                                    class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                    <div>--}}
+{{--                                                                        <span class="guests-input__ctrl minus" id="children-subs-btn"><i--}}
+{{--                                                                                class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                            <span class="guests-input__value"><span id="guests-count-children">0</span>Children 0-12 Years</span>--}}
+{{--                                                                            <span class="guests-input__ctrl plus" id="children-add-btn"><i--}}
+{{--                                                                                    class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                    <div>--}}
+{{--                                                                        <span class="guests-input__ctrl minus" id="room-subs-btn"><i--}}
+{{--                                                                                class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                            <span class="guests-input__value"><span id="guests-count-room">0</span>Infant</span>--}}
+{{--                                                                            <span class="guests-input__ctrl plus" id="room-add-btn"><i--}}
+{{--                                                                                    class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                </div>--}}
+{{--                                                            </div>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-1 col-lg-1 col-md-12">--}}
+{{--                                                <div class="form-group hdd-arrow mb-0">--}}
+{{--                                                    <select class="Infant form-control fw-bold" name="f_class">--}}
+{{--                                                        <option value="Economy">Economy</option>--}}
+{{--                                                        <option value="Premium Economy">Premium Economy</option>--}}
+{{--                                                        <option value="Business">Business</option>--}}
+{{--                                                        <option value="FirstClass">First Class</option>--}}
+{{--                                                    </select>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-1 col-lg-1 col-md-12">--}}
+{{--                                                <div class="form-group mb-0">--}}
+{{--                                                    <input type="hidden" name="f_type" value="Oneway">--}}
+{{--                                                    <button type="submit" class="btn btn-primary full-width fw-medium loadingstart"><i--}}
+{{--                                                            class="fa-solid fa-magnifying-glass fs-5"></i></button>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                        {{ Form::close() }}--}}
+{{--                                    </div>--}}
 
-                                    <div class="tab-pane" id="round">
-                                        <div class="row gx-lg-2 g-3">
-                                            <div class="col-xl-4 col-lg-4 col-md-12">
-                                                <div class="row gy-3 gx-lg-2 gx-3">
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">
-                                                        <div class="form-group hdd-arrow mb-0">
-                                                            <input class="form-control fw-bold " type="text" placeholder="Departure">
-                                                        </div>
-                                                        <div class="btn-flip-icon mt-md-0">
-                                                            <button class="p-0 m-0 text-primary"><i class="fa-solid fa-right-left"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                        <div class="form-groupp hdd-arrow mb-0">
-                                                            <input class="form-control fw-bold " type="text" placeholder="Arrival">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-6 col-lg-6 col-md-12">
-                                                <div class="row gy-3 gx-lg-2 gx-3">
-                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
-                                                        <div class="form-group mb-0">
-                                                            <input class="form-control fw-bold choosedate" type="text" placeholder="Departure Date.." readonly="readonly">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
-                                                        <div class="form-group mb-0">
-                                                            <input class="form-control fw-bold choosedate" type="text" placeholder="Arrival Date.." readonly="readonly">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
-                                                        <div class="form-group mb-0">
-                                                            <div class="booking-form__input guests-input mixer-auto">
-                                                                <button name="guests-btn" id="guests-input-btn">1 Guest</button>
-                                                                <div class="guests-input__options" id="guests-input-options">
-                                                                    <div>
-																	<span class="guests-input__ctrl minus" id="adults-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                        <span class="guests-input__value"><span id="guests-count-adults">1</span>Adults</span>
-                                                                        <span class="guests-input__ctrl plus" id="adults-add-btn"><i
-                                                                                class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                    <div>
-																	<span class="guests-input__ctrl minus" id="children-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                        <span class="guests-input__value"><span id="guests-count-children">0</span>Children</span>
-                                                                        <span class="guests-input__ctrl plus" id="children-add-btn"><i
-                                                                                class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                    <div>
-																	<span class="guests-input__ctrl minus" id="room-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                        <span class="guests-input__value"><span id="guests-count-room">0</span>Rooms</span>
-                                                                        <span class="guests-input__ctrl plus" id="room-add-btn"><i
-                                                                                class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-1 col-lg-1 col-md-12">
-                                                <div class="form-group hdd-arrow mb-0">
-                                                    <select class="Infant form-control fw-bold">
-                                                        <option value="Economy">Economy</option>
-                                                        <option value="Business">Business</option>
-                                                        <option value="FirstClass">First Class</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-1 col-lg-1 col-md-12">
-                                                <div class="form-group mb-0">
-                                                    <button type="button" class="btn btn-primary full-width fw-medium"><i
-                                                            class="fa-solid fa-magnifying-glass fs-5"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="multi">
-                                        <div class="row gx-lg-2 g-3">
-                                            <div class="col-xl-4 col-lg-4 col-md-12">
-                                                <div class="row gy-3 gx-lg-2 gx-3">
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">
-                                                        <div class="form-group hdd-arrow mb-0">
-                                                            <input class="form-control fw-bold " type="text" placeholder="Departure">
-                                                        </div>
-                                                        <div class="btn-flip-icon mt-md-0">
-                                                            <button class="p-0 m-0 text-primary"><i class="fa-solid fa-right-left"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                        <div class="form-groupp hdd-arrow mb-0">
-                                                            <input class="form-control fw-bold " type="text" placeholder="Arrival">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-5 col-lg-5 col-md-12">
-                                                <div class="row gy-3 gx-lg-2 gx-3">
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                        <div class="form-group mb-0">
-                                                            <input class="form-control fw-bold choosedate" type="text" placeholder="Departure Date.." readonly="readonly">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                        <div class="form-group mb-0">
-                                                            <div class="booking-form__input guests-input mixer-auto">
-                                                                <button name="guests-btn" id="guests-input-btn">1 Guest</button>
-                                                                <div class="guests-input__options" id="guests-input-options">
-                                                                    <div>
-																	<span class="guests-input__ctrl minus" id="adults-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                        <span class="guests-input__value"><span id="guests-count-adults">1</span>Adults</span>
-                                                                        <span class="guests-input__ctrl plus" id="adults-add-btn"><i
-                                                                                class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                    <div>
-																	<span class="guests-input__ctrl minus" id="children-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                        <span class="guests-input__value"><span id="guests-count-children">0</span>Children</span>
-                                                                        <span class="guests-input__ctrl plus" id="children-add-btn"><i
-                                                                                class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                    <div>
-																	<span class="guests-input__ctrl minus" id="room-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                        <span class="guests-input__value"><span id="guests-count-room">0</span>Rooms</span>
-                                                                        <span class="guests-input__ctrl plus" id="room-add-btn"><i
-                                                                                class="fa-solid fa-plus"></i></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-12">
-                                                <div class="form-group hdd-arrow mb-0">
-                                                    <select class="Infant form-control fw-bold">
-                                                        <option value="Economy">Economy</option>
-                                                        <option value="Business">Business</option>
-                                                        <option value="FirstClass">First Class</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-1 col-lg-1 col-md-12">
-                                                <div class="form-group mb-0">
-                                                    <button type="button" class="btn btn-primary full-width fw-medium"><i
-                                                            class="fa-solid fa-plus fs-5"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+{{--                                    <div class="tab-pane" id="round">--}}
+{{--                                        <div class="row gx-lg-2 g-3">--}}
+{{--                                            <div class="col-xl-4 col-lg-4 col-md-12">--}}
+{{--                                                <div class="row gy-3 gx-lg-2 gx-3">--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">--}}
+{{--                                                        <div class="form-group hdd-arrow mb-0">--}}
+{{--                                                            <input class="form-control fw-bold " type="text" placeholder="Departure">--}}
+{{--                                                        </div>--}}
+{{--                                                        <div class="btn-flip-icon mt-md-0">--}}
+{{--                                                            <button class="p-0 m-0 text-primary"><i class="fa-solid fa-right-left"></i></button>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">--}}
+{{--                                                        <div class="form-groupp hdd-arrow mb-0">--}}
+{{--                                                            <input class="form-control fw-bold " type="text" placeholder="Arrival">--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-6 col-lg-6 col-md-12">--}}
+{{--                                                <div class="row gy-3 gx-lg-2 gx-3">--}}
+{{--                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">--}}
+{{--                                                        <div class="form-group mb-0">--}}
+{{--                                                            <input class="form-control fw-bold choosedate" type="text" placeholder="Departure Date.." readonly="readonly">--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">--}}
+{{--                                                        <div class="form-group mb-0">--}}
+{{--                                                            <input class="form-control fw-bold choosedate" type="text" placeholder="Arrival Date.." readonly="readonly">--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">--}}
+{{--                                                        <div class="form-group mb-0">--}}
+{{--                                                            <div class="booking-form__input guests-input mixer-auto">--}}
+{{--                                                                <button name="guests-btn" id="guests-input-btn">1 Guest</button>--}}
+{{--                                                                <div class="guests-input__options" id="guests-input-options">--}}
+{{--                                                                    <div>--}}
+{{--																	<span class="guests-input__ctrl minus" id="adults-subs-btn"><i--}}
+{{--                                                                            class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                        <span class="guests-input__value"><span id="guests-count-adults">1</span>Adults</span>--}}
+{{--                                                                        <span class="guests-input__ctrl plus" id="adults-add-btn"><i--}}
+{{--                                                                                class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                    <div>--}}
+{{--																	<span class="guests-input__ctrl minus" id="children-subs-btn"><i--}}
+{{--                                                                            class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                        <span class="guests-input__value"><span id="guests-count-children">0</span>Children</span>--}}
+{{--                                                                        <span class="guests-input__ctrl plus" id="children-add-btn"><i--}}
+{{--                                                                                class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                    <div>--}}
+{{--																	<span class="guests-input__ctrl minus" id="room-subs-btn"><i--}}
+{{--                                                                            class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                        <span class="guests-input__value"><span id="guests-count-room">0</span>Rooms</span>--}}
+{{--                                                                        <span class="guests-input__ctrl plus" id="room-add-btn"><i--}}
+{{--                                                                                class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                </div>--}}
+{{--                                                            </div>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-1 col-lg-1 col-md-12">--}}
+{{--                                                <div class="form-group hdd-arrow mb-0">--}}
+{{--                                                    <select class="Infant form-control fw-bold">--}}
+{{--                                                        <option value="Economy">Economy</option>--}}
+{{--                                                        <option value="Business">Business</option>--}}
+{{--                                                        <option value="FirstClass">First Class</option>--}}
+{{--                                                    </select>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-1 col-lg-1 col-md-12">--}}
+{{--                                                <div class="form-group mb-0">--}}
+{{--                                                    <button type="button" class="btn btn-primary full-width fw-medium"><i--}}
+{{--                                                            class="fa-solid fa-magnifying-glass fs-5"></i></button>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="tab-pane" id="multi">--}}
+{{--                                        <div class="row gx-lg-2 g-3">--}}
+{{--                                            <div class="col-xl-4 col-lg-4 col-md-12">--}}
+{{--                                                <div class="row gy-3 gx-lg-2 gx-3">--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">--}}
+{{--                                                        <div class="form-group hdd-arrow mb-0">--}}
+{{--                                                            <input class="form-control fw-bold " type="text" placeholder="Departure">--}}
+{{--                                                        </div>--}}
+{{--                                                        <div class="btn-flip-icon mt-md-0">--}}
+{{--                                                            <button class="p-0 m-0 text-primary"><i class="fa-solid fa-right-left"></i></button>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">--}}
+{{--                                                        <div class="form-groupp hdd-arrow mb-0">--}}
+{{--                                                            <input class="form-control fw-bold " type="text" placeholder="Arrival">--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-5 col-lg-5 col-md-12">--}}
+{{--                                                <div class="row gy-3 gx-lg-2 gx-3">--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">--}}
+{{--                                                        <div class="form-group mb-0">--}}
+{{--                                                            <input class="form-control fw-bold choosedate" type="text" placeholder="Departure Date.." readonly="readonly">--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">--}}
+{{--                                                        <div class="form-group mb-0">--}}
+{{--                                                            <div class="booking-form__input guests-input mixer-auto">--}}
+{{--                                                                <button name="guests-btn" id="guests-input-btn">1 Guest</button>--}}
+{{--                                                                <div class="guests-input__options" id="guests-input-options">--}}
+{{--                                                                    <div>--}}
+{{--																	<span class="guests-input__ctrl minus" id="adults-subs-btn"><i--}}
+{{--                                                                            class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                        <span class="guests-input__value"><span id="guests-count-adults">1</span>Adults</span>--}}
+{{--                                                                        <span class="guests-input__ctrl plus" id="adults-add-btn"><i--}}
+{{--                                                                                class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                    <div>--}}
+{{--																	<span class="guests-input__ctrl minus" id="children-subs-btn"><i--}}
+{{--                                                                            class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                        <span class="guests-input__value"><span id="guests-count-children">0</span>Children</span>--}}
+{{--                                                                        <span class="guests-input__ctrl plus" id="children-add-btn"><i--}}
+{{--                                                                                class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                    <div>--}}
+{{--																	<span class="guests-input__ctrl minus" id="room-subs-btn"><i--}}
+{{--                                                                            class="fa-solid fa-minus"></i></span>--}}
+{{--                                                                        <span class="guests-input__value"><span id="guests-count-room">0</span>Rooms</span>--}}
+{{--                                                                        <span class="guests-input__ctrl plus" id="room-add-btn"><i--}}
+{{--                                                                                class="fa-solid fa-plus"></i></span>--}}
+{{--                                                                    </div>--}}
+{{--                                                                </div>--}}
+{{--                                                            </div>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-2 col-lg-2 col-md-12">--}}
+{{--                                                <div class="form-group hdd-arrow mb-0">--}}
+{{--                                                    <select class="Infant form-control fw-bold">--}}
+{{--                                                        <option value="Economy">Economy</option>--}}
+{{--                                                        <option value="Business">Business</option>--}}
+{{--                                                        <option value="FirstClass">First Class</option>--}}
+{{--                                                    </select>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-xl-1 col-lg-1 col-md-12">--}}
+{{--                                                <div class="form-group mb-0">--}}
+{{--                                                    <button type="button" class="btn btn-primary full-width fw-medium"><i--}}
+{{--                                                            class="fa-solid fa-plus fs-5"></i></button>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
 
-                            <div class="tab-pane show" id="tours">
+                            <div class="tab-pane show active" id="tours">
                                 {{ Form::open(array('url' => 'search-tour-package',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                                 <div class="row gy-3 gx-md-3 gx-sm-2">
                                     <div class="col-xl-8 col-lg-7 col-md-12">
                                         <div class="row gy-3 gx-md-3 gx-sm-2">
-                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 position-relative">
+                                                <div class="form-group hdd-arrow mb-0">
+                                                    <select class=" form-control fw-bold">
+                                                        <option value="Bangladesh" selected>Bangladesh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 position-relative">
                                                 <div class="form-group hdd-arrow mb-0">
                                                     <select class="goingto form-control fw-bold" name="country" required>
-                                                        <option value="">Select</option>
                                                         @foreach($t_country as $country)
                                                         <option value="{{$country->name}}">{{$country->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
                                                 <div class="form-group mb-0">
                                                     <input type="text" class="form-control fw-bold" placeholder="Check-In & Check-Out" name="checkinout" id="checkinout" readonly="readonly" required>
                                                 </div>
@@ -315,16 +327,6 @@
                                     </div>
                                     <div class="col-xl-4 col-lg-5 col-md-12">
                                         <div class="row gy-3 gx-md-3 gx-sm-2">
-                                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
-                                                <div class="form-group hdd-arrow mb-0">
-                                                    <select class="tour form-control fw-bold" required>
-                                                        <option value="">Select</option>
-                                                        <option value="ny">Family Package</option>
-                                                        <option value="sd">Honeymoon Package</option>
-                                                        <option value="sj">Group Package</option>
-                                                    </select>
-                                                </div>
-                                            </div>
                                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
                                                 <div class="form-group mb-0">
                                                     <button type="submit" class="btn btn-primary full-width fw-medium"><i class="fa-solid fa-magnifying-glass me-2"></i>Search</button>
@@ -371,110 +373,62 @@
                                 </div>
                                 {{ Form::close() }}
                             </div>
-                            <div class="tab-pane" id="hotels">
+                            <div class="tab-pane show" id="work-permit">
+                                {{ Form::open(array('url' => 'search-manpower',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                                 <div class="row gy-3 gx-md-3 gx-sm-2">
-
                                     <div class="col-xl-8 col-lg-7 col-md-12">
                                         <div class="row gy-3 gx-md-3 gx-sm-2">
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">
                                                 <div class="form-group hdd-arrow mb-0">
-                                                    <select class="goingto form-control fw-bold hdd-arrow">
-                                                        <option value="">Select</option>
-                                                        <option value="ny">New York</option>
-                                                        <option value="sd">San Diego</option>
-                                                        <option value="sj">San Jose</option>
-                                                        <option value="ph">Philadelphia</option>
-                                                        <option value="nl">Nashville</option>
-                                                        <option value="sf">San Francisco</option>
-                                                        <option value="hu">Houston</option>
-                                                        <option value="sa">San Antonio</option>
+                                                    <select class=" form-control fw-bold">
+                                                        <option value="Bangladesh" selected>Bangladesh</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                                <div class="form-group mb-0">
-                                                    <input type="text" class="form-control fw-bold" placeholder="Check-In & Check-Out"
-                                                           id="checkinout" readonly="readonly">
+                                                <div class="form-group hdd-arrow mb-0">
+                                                    <select class="goingto form-control fw-bold" name="country" required>
+                                                        <option value="">Select Country</option>
+                                                        @foreach($m_country as $countt)
+                                                            <option value="{{$countt->name}}">{{$countt->name}}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-5 col-md-12">
                                         <div class="row gy-3 gx-md-3 gx-sm-2">
-                                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
-                                                <div class="form-group mb-0">
-                                                    <div class="booking-form__input guests-input mixer-auto">
-                                                        <button name="guests-btn" id="guests-input-btn">1 Guest</button>
-                                                        <div class="guests-input__options" id="guests-input-options">
-                                                            <div>
-																	<span class="guests-input__ctrl minus" id="adults-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                <span class="guests-input__value"><span id="guests-count-adults">1</span>Adults</span>
-                                                                <span class="guests-input__ctrl plus" id="adults-add-btn"><i
-                                                                        class="fa-solid fa-plus"></i></span>
-                                                            </div>
-                                                            <div>
-																	<span class="guests-input__ctrl minus" id="children-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                <span class="guests-input__value"><span id="guests-count-children">0</span>Children</span>
-                                                                <span class="guests-input__ctrl plus" id="children-add-btn"><i
-                                                                        class="fa-solid fa-plus"></i></span>
-                                                            </div>
-                                                            <div>
-																	<span class="guests-input__ctrl minus" id="room-subs-btn"><i
-                                                                            class="fa-solid fa-minus"></i></span>
-                                                                <span class="guests-input__value"><span id="guests-count-room">0</span>Rooms</span>
-                                                                <span class="guests-input__ctrl plus" id="room-add-btn"><i
-                                                                        class="fa-solid fa-plus"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
                                                 <div class="form-group mb-0">
-                                                    <button type="button" class="btn btn-primary full-width fw-medium"><i
-                                                            class="fa-solid fa-magnifying-glass me-2"></i>Search</button>
+                                                    <button type="submit" class="btn btn-primary full-width fw-medium"><i class="fa-solid fa-magnifying-glass me-2"></i>Search</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
+                                {{ Form::close() }}
                             </div>
 
-                            <div class="tab-pane" id="cabs">
+                            <div class="tab-pane show" id="hajj-umrah">
+                                {{ Form::open(array('url' => 'search-hajj-umrah-package',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                                 <div class="row gy-3 gx-md-3 gx-sm-2">
-
                                     <div class="col-xl-8 col-lg-7 col-md-12">
                                         <div class="row gy-3 gx-md-3 gx-sm-2">
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">
                                                 <div class="form-group hdd-arrow mb-0">
-                                                    <select class="pickup form-control fw-bold">
-                                                        <option value="">Select</option>
-                                                        <option value="ny">New York</option>
-                                                        <option value="sd">San Diego</option>
-                                                        <option value="sj">San Jose</option>
-                                                        <option value="ph">Philadelphia</option>
-                                                        <option value="nl">Nashville</option>
-                                                        <option value="sf">San Francisco</option>
-                                                        <option value="hu">Houston</option>
-                                                        <option value="sa">San Antonio</option>
+                                                    <select class=" form-control fw-bold">
+                                                        <option value="Bangladesh" selected>Bangladesh</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                                                 <div class="form-group hdd-arrow mb-0">
-                                                    <select class="drop form-control fw-bold">
-                                                        <option value="">Select</option>
-                                                        <option value="ny">New York</option>
-                                                        <option value="sd">San Diego</option>
-                                                        <option value="sj">San Jose</option>
-                                                        <option value="ph">Philadelphia</option>
-                                                        <option value="nl">Nashville</option>
-                                                        <option value="sf">San Francisco</option>
-                                                        <option value="hu">Houston</option>
-                                                        <option value="sa">San Antonio</option>
+                                                    <select class="goingto form-control fw-bold" name="country" required>
+                                                        <option value="">Select Country</option>
+                                                        @foreach($m_country as $countt)
+                                                            <option value="{{$countt->name}}">{{$countt->name}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
@@ -482,21 +436,15 @@
                                     </div>
                                     <div class="col-xl-4 col-lg-5 col-md-12">
                                         <div class="row gy-3 gx-md-3 gx-sm-2">
-                                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
-                                                <div class="form-group mb-0">
-                                                    <input type="text" class="form-control choosedate fw-bold" placeholder="Choose Pickup Date" readonly="readonly">
-                                                </div>
-                                            </div>
                                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
                                                 <div class="form-group mb-0">
-                                                    <button type="button" class="btn btn-primary full-width fw-medium"><i
-                                                            class="fa-solid fa-magnifying-glass me-2"></i>Search</button>
+                                                    <button type="submit" class="btn btn-primary full-width fw-medium"><i class="fa-solid fa-magnifying-glass me-2"></i>Search</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
+                                {{ Form::close() }}
                             </div>
                         </div>
                     </div>
@@ -550,8 +498,8 @@
             <div class="row align-items-center justify-content-center">
                 <div class="col-xl-12 col-lg-12 col-md-12">
                     <div class="text-center position-relative mt-5">
-                        <button type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i
-                                class="fa-solid fa-arrow-trend-up ms-2"></i></button>
+                        <a type="button" href="{{url('visa')}}" class="btn btn-light-primary fw-medium px-5">Explore More<i
+                                class="fa-solid fa-arrow-trend-up ms-2"></i></a>
                     </div>
                 </div>
             </div>
@@ -562,7 +510,6 @@
     <!-- ============================ Popular Venues Start ================================== -->
     <section>
         <div class="container">
-
             <div class="row align-items-center justify-content-center">
                 <div class="col-xl-8 col-lg-9 col-md-11 col-sm-12">
                     <div class="secHeading-wrap text-center mb-5">
@@ -653,8 +600,8 @@
             <div class="row align-items-center justify-content-center">
                 <div class="col-xl-12 col-lg-12 col-md-12">
                     <div class="text-center position-relative mt-5">
-                        <button type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i
-                                class="fa-solid fa-arrow-trend-up ms-2"></i></button>
+                        <a href="{{url('tour-package')}}" type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i
+                                class="fa-solid fa-arrow-trend-up ms-2"></i></a>
                     </div>
                 </div>
             </div>
@@ -662,7 +609,170 @@
     </section>
     <!-- ============================ Popular Venues Start ================================== -->
 
+    <section>
+        <div class="container">
 
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-8 col-lg-9 col-md-11 col-sm-12">
+                    <div class="secHeading-wrap text-center mb-5">
+                        <h2>Best Work Permit Visa Service  From Bangladesh </h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center gy-4 gx-xl-3 gx-lg-4 gx-4">
+                @foreach($permits as $permit)
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                        <div class="pop-touritem">
+                            <a href="{{'manpower/'.$permit->slug}}" class="card rounded-3 border br-dashed m-0">
+                                <div class="flight-thumb-wrapper p-2 pb-0">
+                                    <div class="popFlights-item-overHidden rounded-3">
+                                        <img src="{{@$domain.'/'.$permit->c_photo}}" class="img-fluid" alt="">
+                                    </div>
+                                </div>
+                                <div class="touritem-middle position-relative p-3">
+                                    <div class="touritem-flexxer">
+                                        <div class="explot">
+                                            <h4 class="city fs-6 m-0 fw-bold">
+                                                <span>{{$permit->country}} Work permit Visa</span>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="booking-wrapes d-flex align-items-center mt-3">
+                                        <button class="btn btn-md btn-light-primary fw-medium rounded full-width me-2">View Details</button>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="text-center position-relative mt-5">
+                        <a type="button" href="{{url('work-permit')}}" class="btn btn-light-primary fw-medium px-5">Explore More<i
+                                class="fa-solid fa-arrow-trend-up ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-8 col-lg-9 col-md-11 col-sm-12">
+                    <div class="secHeading-wrap text-center mb-5">
+                        <h2>Hot & Trending Hajj & Umrah Packages</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center gy-4 gx-xl-3 gx-lg-4 gx-4">
+                @foreach($u_packages as $u_package)
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="pop-touritem">
+                            <a href="{{url('hajj-umrah/'.$u_package->slug)}}" class="card rounded-3 border br-dashed m-0">
+                                <div class="flight-thumb-wrapper p-2 pb-0">
+                                    <div class="popFlights-item-overHidden rounded-3">
+                                        <img src="{{@$domain.'/'.$u_package->p_c_photo}}" class="img-fluid" alt="">
+                                    </div>
+                                </div>
+                                <div class="touritem-middle position-relative p-3">
+                                    <div class="touritem-flexxer">
+                                            <?php
+                                            $include = json_decode($u_package->include);
+                                            ?>
+                                        <div class="tourist-wooks position-relative mb-3">
+                                            <ul class="activities-flex">
+                                                @if(@$include[0] = 'Hotel')
+                                                    <li>
+                                                        <div class="actv-wrap">
+                                                            <div class="actv-wrap-ico"><i class="fa-solid fa-hotel"></i></div>
+                                                            <div class="actv-wrap-caps">Hotel</div>
+                                                        </div>
+                                                    </li>
+                                                @endif
+                                                @if(@$include[1] = 'SightSeeing')
+                                                    <li>
+                                                        <div class="actv-wrap">
+                                                            <div class="actv-wrap-ico"><i class="fa-solid fa-person-walking-luggage"></i></div>
+                                                            <div class="actv-wrap-caps">SightSeeing</div>
+                                                        </div>
+                                                    </li>
+                                                @endif
+                                                @if(@$include[2] = 'Transfer')
+                                                    <li>
+                                                        <div class="actv-wrap">
+                                                            <div class="actv-wrap-ico"><i class="fa-solid fa-bus"></i></div>
+                                                            <div class="actv-wrap-caps">Transfers</div>
+                                                        </div>
+                                                    </li>
+                                                @endif
+                                                @if(@$include[3] = 'Meal')
+                                                    <li>
+                                                        <div class="actv-wrap">
+                                                            <div class="actv-wrap-ico"><i class="fa-solid fa-kitchen-set"></i></div>
+                                                            <div class="actv-wrap-caps">Meal</div>
+                                                        </div>
+                                                    </li>
+                                                @endif
+                                                @if(@$include[4] = 'Visa')
+                                                    <li>
+                                                        <div class="actv-wrap">
+                                                            <div class="actv-wrap-ico"><i class="fa-brands fa-cc-visa"></i></div>
+                                                            <div class="actv-wrap-caps">Visa</div>
+                                                        </div>
+                                                    </li>
+                                                @endif
+                                                @if(@$include[5] = 'Flight')
+                                                    <li>
+                                                        <div class="actv-wrap">
+                                                            <div class="actv-wrap-ico"><i class="fa-solid fa-rocket"></i></div>
+                                                            <div class="actv-wrap-caps">Flight</div>
+                                                        </div>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                        <div class="explot">
+                                            <h4 class="city fs-title m-0 fw-bold">
+                                                <span>{{$u_package->p_name}} &nbsp;<strong><i class="fa-solid fa-star text-warning me-1"></i>{{floatval(rand(4,5))}}</strong></span>
+                                            </h4>
+                                        </div>
+                                        <div class="touritem-amenties my-4">
+                                            <ul class="activities-flex">
+                                                <li>
+                                                    <div class="actv-wrap">
+                                                        <div class="actv-wrap-caps text-dark fw-bold fs-6"><span class="text-dhani me-1">{{$u_package->night}}</span>Night {{$u_package->night +1}} Days</div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <h5 class="fs-5 low-price m-0">{{$c_info->currency}}
+                                                        <span class="price text-primary"> &nbsp; {{$u_package->p_p_adult}} {{$c_info->symbol}}</span>
+                                                    </h5>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="booking-wrapes d-flex align-items-center mt-3">
+                                        <button class="btn btn-md btn-light-primary fw-medium rounded full-width me-2">Request Book<i class="fa-solid fa-arrow-trend-up ms-2"></i></button>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="text-center position-relative mt-5">
+                        <a href="{{url('tour-package')}}" type="button" class="btn btn-light-primary fw-medium px-5">Explore More<i
+                                class="fa-solid fa-arrow-trend-up ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- ================================ Article Section Start ======================================= -->
     <section class="pt-0">
         <div class="container">
