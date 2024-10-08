@@ -36,7 +36,7 @@
                                 <a class="nav-link" data-bs-toggle="tab" href="#education"><i class="fa-solid fa-graduation-cap me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Education';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#services"><i class="fa-solid fa-kaaba me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'services';?></a>
+                                <a class="nav-link" data-bs-toggle="tab" href="#services"><i class="fa-solid fa-list-check me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'services';?></a>
                             </li>
                         </ul>
                         <div class="tab-content">
@@ -426,8 +426,42 @@
                                                 <div class="form-group hdd-arrow mb-0">
                                                     <select class="goingto form-control fw-bold" name="country" required>
                                                         <option value="">Select Country</option>
-                                                        @foreach($m_country as $countt)
-                                                            <option value="{{$countt->name}}">{{$countt->name}}</option>
+                                                        <option value="Umrah">Umrah</option>
+                                                        <option value="Hajj">Hajj</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-5 col-md-12">
+                                        <div class="row gy-3 gx-md-3 gx-sm-2">
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                                                <div class="form-group mb-0">
+                                                    <button type="submit" class="btn btn-primary full-width fw-medium"><i class="fa-solid fa-magnifying-glass me-2"></i>Search</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ Form::close() }}
+                            </div>
+                            <div class="tab-pane show" id="services">
+                                {{ Form::open(array('url' => 'service',  'method' => 'get' ,'class' =>'form-horizontal')) }}
+                                <div class="row gy-3 gx-md-3 gx-sm-2">
+                                    <div class="col-xl-8 col-lg-7 col-md-12">
+                                        <div class="row gy-3 gx-md-3 gx-sm-2">
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 position-relative">
+                                                <div class="form-group hdd-arrow mb-0">
+                                                    <select class=" form-control fw-bold">
+                                                        <option value="Bangladesh" selected>Bangladesh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                                                <div class="form-group hdd-arrow mb-0">
+                                                    <select class="gointo form-control fw-bold" name="name" required>
+                                                        @foreach($services as $servi)
+                                                            <option value="{{$servi->name}}">{{$servi->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

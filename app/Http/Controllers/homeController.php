@@ -38,8 +38,16 @@ class homeController extends Controller
                 $rows7 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(12);
 
                 $rows8 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->get()->take(12);
+
+                $rows10 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+
                 $rows6 = DB::table('b2c_blog')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(8);
-                return view('home', ['airports' => $rows1, 't_country' => $rows2, 't_package' => $rows3, 'visas' => $rows4,'permits' => $rows7,'u_packages' => $rows8, 'v_country' => $rows5, 'm_country' => $rows9, 'blogs' => $rows6]);
+                return view('home',
+                    [
+                        'airports' => $rows1, 't_country' => $rows2, 't_package' => $rows3, 'visas' => $rows4,
+                        'permits' => $rows7,'u_packages' => $rows8, 'v_country' => $rows5, 'm_country' => $rows9,
+                        'blogs' => $rows6,'services' => $rows10,
+                    ]);
             }
             else{
                 return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
