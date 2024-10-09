@@ -57,13 +57,16 @@ Route::get('refund-policy', 'App\Http\Controllers\homeController@refundPolicy');
 Route::get('cookie-policy', 'App\Http\Controllers\homeController@CookiePolicy');
 //Route::get('importCsv', 'App\Http\Controllers\usersController@importCsv');
 //Route::get('/', 'App\Http\Controllers\authController@loginPage');
-Route::get('login', 'App\Http\Controllers\authController@loginPage');
+Route::get('login', 'App\Http\Controllers\authController@allLogin');
 Route::get('logout', 'App\Http\Controllers\authController@logout');
 Route::post('verifyUsers', 'App\Http\Controllers\authController@verifyUsers');
 Route::get('dashboard', 'App\Http\Controllers\authController@dashboard');
+Route::get('report-dashboard', 'App\Http\Controllers\authController@dashboard');
+Route::get('main-dashboard', 'App\Http\Controllers\authController@mainDashboard');
 //----------------------------------------------------------
 Route::middleware(['role'])->group(function () {
     //Dashboard----------------------------------------------------------
+    Route::get('report-dashboard', 'App\Http\Controllers\authController@dashboard');
     Route::get('salesDataGraph', 'App\Http\Controllers\airTicketController@salesDataGraph');
     //General Invoice
     Route::get('g_invoice', 'App\Http\Controllers\accountsController@generalInvoice');
@@ -123,7 +126,15 @@ Route::middleware(['role'])->group(function () {
     Route::get('editPackagePage', 'App\Http\Controllers\tourController@editPackagePage');
     Route::post('updateTourPackage', 'App\Http\Controllers\tourController@updateTourPackage');
     Route::post('deleteTourPackage', 'App\Http\Controllers\tourController@deleteTourPackage');
-    Route::get('viewTourPackage', 'App\Http\Controllers\tourCo ntroller@viewTourPackage');
+    Route::get('viewTourPackage', 'App\Http\Controllers\tourController@viewTourPackage');
+
+    //B2B Section
+    Route::get('search-tour-package-b2b', 'App\Http\Controllers\tourController@searchTourPackageB2b');
+    Route::get('search-visa-b2b', 'App\Http\Controllers\visaController@searchVisaB2b');
+    Route::get('search-manpower-b2b', 'App\Http\Controllers\visaController@searchManpowerB2b');
+    Route::get('search-hajj-umrah-package-b2b', 'App\Http\Controllers\visaController@searchHajjUmrahB2b');
+    Route::get('service-b2b', 'App\Http\Controllers\visaController@serviceB2b');
+    Route::get('tour-package-b2b/{slug}', 'App\Http\Controllers\visaController@tourPackageB2bBySlug');
     //----------------------------------------------------------
 
     //Manpowe Package----------------------------------------------------------

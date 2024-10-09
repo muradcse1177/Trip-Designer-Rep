@@ -16,9 +16,14 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
                 <li class="nav-item">
-                    <a href="{{url('/dashboard')}}" class="nav-link @yield('dashboard')">
+                    <a href="{{url('/main-dashboard')}}" class="nav-link @yield('mainDashboard')">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
+                    </a>
+                <li class="nav-item">
+                    <a href="{{url('/report-dashboard')}}" class="nav-link @yield('reportDashboard')">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <p>Report Dashboard</p>
                     </a>
                 </li>
                 <li class="nav-item">

@@ -459,7 +459,7 @@
                                             </div>
                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                                                 <div class="form-group hdd-arrow mb-0">
-                                                    <select class="gointo form-control fw-bold" name="name" required>
+                                                    <select class="gointo form-control fw-bold select2" name="name" required>
                                                         @foreach($services as $servi)
                                                             <option value="{{$servi->name}}">{{$servi->name}}</option>
                                                         @endforeach

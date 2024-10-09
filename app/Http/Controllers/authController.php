@@ -9,6 +9,19 @@ use Illuminate\Support\Facades\Session;
 
 class authController extends Controller
 {
+    public function domainCheck(){
+        try{
+            //$c_domain = $_SERVER['SERVER_NAME'];
+            $c_domain = 'tripdesigner.net';
+            $rows = DB::table('domain')->where('name',$c_domain)->first();
+            $row['domain'] = @$rows->name;
+            $row['agent_id'] = @$rows->agent_id;
+            return @$row;
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public  function loginPage(Request $request){
         if(Session::get('user_id')){
             return redirect()->to('dashboard');
@@ -31,6 +44,25 @@ class authController extends Controller
     }
     public  function customerLogin(Request $request){
         return view('frontend.userAuth.customer-login');
+    }
+    public  function mainDashboard(Request $request){
+        $domain =$this->domainCheck();
+        $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows2 = DB::table('b2c_tour_package')->where('agent_id',$domain['agent_id'])->get();
+        $rows3 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->get();
+        $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows6 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->get();
+        $rows7 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->get();
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+        return view('main-dashboard',
+            [
+                't_country' => $rows1,'t_package' => $rows2,
+                'visas' => $rows3, 'v_country' => $rows4,
+                'permits' => $rows6,'m_country' => $rows5,
+                'u_package' => $rows7,'services' => $rows8,'type' => 'main'
+
+            ]);
     }
     public  function dashboard(Request $request){
         if(Session::get('user_id')){
@@ -101,7 +133,7 @@ class authController extends Controller
                 ]);
         }
         else{
-            return redirect()->to('login');
+            return redirect()->to('all-login');
         }
     }
     public function createNewCustomer(Request $request){
@@ -187,10 +219,10 @@ class authController extends Controller
             //$this->logout();
             if(Session::get('user_id')){
                 if(Session::get('admin')){
-                    return redirect()->to('dashboard');
+                    return redirect()->to('main-dashboard');
                 }
                 if(Session::get('admin')){
-                    return redirect()->to('dashboard');
+                    return redirect()->to('main-dashboard');
                 }
                 if(Session::get('customer')){
                     return redirect()->to('/');
@@ -214,11 +246,11 @@ class authController extends Controller
                         Cookie::queue('user', $rows->id, time()+31556926 ,'/');
                         if($role == 1){
                             Session::put('superAdmin', $rows->id);
-                            return redirect()->to('dashboard');
+                            return redirect()->to('main-dashboard');
                         }
                         if($role == 2){
                             Session::put('admin', $rows->id);
-                            return redirect()->to('dashboard');
+                            return redirect()->to('main-dashboard');
                         }
                         if($role == 3){
                             Session::put('customer', $rows->id);

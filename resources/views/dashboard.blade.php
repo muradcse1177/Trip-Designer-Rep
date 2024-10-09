@@ -1,6 +1,6 @@
 @extends('mainLayout.layout')
 @section('title','Trip Designer || Dashboard')
-@section('dashboard','active')
+@section('reportDashboard','active')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

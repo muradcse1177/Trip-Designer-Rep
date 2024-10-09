@@ -8,6 +8,19 @@ use Illuminate\Support\Facades\Session;
 
 class tourController extends Controller
 {
+    public function domainCheck(){
+        try{
+            //$c_domain = $_SERVER['SERVER_NAME'];
+            $c_domain = 'tripdesigner.net';
+            $rows = DB::table('domain')->where('name',$c_domain)->first();
+            $row['domain'] = @$rows->name;
+            $row['agent_id'] = @$rows->agent_id;
+            return @$row;
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public function newTourPackage(Request $request){
         try{
             $rows1 = DB::table('tour_countries')->get();
@@ -210,5 +223,27 @@ class tourController extends Controller
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
         }
+    }
+    public  function searchTourPackageB2b(Request $request){
+        $domain =$this->domainCheck();
+        $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows2 = DB::table('b2c_tour_package')
+            ->where('agent_id',$domain['agent_id'])
+            ->where('c_name',$request->country)
+            ->get();
+        $rows3 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->get();
+        $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows6 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->get();
+        $rows7 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->get();
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+        return view('main-dashboard',
+            [
+                't_country' => $rows1,'t_package' => $rows2,
+                'visas' => $rows3, 'v_country' => $rows4,
+                'permits' => $rows6,'m_country' => $rows5,
+                'u_package' => $rows7,'services' => $rows8,
+                'type' => $request->type,
+            ]);
     }
 }
