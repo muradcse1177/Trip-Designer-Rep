@@ -139,6 +139,7 @@
                                     @endphp
                                     @for($i =0; $i<$f_numbers_count; $i++)
                                         <div class="row after-add-more" style="margin-left: 5px;">
+                                            @if(@$_GET['reissue'] != 1)
                                             <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <label>From</label>
@@ -167,6 +168,15 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            @endif
+                                            @if(@$_GET['reissue'] == 1)
+                                                <div class="col-sm-3">
+                                                    <div class="form-group">
+                                                        <label>Flight</label>
+                                                        <input type="text" class="form-control" value="Flight Number {{$i +1}}" readonly/>
+                                                    </div>
+                                                </div>
+                                            @endif
                                             <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <label>Departure</label>
@@ -195,6 +205,7 @@
                                                     <input type="text" class="form-control" id="f_number" name="f_number[]" placeholder="Enter Flight Number" value="{{@$f_numbers[$i]}}" required>
                                                 </div>
                                             </div>
+                                            @if(@$_GET['reissue'] != 1)
                                             <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <label>Airlines</label>
@@ -209,9 +220,9 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            @endif
                                         </div>
                                     @endfor
-
                                     @endif
                                     @if(@$_GET['reissue']==1)
                                         @php

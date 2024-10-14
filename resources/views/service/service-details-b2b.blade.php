@@ -122,182 +122,6 @@
                                         {{ Form::close() }}
                                         <hr>
                                         <br>
-                                        <?php
-                                        $m_photo = json_decode($package->p_m_photo);
-                                        $count= count($m_photo);
-                                        $highlight = json_decode($package->highlights);
-                                        $inclusion = json_decode($package->inclusion);
-                                        $exclusion = json_decode($package->exclusion);
-                                        $tnt = json_decode($package->tnt);
-                                        ?>
-                                        <div class="card">
-                                            <div class="card-header" style="background-color: #D9E0FF;">
-                                                <h5 style="text-align:; color: #00000;"><b>Package Name:</b>  {{$package->p_name}}</h5>
-                                                <span style="color: #00000;""><b>Package Type:</b> {{$package->night +1 }} Days {{$package->night }} Nights </span>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <?php
-                                                    for($i=0; $i<4; $i++) {?>
-                                                        <div class="col-sm-3">
-                                                            <a href="{{@$domain.'/'.@$m_photo[$i]}}" data-toggle="lightbox" data-title="{{$package->p_name}}" data-gallery="gallery">
-                                                                <img src="{{@$domain.'/'.@$m_photo[$i]}}" class="img-fluid mb-2" alt="white sample" style="height: 170px; width: 100%; border-radius: 8px"/>
-                                                            </a>
-                                                        </div>
-                                                    <?php }?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card card-warning card-tabs" style="">
-                                            <div class="card-header p-0 pt-1">
-                                                <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-                                                    <li class="nav-item menu-is-opening menu-open">
-                                                        <a class="nav-link active" id="overview" data-toggle="pill" href="#custom-tabs-one-overview" role="tab" aria-controls="custom-tabs-one-overview" aria-selected="true">Overview</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" id="itinerary" data-toggle="pill" href="#custom-tabs-one-itinerary" role="tab" aria-controls="custom-tabs-one-itinerary" aria-selected="false">Itinerary</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="tab-content" id="custom-tabs-one-tabContent">
-                                            <div class="tab-pane fade show active" id="custom-tabs-one-overview" role="tabpanel" aria-labelledby="custom-tabs-one-overview">
-                                                <div class="row">
-                                                    <div class="col-xl-8 col-lg-8 col-md-12">
-                                                        <div class="card">
-                                                            <div class="card-header">
-                                                                <h5><b>Tour Highlights </b></h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="row">
-                                                                    {!!  $highlight !!}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card">
-                                                            <div class="card-header">
-                                                                <h5><b>Inclusions </b></h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="row">
-                                                                    {!!  $inclusion !!}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card">
-                                                            <div class="card-header">
-                                                                <h5><b>Exclusions </b></h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="row">
-                                                                    {!!  $exclusion !!}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card">
-                                                            <div class="card-header">
-                                                                <h5><b>Terms and Conditions </b></h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="row">
-                                                                    {!!  $tnt !!}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-4 col-lg-4 col-md-12">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <p class="font10 lh-1 mb-0"><b>For Booking Please Contact Us: </b></p><hr>
-                                                                <p class="font10 lh-1 mb-0"><b>Phone: </b> {{$c_info->phone1}}</p><hr>
-                                                                <p class="font10 lh-1 mb-0"><b>Email: </b>{{$c_info->email}}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <p class="font12 lh-1 mb-0">
-                                                                    <span class="text-dark fs-3 fw-bold">
-                                                                        <span style="font-size: 20px;"><b>{{$c_info->currency.' '}}{{$package->p_p_adult}}</b></span>
-                                                                    </span>  Per Adult*</p><hr>
-                                                                <p class="font12 lh-1 mb-0">
-                                                                    <span class="text-dark fs-3 fw-bold">
-                                                                        <span style="font-size: 12px;"><b>{{$c_info->currency.' '}}{{$package->p_p_child}}</b></span>
-                                                                    </span>  Per Child*</p><br>
-                                                                <button type="button" class="btn btn-block btn-success">Proceed to Book Online</button>
-                                                                <button type="button" class="btn btn-block btn-warning">Send Inquiry</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <?php
-                                                $i= 0;
-                                                $itinary = json_decode($package->itinary);
-                                                $title = json_decode($package->title);
-                                                $d = 'rounded-2';
-                                            ?>
-                                            <div class="tab-pane fade" id="custom-tabs-one-itinerary" role="tabpanel" aria-labelledby="custom-tabs-one-itinerary">
-                                                <div class="row">
-                                                    <div class="col-xl-8 col-lg-8 col-md-12">
-                                                        <!-- The time line -->
-                                                        <div class="timeline">
-                                                            <div class="time-label">
-                                                                <span class="bg-success">Tour Start</span>
-                                                            </div>
-                                                            @for($i=0; $i<=$package->night; $i++)
-                                                                <div>
-                                                                    <i class="fas fa-bus bg-success"></i>
-                                                                    <div class="timeline-item">
-                                                                        <h3 class="timeline-header"><b>Day {{$i+1}}  :  {{$title[$i]}}</b></h3>
-
-                                                                        <div class="timeline-body">
-                                                                                <?php
-                                                                                $output = '<ul style="list-style-type: disc !important; adding-left:1em !important; margin-left:1em;">';
-                                                                                $listformat = explode("\n", $itinary[$i]);
-                                                                                foreach ($listformat as $test => $line) {
-                                                                                    $output .= "<li>".$line."</li>";
-                                                                                };
-                                                                                $output .='</ul>';
-                                                                                ?>
-                                                                            {!! $output !!}
-                                                                        </div>
-                                                                        <div class="timeline-footer">
-                                                                            <a class="btn btn-danger btn-sm">Day End</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endfor
-                                                            <div>
-                                                                <i class="fas fa-clock bg-red"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-4 col-lg-4 col-md-12">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <p class="font10 lh-1 mb-0"><b>For Booking Please Contact Us: </b></p><hr>
-                                                                <p class="font10 lh-1 mb-0"><b>Phone: </b> {{$c_info->phone1}}</p><hr>
-                                                                <p class="font10 lh-1 mb-0"><b>Email: </b>{{$c_info->email}}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <p class="font12 lh-1 mb-0">
-                                                                    <span class="text-dark fs-3 fw-bold">
-                                                                        <span style="font-size: 20px;"><b>{{$c_info->currency.' '}}{{$package->p_p_adult}}</b></span>
-                                                                    </span>  Per Adult*</p><hr>
-                                                                <p class="font12 lh-1 mb-0">
-                                                                    <span class="text-dark fs-3 fw-bold">
-                                                                        <span style="font-size: 12px;"><b>{{$c_info->currency.' '}}{{$package->p_p_child}}</b></span>
-                                                                    </span>  Per Child*</p><br>
-                                                                <button type="button" class="btn btn-block btn-success">Proceed to Book Online</button>
-                                                                <button type="button" class="btn btn-block btn-warning">Send Inquiry</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="tab-pane fade <?php echo @$tp_v; ?>" id="custom-tabs-one-visa" role="tabpanel" aria-labelledby="custom-tabs-one-visa"><br>
                                         {{ Form::open(array('url' => 'search-visa-b2b',  'method' => 'get' ,'class' =>'form-horizontal')) }}
@@ -313,7 +137,7 @@
                                                 <div class="form-group">
                                                     <select class="form-control select2bs4" name="country" style="width: 100%;" required>
                                                         @foreach($v_country as $coun)
-                                                            <option value="{{$coun->name}}" <?php if(@$_GET['country'] == $coun->name) echo 'selected'; ?>>{{$coun->name}}</option>
+                                                            <option value="{{$coun->name}}" <?php if(@$visa->country == $coun->name) echo 'selected'; ?>>{{$coun->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -401,7 +225,7 @@
                                                 <div class="form-group">
                                                     <select class="form-control select2bs4" name="name" style="width: 100%;" required>
                                                         @foreach($services as $servi)
-                                                            <option value="{{$servi->name}}" <?php if(@$_GET['name'] == $servi->name) echo 'selected'; ?>>{{$servi->name}}</option>
+                                                            <option value="{{$servi->name}}" <?php if(@$visa->name == $servi->name) echo 'selected'; ?>>{{$servi->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -414,6 +238,75 @@
                                         {{ Form::close() }}
                                         <hr>
                                         <br>
+                                        <div class="card">
+                                            <div class="card-header" style="background-color: #D9E0FF;">
+                                                <h5 style="text-align:center; color: #00000;"><b>  {{$visa->title}}</b> </h5>
+                                                <center><span style="color: #00000;""> {{$c_info->name}} Authorized Visa Submitting Agents of Embassy in Dhaka, Bangladesh </span></center>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-8 col-lg-8 col-md-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5><b>Service Details</b></h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            {!! json_decode(@$visa->s_details) !!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5><b>Payment Method</b></h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            {!! json_decode(@$visa->p_method) !!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @if(json_decode($visa->exclusion) !=null)
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5><b>Exclusions </b></h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            {!!  json_decode(@$visa->exclusion) !!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                                @if(json_decode($visa->tnt) !=null)
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5><b>Terms and Conditions </b></h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            {!! json_decode(@$visa->tnt)  !!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <p class="font10 lh-1 mb-0"><b>For Booking Please Contact Us: </b></p><hr>
+                                                        <p class="font10 lh-1 mb-0"><b>Phone: </b> {{$c_info->phone1}}</p><hr>
+                                                        <p class="font10 lh-1 mb-0"><b>Email: </b>{{$c_info->email}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <button type="button" class="btn btn-block btn-success">Proceed to Book Online</button>
+                                                        <button type="button" class="btn btn-block btn-warning">Send Inquiry</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -425,8 +318,6 @@
     </div>
 @endsection
 @section('js')
-    <script src="{{url('/public/plugins/filterizr/jquery.filterizr.min.js')}}"></script>
-    <script src="{{url('/public/plugins/ekko-lightbox/ekko-lightbox.min.js')}}"></script>
     <script>
         $('.select2').select2()
         $('.select2bs4').select2({
@@ -436,20 +327,6 @@
             locale: {
                 format: 'YYYY-MM-DD'
             }
-        })
-        $(function () {
-            $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-                event.preventDefault();
-                $(this).ekkoLightbox({
-                    alwaysShowClose: true,
-                });
-            });
-
-            $('.filter-container').filterizr({gutterPixels: 3});
-            $('.btn[data-filter]').on('click', function() {
-                $('.btn[data-filter]').removeClass('active');
-                $(this).addClass('active');
-            });
         })
     </script>
 @endsection

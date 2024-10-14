@@ -221,12 +221,9 @@
                                         <th>Date</th>
                                         <th>Country</th>
                                         <th>Details</th>
-                                        <th>Vendor</th>
                                         <th>Passengers</th>
                                         <th>Status</th>
-                                        <th>A.Price</th>
-                                        <th>C.Price</th>
-                                        <th>P.Type</th>
+                                        <th>Price</th>
                                         <th>Due</th>
                                         <th>Action</th>
                                     </tr>
@@ -240,12 +237,14 @@
                                         <tr>
                                             <td>{{$i}}</td>
                                             <td>{{$visa->date}}</td>
-                                            <td>{{$visa->visa_country}}</td>
+                                            <td>
+                                                <div>Country:{{$visa->visa_country}}</div>
+                                                <div>Vendor:{{$visa->vendor}}</div>
+                                            </td>
                                             <td>{{$visa->v_details}}</td>
-                                            <td>{{$visa->vendor}}</td>
-                                                <?php
-                                                $p = json_decode($visa->p_details);
-                                                ?>
+                                            <?php
+                                            $p = json_decode($visa->p_details);
+                                            ?>
 
                                             <td>
                                                 @foreach($p as $pas)
@@ -262,9 +261,10 @@
                                                 @endforeach
                                             </td>
                                             <td>{{$visa->status}}</td>
-                                            <td>{{$visa->v_a_price}}</td>
-                                            <td>{{$visa->v_c_price + $visa->v_vat + $visa->v_ait}}</td>
-                                            <td>{{$visa->v_p_type}}</td>
+                                            <td>
+                                                A.Price{{$visa->v_a_price}}
+                                                C.Price:{{$visa->v_c_price + $visa->v_vat + $visa->v_ait}}
+                                            </td>
                                             <td>
                                                 @if((int)$visa->v_due > 0)
                                                     <button type="button" class="btn btn-danger">{{$visa->v_due}}</button>

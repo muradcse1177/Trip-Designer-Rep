@@ -163,12 +163,12 @@
                                                                     </a><br><br>
                                                                 </li>
                                                                 <li class="nav-item">
-                                                                    <a href="#" class="nav-link">
+                                                                    <a href="{{url('tour-package-b2b/'.$package->slug)}}" class="nav-link">
                                                                         <b>{{substr($package->p_name,'0',30).'..'}}</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
                                                                     </a>
                                                                 </li>
                                                                 <li class="nav-item">
-                                                                    <a href="#" class="nav-link">
+                                                                    <a href="{{url('tour-package-b2b/'.$package->slug)}}" class="nav-link">
                                                                         {{$package->night}}</span> Night {{$package->night +1}} Days<span class="float-right badge bg-success">{{$package->p_p_adult}} {{$c_info->symbol}}</span>
                                                                     </a>
                                                                 </li>
@@ -213,23 +213,24 @@
                                         <div class="row">
                                             @foreach($visas as $visa)
                                                 <div class="col-md-4">
-                                                    <!-- Widget: user widget style 2 -->
-                                                    <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
-                                                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                                                        <div class="widget-user-header">
-                                                            <img src="{{url($visa->v_c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                    <a href="{{url('visa-b2b/'.$visa->slug)}}">
+                                                        <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
+                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                            <div class="widget-user-header">
+                                                                <img src="{{url($visa->v_c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                            </div>
+                                                            <div class="card-footer p-0">
+                                                                <ul class="nav flex-column">
+                                                                    <li class="nav-item">
+                                                                        <a href="#" class="nav-link">
+                                                                            <b>{{$visa->country}} Visa</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                                <a type="button" href="{{url('visa-b2b/'.$visa->slug)}}" class="btn btn-block btn-default" style="background-color: #D9E0FF; color: #04107C;">View Requirements</a>
+                                                            </div>
                                                         </div>
-                                                        <div class="card-footer p-0">
-                                                            <ul class="nav flex-column">
-                                                                <li class="nav-item">
-                                                                    <a href="#" class="nav-link">
-                                                                        <b>{{$visa->country}} Visa</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <a type="button" class="btn btn-block btn-default" style="background-color: #D9E0FF; color: #04107C;">View Requirements</a>
-                                                        </div>
-                                                    </div>
+                                                    </a>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -268,23 +269,24 @@
                                         <div class="row">
                                             @foreach($permits as $permit)
                                                 <div class="col-md-4">
-                                                    <!-- Widget: user widget style 2 -->
-                                                    <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
-                                                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                                                        <div class="widget-user-header">
-                                                            <img src="{{url($permit->c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                    <a href="{{url('manpower-b2b/'.$permit->slug)}}">
+                                                        <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
+                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                            <div class="widget-user-header">
+                                                                <img src="{{url($permit->c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                            </div>
+                                                            <div class="card-footer p-0">
+                                                                <ul class="nav flex-column">
+                                                                    <li class="nav-item">
+                                                                        <a href="#" class="nav-link">
+                                                                            <b>{{$permit->country}} Work Permit Visa</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                                <a type="button" href="{{url('manpower-b2b/'.$permit->slug)}}" class="btn btn-block btn-default" style="background-color: #D9E0FF; color: #04107C;">View Details</a>
+                                                            </div>
                                                         </div>
-                                                        <div class="card-footer p-0">
-                                                            <ul class="nav flex-column">
-                                                                <li class="nav-item">
-                                                                    <a href="#" class="nav-link">
-                                                                        <b>{{$permit->country}} Work Permit Visa</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <a type="button" class="btn btn-block btn-default" style="background-color: #D9E0FF; color: #04107C;">View Details</a>
-                                                        </div>
-                                                    </div>
+                                                    </a>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -322,67 +324,68 @@
                                         <div class="row">
                                             @foreach($u_package as $pack)
                                                 <div class="col-md-4">
-                                                    <!-- Widget: user widget style 2 -->
-                                                    <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
-                                                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                                                        <div class="widget-user-header">
-                                                            <img src="{{url($pack->p_c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                    <a href="{{url('hajj-umrah-b2b/'.$pack->slug)}}">
+                                                        <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
+                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                            <div class="widget-user-header">
+                                                                <img src="{{url($pack->p_c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                            </div>
+                                                            <div class="card-footer p-0">
+                                                                <ul class="nav flex-column">
+                                                                    <li class="nav-item" >
+                                                                        <a href="#" class="nav-link" >
+                                                                            @if(@$include[0] = 'Hotel')
+                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
+                                                                                <div class="actv-wrap-ico"><i class="fa fa-hotel"></i></div>
+                                                                                <div class="actv-wrap-caps">Hotel</div>
+                                                                            </span>
+                                                                            @endif
+                                                                            @if(@$include[1] = 'SightSeeing')
+                                                                                <span class="float-left badge" style="margin-right: 6px;background-color: #04107C; color:white;">
+                                                                                <div class="actv-wrap-ico"><i class="fa fa-umbrella-beach"></i></div>
+                                                                                <div class="actv-wrap-caps">Sight</div>
+                                                                            </span>
+                                                                            @endif
+                                                                            @if(@$include[2] = 'Transfer')
+                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
+                                                                                <div class="actv-wrap-ico"><i class="fa fa-train"></i></div>
+                                                                                <div class="actv-wrap-caps">Transfer</div>
+                                                                            </span>
+                                                                            @endif
+                                                                            @if(@$include[3] = 'Meal')
+                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
+                                                                                <div class="actv-wrap-ico"><i class="fa fa-hamburger"></i></div>
+                                                                                <div class="actv-wrap-caps">Meal</div>
+                                                                            </span>
+                                                                            @endif
+                                                                            @if(@$include[4] = 'Visa')
+                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
+                                                                                <div class="actv-wrap-ico"><i class="fa fa-passport"></i></div>
+                                                                                <div class="actv-wrap-caps">Visa</div>
+                                                                            </span>
+                                                                            @endif
+                                                                            @if(@$include[5] = 'Flight')
+                                                                                <span class="float-right badge" style="background-color: #04107C; color:white;">
+                                                                                <div class="actv-wrap-ico"><i class="fa fa-plane"></i></div>
+                                                                                <div class="actv-wrap-caps">Flight</div>
+                                                                            </span>
+                                                                            @endif
+                                                                        </a><br><br>
+                                                                    </li>
+                                                                    <li class="nav-item">
+                                                                        <a href="{{url('hajj-umrah-b2b/'.$pack->slug)}}" class="nav-link">
+                                                                            <b>{{substr($pack->p_name,'0',30).'..'}}</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li class="nav-item">
+                                                                        <a href="{{url('hajj-umrah-b2b/'.$pack->slug)}}" class="nav-link">
+                                                                            {{$pack->night}}</span> Night {{$pack->night +1}} Days<span class="float-right badge bg-success">{{$pack->p_p_adult}} {{$c_info->symbol}}</span>
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
-                                                        <div class="card-footer p-0">
-                                                            <ul class="nav flex-column">
-                                                                <li class="nav-item" >
-                                                                    <a href="#" class="nav-link" >
-                                                                        @if(@$include[0] = 'Hotel')
-                                                                            <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                            <div class="actv-wrap-ico"><i class="fa fa-hotel"></i></div>
-                                                                            <div class="actv-wrap-caps">Hotel</div>
-                                                                        </span>
-                                                                        @endif
-                                                                        @if(@$include[1] = 'SightSeeing')
-                                                                            <span class="float-left badge" style="margin-right: 6px;background-color: #04107C; color:white;">
-                                                                            <div class="actv-wrap-ico"><i class="fa fa-umbrella-beach"></i></div>
-                                                                            <div class="actv-wrap-caps">Sight</div>
-                                                                        </span>
-                                                                        @endif
-                                                                        @if(@$include[2] = 'Transfer')
-                                                                            <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                            <div class="actv-wrap-ico"><i class="fa fa-train"></i></div>
-                                                                            <div class="actv-wrap-caps">Transfer</div>
-                                                                        </span>
-                                                                        @endif
-                                                                        @if(@$include[3] = 'Meal')
-                                                                            <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                            <div class="actv-wrap-ico"><i class="fa fa-hamburger"></i></div>
-                                                                            <div class="actv-wrap-caps">Meal</div>
-                                                                        </span>
-                                                                        @endif
-                                                                        @if(@$include[4] = 'Visa')
-                                                                            <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                            <div class="actv-wrap-ico"><i class="fa fa-passport"></i></div>
-                                                                            <div class="actv-wrap-caps">Visa</div>
-                                                                        </span>
-                                                                        @endif
-                                                                        @if(@$include[5] = 'Flight')
-                                                                            <span class="float-right badge" style="background-color: #04107C; color:white;">
-                                                                            <div class="actv-wrap-ico"><i class="fa fa-plane"></i></div>
-                                                                            <div class="actv-wrap-caps">Flight</div>
-                                                                        </span>
-                                                                        @endif
-                                                                    </a><br><br>
-                                                                </li>
-                                                                <li class="nav-item">
-                                                                    <a href="#" class="nav-link">
-                                                                        <b>{{substr($pack->p_name,'0',30).'..'}}</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="nav-item">
-                                                                    <a href="#" class="nav-link">
-                                                                        {{$pack->night}}</span> Night {{$pack->night +1}} Days<span class="float-right badge bg-success">{{$pack->p_p_adult}} {{$c_info->symbol}}</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
+                                                    </a>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -423,23 +426,24 @@
                                         <div class="row">
                                             @foreach($services as $servi)
                                                 <div class="col-md-4">
-                                                    <!-- Widget: user widget style 2 -->
-                                                    <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
-                                                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                                                        <div class="widget-user-header">
-                                                            <img src="{{url($servi->c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                    <a href="{{url('service-b2b/'.$servi->slug)}}">
+                                                        <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
+                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                            <div class="widget-user-header">
+                                                                <img src="{{url($servi->c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                            </div>
+                                                            <div class="card-footer p-0">
+                                                                <ul class="nav flex-column">
+                                                                    <li class="nav-item">
+                                                                        <a href="{{url('service-b2b/'.$servi->slug)}}" class="nav-link">
+                                                                            <b>{{$servi->name}}</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                                <a type="button" href="{{url('service-b2b/'.$servi->slug)}}" class="btn btn-block btn-default" style="background-color: #D9E0FF; color: #04107C;">View Details</a>
+                                                            </div>
                                                         </div>
-                                                        <div class="card-footer p-0">
-                                                            <ul class="nav flex-column">
-                                                                <li class="nav-item">
-                                                                    <a href="#" class="nav-link">
-                                                                        <b>{{$servi->name}}</b> <span class="float-right badge bg-info">*{{floatval(rand(4,5))}}</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <a type="button" class="btn btn-block btn-default" style="background-color: #D9E0FF; color: #04107C;">View Details</a>
-                                                        </div>
-                                                    </div>
+                                                    </a>
                                                 </div>
                                             @endforeach
                                         </div>

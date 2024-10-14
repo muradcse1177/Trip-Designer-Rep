@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\SslCommerzPaymentController;
 use Illuminate\Support\Facades\Route;
 
 //Auth Management-------------------------------------------------------
@@ -63,6 +65,22 @@ Route::post('verifyUsers', 'App\Http\Controllers\authController@verifyUsers');
 Route::get('dashboard', 'App\Http\Controllers\authController@dashboard');
 Route::get('report-dashboard', 'App\Http\Controllers\authController@dashboard');
 Route::get('main-dashboard', 'App\Http\Controllers\authController@mainDashboard');
+
+
+
+//SSL Commerz Payment Gateway----------------------------------------------------------
+Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
+Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
+
+Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
+Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax']);
+
+Route::post('/success', [SslCommerzPaymentController::class, 'success']);
+Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
+Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+
+Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
+
 //----------------------------------------------------------
 Route::middleware(['role'])->group(function () {
     //Dashboard----------------------------------------------------------
@@ -135,6 +153,10 @@ Route::middleware(['role'])->group(function () {
     Route::get('search-hajj-umrah-package-b2b', 'App\Http\Controllers\visaController@searchHajjUmrahB2b');
     Route::get('service-b2b', 'App\Http\Controllers\visaController@serviceB2b');
     Route::get('tour-package-b2b/{slug}', 'App\Http\Controllers\visaController@tourPackageB2bBySlug');
+    Route::get('visa-b2b/{slug}', 'App\Http\Controllers\visaController@visaB2bBySlug');
+    Route::get('manpower-b2b/{slug}', 'App\Http\Controllers\visaController@manpowerB2bBySlug');
+    Route::get('hajj-umrah-b2b/{slug}', 'App\Http\Controllers\visaController@hajjUmrahB2bBySlug');
+    Route::get('service-b2b/{slug}', 'App\Http\Controllers\visaController@serviceB2bBySlug');
     //----------------------------------------------------------
 
     //Manpowe Package----------------------------------------------------------

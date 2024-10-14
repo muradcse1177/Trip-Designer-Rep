@@ -75,73 +75,130 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="example11" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Booking Date</th>
-                                        <th>Issued By</th>
-                                        <th>R.PNR</th>
-                                        <th>A.PNR</th>
-                                        <th>Status</th>
-                                        <th>Vendor</th>
-                                        <th>F.Type</th>
-                                        <th>A.Price</th>
-                                        <th>C.Price</th>
-                                        <th>VAT</th>
-                                        <th>AIT</th>
-                                        <th>P.Type</th>
-                                        <th>Due</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                    @endphp
-                                    @foreach($tickets as $ticket)
+                                <div class="table-responsive">
+                                    <table id="passTablea" class="table table-bordered table-hover">
+                                        <thead>
                                         <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$ticket->issue_date}}</td>
-                                            <td>{{$ticket->issued_by}}</td>
-                                            <td>{{$ticket->reservation_pnr}}</td>
-                                            <td>{{$ticket->	airline_pnr}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-success">{{$ticket->status}}</button>
-                                            </td>
-                                            <td>{{$ticket->vendor}}</td>
-                                            <td>{{$ticket->	f_type}}</td>
-                                            <td>{{$ticket->	a_price}}</td>
-                                            <td>{{$ticket->	c_price}}</td>
-                                            <td>{{$ticket->	vat}}</td>
-                                            <td>{{$ticket->	ait}}</td>
-                                            <td>{{$ticket->	payment_type}}</td>
-                                            <td>
-                                                @if((int)$ticket->due_amount > 0)
-                                                    <button type="button" class="btn btn-danger">{{$ticket->due_amount}}</button>
-                                                @else
-                                                    {{$ticket->	due_amount}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info">Action</button>
-                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu" style="">
-{{--                                                        <a class="dropdown-item" href="{{url('editTicketPage?id='.$ticket->id.'&reissue=1')}}">Edit</a>--}}
-                                                        <a class="dropdown-item delete" data-id="{{$ticket->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteTicket?id='.$ticket->id)}}">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                            <th>S.L</th>
+                                            <th>Booking Date</th>
+                                            <th>Ticket Details</th>
+                                            <th>Passengers</th>
+                                            <th>Status</th>
+                                            <th>Price Details</th>
+                                            <th>Due</th>
+                                            <th>Profit</th>
+                                            <th>Action</th>
                                         </tr>
+                                        </thead>
+                                        <tbody>
                                         @php
-                                            $i++;
+                                            $i=1;
+                                            $j=1;
+                                            $sum_due = 0;
+                                            $sum_a_price = 0;
+                                            $sum_c_price = 0;
                                         @endphp
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        @foreach($tickets as $ticket)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$ticket->issue_date}}</td>
+                                                <td>
+                                                    <div>R.PNR: {{$ticket->reservation_pnr}} </div>
+                                                    <div>A.PNR: {{$ticket->airline_pnr}} </div>
+                                                    <div>Vendor: {{$ticket->vendor}} </div>
+                                                </td>
+                                                    <?php
+                                                    $p = json_decode($ticket->pax_name);
+                                                    ?>
+                                                <td>
+                                                    @foreach($p as $pas)
+                                                            <?php
+                                                            $name = DB::table('passengers')
+                                                                ->where('id',$pas)
+                                                                ->where('upload_by',Session::get('user_id'))
+                                                                ->first();
+                                                            $phone = @$name->phone;
+                                                            ?>
+                                                        <div>{{$j.'.'.@$name->f_name.' '.@$name->l_name}}</div>
+                                                        @php
+                                                            $j++;
+                                                        @endphp
+                                                    @endforeach
+                                                    <div>Phone: {{@$phone}}</div>
+                                                </td>
+                                                <td>
+                                                    @if($ticket->	status == 'Issued')
+                                                        <button type="button" class="btn btn-success">{{$ticket->status}}</button>
+                                                    @endif
+                                                    @if($ticket->	status == 'Refunded')
+                                                        <button type="button" class="btn btn-info">{{$ticket->status}}</button>
+                                                    @endif
+                                                    @if($ticket->	status == 'Cancelled')
+                                                        <button type="button" class="btn btn-danger">{{$ticket->status}}</button>
+                                                    @endif
+                                                    @if($ticket->	status == 'Reissued')
+                                                        <button type="button" class="btn btn-warning">{{$ticket->status}}</button>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <div>A.Price:{{$ticket->	a_price}}/-</div>
+                                                    <div>C.Price:{{$ticket->	c_price + $ticket->	vat + $ticket->	ait}}/-</div>
+                                                </td>
+                                                <td>
+                                                    @if((int)$ticket->due_amount > 0)
+                                                        <div style="color: red;"><b>{{$ticket->due_amount}}/-</b></div>
+                                                    @else
+                                                        {{$ticket->	due_amount.'/-'}}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    {{$ticket->	c_price + $ticket->	vat + $ticket->	ait - $ticket->	a_price}}/-
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-info">Action</button>
+                                                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <div class="dropdown-menu" role="menu" style="">
+                                                            <a class="dropdown-item" href="{{url('viewTicket?id='.$ticket->id)}}">View</a>
+                                                            <a class="dropdown-item" href="{{url('editTicketPage?id='.$ticket->id)}}">Edit</a>
+                                                            <a class="dropdown-item delete" data-id="{{$ticket->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteTicket?id='.$ticket->id)}}">Delete</a>
+                                                            <a class="dropdown-item" href="{{url('editPaymentStatus?id='.$ticket->id)}}">Edit Payment Status</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                                 $j = 1;
+                                                 $sum_due = $sum_due + $ticket->due_amount;
+                                                 $sum_a_price = $sum_a_price + $ticket->a_price;
+                                                 $sum_c_price = $sum_c_price + $ticket->c_price + $ticket->vat + $ticket->ait;
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td align="right" colspan="5"><b>Total</b></td>
+                                            <td align="left">
+                                                <p>A.Price:{{$sum_a_price}}/-</p>
+                                                <p>C.Price:{{$sum_c_price}}/-</p>
+                                            </td>
+                                            <th align="left">
+                                                <div style="color: red;"><b>{{$sum_due}}/-</b></div>
+                                            </th>
+                                            <th align="left">
+                                                <div style="color: green;"><b>{{$sum_c_price - $sum_a_price}}/-</b></div>
+                                            </th>
+                                            <th align="left"></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div><br>
+                                <div class="table-responsive">
+                                    {{ $tickets->links() }}
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>

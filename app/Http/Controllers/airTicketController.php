@@ -136,15 +136,21 @@ class airTicketController extends Controller
                 ->where('agent_id',Session::get('user_id'))
                 ->where('deleted',0)
                 ->get();
-            $rows2 = DB::table('passengers')
-                ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
-                ->orderBy('id','desc')
-                ->get();
-            $rows3 = DB::table('airport_details')
-                ->get();
-            $rows4 = DB::table('airlines_details')
-                ->get();
+            if($request->reissue==1){
+                $rows2 = '';
+                $rows3 = '';
+                $rows4 = '';
+            }else{
+                $rows2 = DB::table('passengers')
+                    ->where('deleted',0)
+                    ->where('upload_by',Session::get('user_id'))
+                    ->orderBy('id','desc')
+                    ->get();
+                $rows3 = DB::table('airport_details')
+                    ->get();
+                $rows4 = DB::table('airlines_details')
+                    ->get();
+            }
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('agent_id',Session::get('user_id'))
@@ -175,12 +181,12 @@ class airTicketController extends Controller
                         $issued_by = $request->issued_by;
                         $f_type = $request->f_type;
                         $f_class = $request->f_class;
-                        $a_from = json_encode($request->a_from);
-                        $a_to = json_encode($request->a_to);
+                        $a_from = $rows->a_from;
+                        $a_to = $rows->a_to;
                         $d_time = json_encode($request->d_time);
                         $a_time = json_encode($request->a_time);
                         $f_number = json_encode($request->f_number);
-                        $airlines = json_encode($request->airlines);
+                        $airlines = $rows->airlines;
                         $pax_number = $rows->pax_number;
                         $pax_name = $rows->pax_name;
                         $t_number = $rows->t_number;
@@ -497,7 +503,7 @@ class airTicketController extends Controller
                 ->where('status','Reissued')
                 ->where('agent_id',Session::get('user_id'))
                 ->orderBy('updated_at','desc')
-                ->get();
+                ->paginate(30);
             return view('airTicket.reissueAirTicket',['tickets' => $rows5,]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -531,7 +537,7 @@ class airTicketController extends Controller
                 ->where('status','Refunded')
                 ->where('agent_id',Session::get('user_id'))
                 ->orderBy('updated_at','desc')
-                ->get();
+                ->paginate(30);
             return view('airTicket.refundAirTicket',['tickets' => $rows5,]);
         }
         catch(\Illuminate\Database\QueryException $ex){

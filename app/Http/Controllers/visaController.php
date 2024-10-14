@@ -355,4 +355,72 @@ class visaController extends Controller
                 'type' => 'f_tour',
             ]);
     }
+    public  function visaB2bBySlug(Request $request){
+        $domain =$this->domainCheck();
+        $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows3 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->where('slug',$request->slug)->first();
+        $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+        return view('visa.visa-details-b2b',
+            [
+                't_country' => $rows1,
+                'visa' => $rows3,
+                'v_country' => $rows4,
+                'm_country' => $rows5,
+                'services' => $rows8,
+                'type' => 'f_visa',
+            ]);
+    }
+    public  function manpowerB2bBySlug(Request $request){
+        $domain =$this->domainCheck();
+        $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows3 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->where('slug',$request->slug)->first();
+        $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+        return view('manpower.work-permit-details-b2b',
+            [
+                't_country' => $rows1,
+                'permit' => $rows3,
+                'v_country' => $rows4,
+                'm_country' => $rows5,
+                'services' => $rows8,
+                'type' => 'f_permit',
+            ]);
+    }
+    public  function hajjUmrahB2bBySlug(Request $request){
+        $domain =$this->domainCheck();
+        $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows3 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->where('slug',$request->slug)->first();
+        $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+        return view('hajj-umrah.hajj-umrah-details-b2b',
+            [
+                't_country' => $rows1,
+                'package' => $rows3,
+                'v_country' => $rows4,
+                'm_country' => $rows5,
+                'services' => $rows8,
+                'type' => 'f_umrah',
+            ]);
+    }
+    public  function serviceB2bBySlug(Request $request){
+        $domain =$this->domainCheck();
+        $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->where('slug',$request->slug)->first();
+        $rows3 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+        return view('service.service-details-b2b',
+            [
+                't_country' => $rows1,
+                'v_country' => $rows4,
+                'm_country' => $rows5,
+                'services' => $rows3,
+                'visa' => $rows8,
+                'type' => 'f_service',
+            ]);
+    }
 }
