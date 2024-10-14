@@ -196,6 +196,7 @@ class authController extends Controller
                         'phone_code' => $phoneCode,
                         'company_pnone' => $phone,
                         'password' => $password,
+                        'status' => 2,
                         'role' => 2,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
@@ -218,7 +219,7 @@ class authController extends Controller
         try{
             //$this->logout();
             if(Session::get('user_id')){
-                if(Session::get('admin')){
+                if(Session::get('superAdmin')){
                     return redirect()->to('main-dashboard');
                 }
                 if(Session::get('admin')){

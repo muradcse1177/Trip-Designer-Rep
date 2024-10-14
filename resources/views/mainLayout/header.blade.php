@@ -46,6 +46,11 @@
         body {
             font-family: 'jost';
         }
+        @media (pointer:none), (pointer:coarse) {
+            body {
+                font-family: 'jost';
+            }
+        }
     </style>
     @yield('css')
 </head>

@@ -142,6 +142,17 @@ class usersController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function agency(Request $request){
+        try{
+            $rows1 = DB::table('users')
+                ->orderBy('id','desc')
+                ->paginate(20);
+            return view('agency.agency',['users' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public function contacts(Request $request){
         try{
             $rows1 = DB::table('contacts')
@@ -241,6 +252,24 @@ class usersController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function searchUsersDetails(Request $request){
+        try{
+            //dd($request);
+            $rows1 = DB::table('users')
+                ->orWhere('company_name', 'like', '%' . $request->s . '%')
+                ->orWhere('company_pnone', 'like', '%' . $request->s . '%')
+                ->orWhere('company_email', 'like', '%' . $request->s . '%')
+                ->orWhere('address', 'like', '%' . $request->s . '%')
+                ->orWhere('contact_person', 'like', '%' . $request->s . '%')
+                ->orWhere('con_phone', 'like', '%' . $request->s . '%')
+                ->orderBy('id','desc')
+                ->paginate(20);
+            return view('agency.agency',['users' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public function createNewPassenger(Request $request){
         try{
             if($request) {
@@ -297,7 +326,35 @@ class usersController extends Controller
                             'status' => 'In Active',
                         ]);
                     if ($result) {
-                        return redirect()->to('users')->with('successMessage', 'Data update successfully!!');
+                        return redirect()->to('passengers')->with('successMessage', 'Data update successfully!!');
+                    } else {
+                        return back()->with('errorMessage', 'Please try again!!');
+                    }
+                }
+                else {
+                    return back()->with('errorMessage', 'Bad Request!!');
+                }
+            }
+            else{
+                return back()->with('errorMessage', 'Please fill up the form');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function isAgencyInActive(Request $request){
+        try{
+            if($request) {
+                if($request->id) {
+                    if($request->status== 'Active')
+                    $result =DB::table('users')
+                        ->where('id', $request->id)
+                        ->update([
+                            'status' => 'In Active',
+                        ]);
+                    if ($result) {
+                        return redirect()->to('agency')->with('successMessage', 'Agency update successfully!!');
                     } else {
                         return back()->with('errorMessage', 'Please try again!!');
                     }
@@ -325,13 +382,111 @@ class usersController extends Controller
                             'status' => 'Active',
                         ]);
                     if ($result) {
-                        return redirect()->to('users')->with('successMessage', 'Data update successfully!!');
+                        return redirect()->to('passengers')->with('successMessage', 'Data update successfully!!');
                     } else {
                         return back()->with('errorMessage', 'Please try again!!');
                     }
                 }
                 else {
                     return back()->with('errorMessage', 'Bad Request!!');
+                }
+            }
+            else{
+                return back()->with('errorMessage', 'Please fill up the form');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function isAgencyActive (Request $request){
+        try{
+            if($request) {
+                if($request->id) {
+                    if($request->status== 'In Active')
+                    $result =DB::table('users')
+                        ->where('id', $request->id)
+                        ->update([
+                            'status' => 'Active',
+                        ]);
+                    if ($result) {
+                        return redirect()->to('agency')->with('successMessage', 'Agency update successfully!!');
+                    } else {
+                        return back()->with('errorMessage', 'Please try again!!');
+                    }
+                }
+                else {
+                    return back()->with('errorMessage', 'Bad Request!!');
+                }
+            }
+            else{
+                return back()->with('errorMessage', 'Please fill up the form');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function editCompanyInfo(Request $request){
+        try{
+            $rows1 = DB::table('users')
+                ->where('id',$request->id)
+                ->first();
+            return view('agency.editAgencyInfo',['company' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function updateCompanyInfo(Request $request){
+        try{
+            if($request) {
+                $rows = DB::table('users')
+                    ->where('company_pnone', $request->phone)
+                    ->orwhere('company_email', $request->email)
+                    ->distinct()->get()->count();
+                if ($rows > 0) {
+                    $rows = DB::table('users')
+                        ->where('company_pnone', $request->phone)
+                        ->orwhere('company_email', $request->email)
+                        ->first();
+                    if($request->password == ''){
+                        $password = $rows->password;
+                    }
+                    else{
+                        $password = Hash::make($request->password);
+                    }
+                    if($request->hasFile('logo')){
+                        $targetFolder = 'public/images/upload/company/';
+                        $file = $request->file('logo');
+                        $pname = time() . '.' . $file->getClientOriginalName();
+                        $image['filePath'] = $pname;
+                        $file->move($targetFolder, $pname);
+                        $c_logo = $targetFolder . $pname;
+                    }
+                    else{
+                        $c_logo = $rows->logo;
+                    }
+                    $result =DB::table('users')
+                        ->where('id', $request->id)
+                        ->update([
+                            'company_email' => $request->email,
+                            'company_pnone' => $request->phone,
+                            'address' => $request->address,
+                            'contact_person' => $request->contact_person,
+                            'con_phone' => $request->con_phone,
+                            'password' => $password,
+                            'logo' => $c_logo,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ]);
+                    if ($result) {
+                        return redirect()->to('agency')->with('successMessage', 'Data updated successfully!!');
+                    } else {
+                        return back()->with('errorMessage', 'Please try again!!');
+                    }
+                }
+                else {
+                    return back()->with('errorMessage', 'Company not exits.Please try again!!');
                 }
             }
             else{

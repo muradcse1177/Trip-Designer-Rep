@@ -176,7 +176,7 @@
                             <!-- /.card-header -->
                             <div class="card-body">
                                 {{ Form::open(array('url' => 'searchPDetails',  'method' => 'get' ,'class' =>'form-horizontal')) }}
-                                <div class="row table-responsive">
+                                <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <input type="text" class="form-control" id="s" name="s" value ="<?php if(@$_GET['s']) echo $_GET['s']; ?>" placeholder="Enter Your Text" required>
@@ -250,7 +250,7 @@
                                                     Email: {{$passenger->email}}
                                                 </div>
                                                 <div>
-                                                    Phone Number: {{$passenger->p_number}}
+                                                    Passport Number: {{$passenger->p_number}}
                                                 </div>
                                             </td>
                                             <td>

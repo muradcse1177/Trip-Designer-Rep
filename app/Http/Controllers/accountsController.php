@@ -110,16 +110,55 @@ class accountsController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function bankAccountsSuper(Request $request){
+        try{
+            $rows1 = DB::table('bank_account_super')
+                ->where('agent_id',Session::get('user_id'))
+                ->orderBy('id','asc')
+                ->get();
+            return view('accounts.bank-accounts-super',['accounts' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
     public function addBankAccounts(Request $request){
         try{
 
-            $result = DB::table('bank_accounts')->insert([
+            $result = DB::table('bank_account_super')->insert([
                 'name' => $request->name,
                 'agent_id' => Session::get('user_id'),
                 'amount' => $request->amount,
             ]);
             if ($result) {
                 return redirect()->to('bankAccounts')->with('successMessage', 'Bank account  added successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function addBankAccountsSuper(Request $request){
+        try{
+
+            $fileName = time() . '.' . $request->logo->extension();
+            $request->logo->move(public_path('images/upload/company/'), $fileName);
+            $photo = 'public/images/upload/company/'.$fileName;
+
+            $result = DB::table('bank_account_super')->insert([
+                'name' => $request->name,
+                'agent_id' => Session::get('user_id'),
+                'branch' => $request->branch,
+                'acc_name' => $request->acc_name,
+                'acc_number' => $request->acc_number,
+                'routing' => $request->routing,
+                'method' => $request->methods,
+                'logo' => $photo,
+            ]);
+            if ($result) {
+                return redirect()->to('bank-accounts')->with('successMessage', 'Bank account  added successfully!!');
             } else {
                 return back()->with('errorMessage', 'Please try again!!');
             }
@@ -135,6 +174,53 @@ class accountsController extends Controller
                 ->where('id',$request->id)
                 ->first();
             return view('accounts.editBankAccountPage',['account' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function editBankAccountSuperPage(Request $request){
+        try{
+            $rows1 = DB::table('bank_account_super')
+                ->where('agent_id',Session::get('user_id'))
+                ->where('id',$request->id)
+                ->first();
+            return view('accounts.editBankAccountSuper',['account' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function updateBankAccountsSuper(Request $request){
+        try {
+            if ($request) {
+                $rows = DB::table('bank_account_super')->where('agent_id', Session::get('user_id'))->where('id', $request->id)->first();
+                if ($request->logo) {
+                    $fileName = time() . '.' . $request->logo->extension();
+                    $request->logo->move(public_path('images/upload/company/'), $fileName);
+                    $logo = 'public/images/upload/company/'. $fileName;
+                } else {
+                    $logo = $rows->logo;
+                }
+                $result = DB::table('bank_account_super')
+                    ->where('id', $rows->id)
+                    ->where('agent_id', Session::get('user_id'))
+                    ->update([
+                        'name' => $request->name,
+                        'agent_id' => Session::get('user_id'),
+                        'branch' => $request->branch,
+                        'acc_name' => $request->acc_name,
+                        'acc_number' => $request->acc_number,
+                        'routing' => $request->routing,
+                        'method' => $request->methods,
+                        'logo' => $logo,
+                    ]);
+                if ($result) {
+                    return redirect()->to('bank-accounts')->with('successMessage', 'Bank account updated successfully!!');
+                } else {
+                    return back()->with('errorMessage', 'Please Try Again!!');
+                }
+            }
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -166,6 +252,22 @@ class accountsController extends Controller
                 ->delete();
             if ($result) {
                 return redirect()->to('bankAccounts')->with('successMessage', 'Data update successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function deleteBankAccountSuper(Request $request){
+        try{
+            $result =DB::table('bank_account_super')
+                ->where('id', $request->id)
+                ->where('agent_id',Session::get('user_id'))
+                ->delete();
+            if ($result) {
+                return redirect()->to('bank-accounts')->with('successMessage', 'Bank account deleted successfully!!');
             } else {
                 return back()->with('errorMessage', 'Please try again!!');
             }

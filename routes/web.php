@@ -159,7 +159,7 @@ Route::middleware(['role'])->group(function () {
     Route::get('service-b2b/{slug}', 'App\Http\Controllers\visaController@serviceB2bBySlug');
     //----------------------------------------------------------
 
-    //Manpowe Package----------------------------------------------------------
+    //Manpower Package----------------------------------------------------------
     Route::get('newManPowerPackage', 'App\Http\Controllers\manpowerController@newManPowerPackage');
     //----------------------------------------------------------
 
@@ -175,7 +175,17 @@ Route::middleware(['role'])->group(function () {
     Route::get('searchPDetails', 'App\Http\Controllers\usersController@searchPDetails');
     //----------------------------------------------------------
 
+    //AgencyManagement----------------------------------------------------------
+    Route::get('agency', 'App\Http\Controllers\usersController@agency');
+    Route::get('isAgencyInActive', 'App\Http\Controllers\usersController@isAgencyInActive');
+    Route::get('isAgencyActive', 'App\Http\Controllers\usersController@isAgencyActive');
+    Route::get('editCompanyInfo', 'App\Http\Controllers\usersController@editCompanyInfo');
+    Route::post('updateCompanyInfo', 'App\Http\Controllers\usersController@updateCompanyInfo');
+    Route::get('searchUsersDetails', 'App\Http\Controllers\usersController@searchUsersDetails');
+    //----------------------------------------------------------
+
     //Accounts Management------------------------------------------------
+    Route::get('payment-request', 'App\Http\Controllers\accountsController@paymentRequest');
     Route::get('transactions', 'App\Http\Controllers\accountsController@transactions');
     Route::get('officeExpenses', 'App\Http\Controllers\accountsController@officeExpenses');
     Route::post('addOfficeExpense', 'App\Http\Controllers\accountsController@addOfficeExpense');
@@ -186,6 +196,11 @@ Route::middleware(['role'])->group(function () {
     Route::post('deleteBankAccount', 'App\Http\Controllers\accountsController@deleteBankAccount');
     Route::get('filterTransaction', 'App\Http\Controllers\accountsController@filterTransaction');
     Route::get('filterOfficeExpense', 'App\Http\Controllers\accountsController@filterOfficeExpense');
+    Route::get('bank-accounts', 'App\Http\Controllers\accountsController@bankAccountsSuper');
+    Route::post('addBankAccountsSuper', 'App\Http\Controllers\accountsController@addBankAccountsSuper');
+    Route::get('editBankAccountSuperPage', 'App\Http\Controllers\accountsController@editBankAccountSuperPage');
+    Route::post('updateBankAccountsSuper', 'App\Http\Controllers\accountsController@updateBankAccountsSuper');
+    Route::post('deleteBankAccountSuper', 'App\Http\Controllers\accountsController@deleteBankAccountSuper');
     //----------------------------------------------------------
 
     //Statement Management------------------------------------------------

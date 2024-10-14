@@ -74,7 +74,7 @@
                         <li class="nav-item">
                             <a href="{{url("cancelAirTicket")}}" class="nav-link @yield('cancelAirTicket')">
                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
-                                <p>Temporary Cancel Ticket</p>
+                                <p>Temporary Cancel</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -104,7 +104,7 @@
                 </li>
                 <li class="nav-item @yield('visaMenu')">
                     <a href="#" class="nav-link @yield('visa')">
-                        <i class="nav-icon fas fa-book"></i>
+                        <i class="nav-icon fas fa-passport"></i>
                         <p>
                             Visa Processing
                             <i class="fas fa-angle-left right"></i>
@@ -140,7 +140,7 @@
                     <a href="#" class="nav-link @yield('manPowerPackage')">
                         <i class="nav-icon fas fa-user-friends"></i>
                         <p>
-                            Manpower
+                            Work Permit
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
@@ -148,24 +148,40 @@
                         <li class="nav-item">
                             <a href="{{url("newManPowerPackage")}}" class="nav-link @yield('newManPowerPackage')">
                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
-                                <p> Manpower Management</p>
+                                <p> W.P Management</p>
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item @yield('accountMenu')">
                     <a href="#" class="nav-link @yield('accounts')">
-                        <i class="nav-icon fas fa-book"></i>
+                        <i class="nav-icon fas fa-landmark"></i>
                         <p>
-                            Finance
+                            Accounts & Finance
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{{url('bank-accounts')}}" class="nav-link @yield('bankAccountSuper')">
+                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                <p>Bank Accounts </p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('payment-request')}}" class="nav-link @yield('paymentRequest')">
+                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                <p>Payment Request</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
                             <a href="{{url('transactions')}}" class="nav-link @yield('transactions')">
                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
-                                <p>Transactions</p>
+                                <p>Ledger Account</p>
                             </a>
                         </li>
                     </ul>
@@ -181,7 +197,7 @@
                         <li class="nav-item">
                             <a href="{{url('bankAccounts')}}" class="nav-link @yield('bankAccounts')">
                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
-                                <p>Bank Accounts</p>
+                                <p>Amount in Hand</p>
                             </a>
                         </li>
                     </ul>
@@ -199,6 +215,23 @@
                             <a href="{{url('users')}}" class="nav-link  @yield('users')">
                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
                                 <p>Passengers</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item  @yield('agencyMenu')">
+                    <a href="#" class="nav-link @yield('agency')">
+                        <i class="nav-icon fas fa-city"></i>
+                        <p>
+                            Agency
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url('agency')}}" class="nav-link  @yield('agency')">
+                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                <p>Agency Management</p>
                             </a>
                         </li>
                     </ul>

@@ -2,7 +2,7 @@
 @section('title','Trip Designer || Bank Accounts Management')
 @section('accounts','active')
 @section('accountMenu','menu-open')
-@section('bankAccounts','active')
+@section('bankAccountSuper','active')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -40,19 +40,49 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body" style="display: block;">
-                                {{ Form::open(array('url' => 'addBankAccounts',  'method' => 'post' ,'class' =>'form-horizontal' , 'enctype' => 'multipart/form-data')) }}
+                                {{ Form::open(array('url' => 'addBankAccountsSuper',  'method' => 'post' ,'class' =>'form-horizontal' , 'enctype' => 'multipart/form-data')) }}
                                 {{ csrf_field() }}
                                 <div class="card-body row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Bank/Wallet Name</label>
+                                            <label>Bank Name</label>
                                             <input type="text" class="form-control" id="name" name="name" placeholder="Enter Bank Name" required>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Amount</label>
-                                            <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter Amount" required>
+                                            <label>Bank Branch</label>
+                                            <input type="text" class="form-control" id="branch" name="branch" placeholder="Enter Bank Branch Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Account Name</label>
+                                            <input type="text" class="form-control" id="acc_name" name="acc_name" placeholder="Enter Bank Account Name" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Account Number</label>
+                                            <input type="text" class="form-control" id="acc_number" name="acc_number" placeholder="Enter Bank Account Number" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Routing Number</label>
+                                            <input type="text" class="form-control" id="routing" name="routing" placeholder="Enter Routing Number" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Transfer Method</label>
+                                            <input type="text" class="form-control" id="methods" name="methods" placeholder="Enter Transfer Method" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Bank Logo</label>
+                                            <input type="file" class="form-control" id="logo" name="logo" accept="image/png, image/jpeg">
                                         </div>
                                     </div>
                                 </div>
@@ -84,8 +114,13 @@
                                     <thead>
                                     <tr>
                                         <th>S.L</th>
+                                        <th>Photo</th>
                                         <th>Bank Name</th>
-                                        <th>Amount</th>
+                                        <th>Bank Branch</th>
+                                        <th>Account Name</th>
+                                        <th>Account Number</th>
+                                        <th>Routing</th>
+                                        <th>Acceptance Method</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -97,8 +132,13 @@
                                     @foreach($accounts as $account)
                                         <tr>
                                             <td>{{$i}}</td>
+                                            <td><img src="{{url('/'.$account->logo)}}" height="60" width="80"/></td>
                                             <td>{{$account->name}}</td>
-                                            <td>{{$account->amount}}</td>
+                                            <td>{{$account->branch}}</td>
+                                            <td>{{$account->acc_name}}</td>
+                                            <td>{{$account->acc_number}}</td>
+                                            <td>{{$account->routing}}</td>
+                                            <td>{{$account->method}}</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-info">Action</button>
@@ -106,113 +146,16 @@
                                                         <span class="sr-only">Toggle Dropdown</span>
                                                     </button>
                                                     <div class="dropdown-menu" role="menu" style="">
-                                                        <a class="dropdown-item" href="{{url('editBankAccount?id='.$account->id)}}">Edit</a>
+                                                        <a class="dropdown-item" href="{{url('editBankAccountSuperPage?id='.$account->id)}}">Edit</a>
                                                         <a class="dropdown-item delete" data-id="{{$account->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteBankAccount?id='.$account->id)}}">Delete</a>
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
-                                        @php
-                                            $i++;
-                                            $sum = $sum + $account->amount;
-                                        @endphp
                                     @endforeach
-                                    <tfoot>
-                                        <tr>
-                                            <th></th>
-                                            <th>Total Amount</th>
-                                            <th align="right">{{$sum}}/-</th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                    </tbody>
-                                </table><br>
-                                <table id="example111" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Booking Date</th>
-                                        <th>Ticket Details</th>
-                                        <th>Passengers</th>
-                                        <th>Price Details</th>
-                                        <th>Due</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                        $j=1;
-                                        $sum_due = 0;
-                                        $sum_a_price = 0;
-                                        $sum_c_price = 0;
-                                    @endphp
-                                    @foreach($tickets as $ticket)
-                                        <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$ticket->issue_date}}</td>
-                                            <td>
-                                                <div>Reservation PNR: {{$ticket->reservation_pnr}} </div>
-                                                <div>Airlines PNR: {{$ticket->airline_pnr}} </div>
-                                            </td>
-                                                <?php
-                                                $p = json_decode($ticket->pax_name);
-                                                ?>
-                                            <td>
-                                                @foreach($p as $pas)
-                                                        <?php
-                                                        $name = DB::table('passengers')
-                                                            ->where('id',$pas)
-                                                            ->where('upload_by',Session::get('user_id'))
-                                                            ->first();
-                                                        ?>
-                                                    <div>{{$j.'.'.@$name->f_name.' '.@$name->l_name}}</div>
-                                                    @php
-                                                        $j++;
-                                                    @endphp
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                <div>A.Price: {{$ticket->	a_price}} /-</div>
-                                                <div>C.Price:  {{$ticket->	c_price + $ticket->	vat + $ticket->	ait}} /-</div>
-                                            </td>
-                                            <td>
-                                                @if((int)$ticket->due_amount > 0)
-                                                    <div style="color: red;"><b>{{$ticket->due_amount}}/-</b></div>
-                                                @else
-                                                    {{$ticket->	due_amount.'/-'}}
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        @php
-                                            $i++;
-                                             $j = 1;
-                                             $sum_due = $sum_due + $ticket->due_amount;
-                                             $sum_a_price = $sum_a_price + $ticket->a_price;
-                                             $sum_c_price = $sum_c_price + $ticket->c_price + $ticket->vat + $ticket->ait;
-                                        @endphp
-                                    @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th align="center"></th>
-                                        <th align="left"></th>
-                                        <th align="left"></th>
-                                        <th align="left">
-                                            <div>A.Price: {{$sum_a_price}} /-</div>
-                                            <div>C.Price:  {{$sum_c_price}} /-</div>
-                                        </th>
-                                        <th align="left">
-                                            <div style="color: red;"><b>{{$sum_due}} /-</b></div>
-                                        </th>
-                                    </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <!-- /.card-body -->
-                            <div class="card-header">
-                                <h3 class="card-title"><b >Total Amount in Hand :   {{$sum + $sum_due}}/- </b></h3>
-                            </div>
                         </div>
                         <!-- /.card -->
                     </div>
@@ -226,7 +169,7 @@
                     <div class="modal-body">
                         <p style="text-align: center; font-size: 25px;">Are You Sure!!</p>
                     </div>
-                    {{ Form::open(array('url' => 'deleteBankAccount',  'method' => 'post')) }}
+                    {{ Form::open(array('url' => 'deleteBankAccountSuper',  'method' => 'post')) }}
                     {{ csrf_field() }}
                     <div class="modal-footer justify-content-between">
                         <input type="hidden" name="id" class="id">

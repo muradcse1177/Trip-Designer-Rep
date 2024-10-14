@@ -53,7 +53,7 @@
                                                 <div class="col-sm-9">
                                                     <div class="form-group">
                                                         <label class="form-label">Enter Phone</label>
-                                                        <input type="number" name="phone" class="form-control" placeholder="1707011562" required>
+                                                        <input type="number" name="phone" class="form-control" placeholder="1707011562"  maxlength="10" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -88,5 +88,13 @@
 @endsection
 @section('js')
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[maxlength]').forEach(input => {
+                input.addEventListener('input', e => {
+                    let val = e.target.value, len = +e.target.getAttribute('maxlength');
+                    e.target.value = val.slice(0,len);
+                })
+            })
+        })
     </script>
 @endsection
