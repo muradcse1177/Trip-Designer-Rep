@@ -25,7 +25,7 @@ class homeController extends Controller
     public function home(Request $request){
         try{
             $domain =$this->domainCheck();
-            //dd($domain);
+            //dd($this->domainCheck());
             if($domain['agent_id']) {
                 $rows1 = DB::table('airport_details')->get();
                 $rows2 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();

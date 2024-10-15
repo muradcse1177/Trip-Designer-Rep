@@ -372,9 +372,9 @@
                                                 <td>{{$i}}</td>
                                                 <td>{{$ticket->issue_date}}</td>
                                                 <td>
-                                                    <div>R.PNR: {{$ticket->reservation_pnr}} </div>
-                                                    <div>A.PNR: {{$ticket->airline_pnr}} </div>
-                                                    <div>Vendor: {{$ticket->vendor}} </div>
+                                                    <div>R.PNR:{{$ticket->reservation_pnr}} </div>
+                                                    <div>A.PNR:{{$ticket->airline_pnr}} </div>
+                                                    <div>Vendor:{{$ticket->vendor}} </div>
                                                 </td>
                                                     <?php
                                                     $p = json_decode($ticket->pax_name);

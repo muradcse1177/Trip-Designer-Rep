@@ -2,7 +2,7 @@
 @section('title','Trip Designer || Bank Accounts Management')
 @section('accounts','active')
 @section('accountMenu','menu-open')
-@section('officeExpenses','active')
+@section('bankAccountSuper','active')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

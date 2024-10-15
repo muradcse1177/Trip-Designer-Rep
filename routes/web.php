@@ -201,6 +201,10 @@ Route::middleware(['role'])->group(function () {
     Route::get('editBankAccountSuperPage', 'App\Http\Controllers\accountsController@editBankAccountSuperPage');
     Route::post('updateBankAccountsSuper', 'App\Http\Controllers\accountsController@updateBankAccountsSuper');
     Route::post('deleteBankAccountSuper', 'App\Http\Controllers\accountsController@deleteBankAccountSuper');
+    Route::get('payment-request', 'App\Http\Controllers\accountsController@paymentRequest');
+    Route::post('addManualPayment', 'App\Http\Controllers\accountsController@addManualPayment');
+    Route::get('editManualPaymentPage', 'App\Http\Controllers\accountsController@editManualPaymentPage');
+    Route::post('updateManualPayment', 'App\Http\Controllers\accountsController@updateManualPayment');
     //----------------------------------------------------------
 
     //Statement Management------------------------------------------------

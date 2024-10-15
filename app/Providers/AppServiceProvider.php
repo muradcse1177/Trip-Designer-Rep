@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         {
             //$c_domain = $_SERVER['SERVER_NAME'];
             $c_domain = 'tripdesigner.net';
-            $fixed_domain = 'http://localhost/tam';
+            $fixed_domain = 'https://tripdesigner.net/'; //http://localhost/tam/
             $rows = DB::table('domain')->where('name',$c_domain)->first();
             $c_info = DB::table('company_info')->where('agent_id',@$rows->agent_id)->first();
             $view->with('domain', $fixed_domain);

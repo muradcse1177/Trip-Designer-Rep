@@ -42,25 +42,29 @@
                             ?>
                             <div class="galleryGrid typeGrid_2 mb-lg-0 mb-3">
                                 <div class="galleryGrid__item relative d-flex">
-                                    <a href="{{@$domain.'/'.$package->p_c_photo}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$package->p_c_photo}}"
-                                                                                                                 alt="image" class="rounded-2 img-fluid"></a>
+                                    <a href="{{@$domain.'/'.@$m_photo[0]}}" data-lightbox="roadtrip">
+                                        <img src="{{@$domain.'/'.$m_photo[0]}}" alt="image" class="rounded-2 img-fluid">
+                                    </a>
                                 </div>
-
                                 <div class="galleryGrid__item position-relative">
-                                    <a href="{{@$domain.'/'.@$m_photo[0]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[0]}}"
-                                                                                                          alt="image" class="rounded-2 img-fluid"></a>
+                                    <a href="{{@$domain.'/'.@$m_photo[1]}}" data-lightbox="roadtrip">
+                                        <img src="{{@$domain.'/'.$m_photo[1]}}" alt="image" class="rounded-2 img-fluid">
+                                    </a>
                                     <div class="position-absolute end-0 bottom-0 mb-3 me-3">
-                                        <a href="{{@$domain.'/'.@$m_photo[1]}}" data-lightbox="roadtrip"
-                                           class="btn btn-md btn-whites fw-medium text-dark"><i class="fa-solid fa-caret-right me-1"></i></a>
+                                        <a href="{{@$domain.'/'.@$m_photo[2]}}" data-lightbox="roadtrip" class="btn btn-md btn-whites fw-medium text-dark">
+                                            <i class="fa-solid fa-caret-right me-1"></i>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="galleryGrid__item">
-                                    <a href="{{@$domain.'/'.@$m_photo[2]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[2]}}"
-                                                                                                          alt="image" class="rounded-2 img-fluid"></a>
+                                    <a href="{{@$domain.'/'.@$m_photo[2]}}" data-lightbox="roadtrip">
+                                        <img src="{{@$domain.'/'.$m_photo[2]}}" alt="image" class="rounded-2 img-fluid">
+                                    </a>
                                 </div>
                                 <div class="galleryGrid__item">
-                                    <a href="{{@$domain.'/'.@$m_photo[3]}}" data-lightbox="roadtrip"><img src="{{@$domain.'/'.$m_photo[3]}}"
-                                                                                                          alt="image" class="rounded-2 img-fluid"></a>
+                                    <a href="{{@$domain.'/'.@$m_photo[3]}}" data-lightbox="roadtrip">
+                                        <img src="{{@$domain.'/'.$m_photo[3]}}" alt="image" class="rounded-2 img-fluid">
+                                    </a>
                                 </div>
                             </div>
 

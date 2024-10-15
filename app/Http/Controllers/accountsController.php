@@ -112,8 +112,9 @@ class accountsController extends Controller
     }
     public function bankAccountsSuper(Request $request){
         try{
+            $domain = app('App\Http\Controllers\homeController')->domainCheck();
             $rows1 = DB::table('bank_account_super')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',$domain['agent_id'])
                 ->orderBy('id','asc')
                 ->get();
             return view('accounts.bank-accounts-super',['accounts' => $rows1]);
@@ -360,5 +361,101 @@ class accountsController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function paymentRequest (Request $request){
+        try{
+            $domain = app('App\Http\Controllers\homeController')->domainCheck();
+            $rows1 = DB::table('bank_account_super')->where('agent_id',$domain['agent_id'])->orderBy('id','asc')->get();
+            $rows2 = DB::table('payment_history')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            return view('accounts.payment-request',['banks' => $rows1,'accounts' => $rows2]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
 
+    public function addManualPayment (Request $request){
+        try{
+            $invoice = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,8);
+            $result = DB::table('payment_history')->insert([
+                'dep_ref_number' => $invoice,
+                'agent_id' => Session::get('user_id'),
+                'deposit_time' =>date('Y-m-d h:i:s'),
+                'p_type' => $request->p_type,
+                'type' => 'Manual',
+                'dep_bank' => $request->dep_bank,
+                'amount' => $request->amount,
+                'date' => $request->date,
+                'from_bank' => $request->from_bank,
+                'from_acc_number' => $request->from_acc_number,
+                'ref' => $request->ref,
+            ]);
+            if ($result) {
+                return redirect()->to('payment-request')->with('successMessage', 'Payment request submitted successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function editManualPaymentPage(Request $request){
+        try{
+            $rows1 = DB::table('payment_history')
+                ->where('id',$request->id)
+                ->first();
+            return view('accounts.editManualPaymentPage',['account' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function updateManualPayment(Request $request){
+        try{
+            $rows2 = DB::table('payment_history')
+                ->where('id',$request->id)
+                ->first();
+            if($rows2->status == "Approved"){
+                return back()->with('errorMessage', 'Payment Already Approved.Please contact with admin!!');
+            }
+            else{
+                $rows1 = DB::table('users')
+                    ->where('id',Session::get('user_id'))
+                    ->first();
+                $result =DB::table('payment_history')
+                    ->where('id', $request->id)
+                    ->update([
+                        'status' => $request->status,
+                        'remarks' => $request->remarks,
+                        'approved_by' =>$rows1->company_name,
+                    ]);
+                $rows3 = DB::table('users')
+                    ->where('id', $rows2->agent_id)
+                    ->first();
+                if ($result) {
+                    $result1 =DB::table('users')
+                        ->where('id', $rows2->agent_id)
+                        ->update([
+                            'agency_amount' => $rows2->amount + $rows3->agency_amount - $rows3->auth_amount - $rows3->fine,
+                        ]);
+                    if($result1){
+                        return redirect()->to('payment-request')->with('successMessage', 'Payment updated successfully!!');
+                    }
+                    else{
+                        return back()->with('errorMessage', 'Please contact with admin!!');
+                    }
+
+
+                } else {
+                    return back()->with('errorMessage', 'Please try again!!');
+                }
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
 }
+

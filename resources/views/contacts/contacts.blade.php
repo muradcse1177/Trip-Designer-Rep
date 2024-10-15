@@ -1,7 +1,6 @@
 @extends('mainLayout.layout')
 @section('title','Trip Designer || Contacts Management ')
 @section('contacts','active')
-@section('userMenu','menu-open')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -159,18 +158,6 @@
             var id = $(this).data('id');
             $('.id').val(id);
         });
-        $(function () {
-            $("#passTable").DataTable({
-                "pageLength": 50,
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print",],
-                "paging": true,
-                "searching": true,
-                "ordering": false,
-                "info": false,
-            }).buttons().container().appendTo('#passTable_wrapper .col-md-6:eq(0)');
-        });
+
     </script>
 @endsection

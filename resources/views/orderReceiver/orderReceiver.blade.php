@@ -1,7 +1,6 @@
 @extends('mainLayout.layout')
 @section('title','Trip Designer || B2C Order Receiver ')
 @section('orderReceiver','active')
-@section('userMenu','menu-open')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -82,9 +81,9 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <p>Name: {{$order->name}}</p>
-                                                <p>Phone: {{$order->phone}}</p>
-                                                <p>Email: {{$order->email}}</p>
+                                                Name:{{$order->name}}<br>
+                                                Phone:{{$order->phone}}<br>
+                                                Email:{{$order->email}}
                                             </td>
                                             <td>{{$order->r_type}}</td>
                                             <td>{{json_decode($order->remarks)}}</td>
