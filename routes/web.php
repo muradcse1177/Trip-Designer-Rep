@@ -84,7 +84,7 @@ Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 //----------------------------------------------------------
 Route::middleware(['role'])->group(function () {
     //Dashboard----------------------------------------------------------
-    Route::get('report-dashboard', 'App\Http\Controllers\authController@dashboard');
+    Route::get('/report-dashboard', 'App\Http\Controllers\authController@dashboard');
     Route::get('salesDataGraph', 'App\Http\Controllers\airTicketController@salesDataGraph');
     //General Invoice
     Route::get('g_invoice', 'App\Http\Controllers\accountsController@generalInvoice');
@@ -124,6 +124,17 @@ Route::middleware(['role'])->group(function () {
     Route::get('getAirportCode', 'App\Http\Controllers\airTicketController@getAirportCode');
     Route::post('generateAirInvoicePDF', 'App\Http\Controllers\airTicketController@generateAirInvoicePDF');
     Route::get('printAirTicket', 'App\Http\Controllers\airTicketController@printAirTicket');
+    //----------------------------------------------------------
+
+    //Hotel Management------------------------------------------------
+    Route::get('hotelBooking', 'App\Http\Controllers\hotelController@hotelBooking');
+    Route::post('createNewHotelBooking', 'App\Http\Controllers\hotelController@createNewHotelBooking');
+    Route::get('viewHotelBooking', 'App\Http\Controllers\hotelController@viewHotelBooking');
+    Route::get('editHotelBookingPage', 'App\Http\Controllers\hotelController@editHotelBookingPage');
+    Route::get('editHotelBookingPayment', 'App\Http\Controllers\hotelController@editHotelBookingPayment');
+    Route::post('updateHotelBookingPaymentStatus', 'App\Http\Controllers\hotelController@updateHotelBookingPaymentStatus');
+    Route::post('updateHotelBooking', 'App\Http\Controllers\hotelController@updateHotelBooking');
+    Route::post('deleteHotelBooking', 'App\Http\Controllers\hotelController@deleteHotelBooking');
     //----------------------------------------------------------
 
     //Visa Processing----------------------------------------------------------
@@ -205,6 +216,8 @@ Route::middleware(['role'])->group(function () {
     Route::post('addManualPayment', 'App\Http\Controllers\accountsController@addManualPayment');
     Route::get('editManualPaymentPage', 'App\Http\Controllers\accountsController@editManualPaymentPage');
     Route::post('updateManualPayment', 'App\Http\Controllers\accountsController@updateManualPayment');
+                                //-------------
+    Route::post('pay-online-b2b', [SslCommerzPaymentController::class, 'payOnlineb2b']);
     //----------------------------------------------------------
 
     //Statement Management------------------------------------------------

@@ -446,9 +446,8 @@ class accountsController extends Controller
                     else{
                         return back()->with('errorMessage', 'Please contact with admin!!');
                     }
-
-
-                } else {
+                }
+                else {
                     return back()->with('errorMessage', 'Please try again!!');
                 }
             }

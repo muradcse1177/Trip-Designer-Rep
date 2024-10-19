@@ -39,7 +39,7 @@
                                         <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Manual Payment Request</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Instant Payment with Gateway</a>
+                                        <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Instant Payment with SSLCommerz</a>
                                     </li>
                                 </ul>
                             </div>
@@ -112,22 +112,26 @@
 {{--                                            </div>--}}
                                         </div>
                                         <div class="card-footer">
-                                            <button type="submit" class="btn btn-warning float-right">Submit Deposit </button>
+                                            <button type="submit"  class="btn btn-warning float-right">Submit Deposit </button>
                                         </div>
                                         {{ Form::close() }}
                                     </div>
                                     <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
-                                        {{ Form::open(array('url' => 'payOnline',  'method' => 'post' ,'class' =>'form-horizontal' , 'enctype' => 'multipart/form-data')) }}
+                                        {{ Form::open(array('url' => 'pay-online-b2b', 'method' => 'post' ,'target' => '_blank' ,'class' =>'form-horizontal')) }}
                                         {{ csrf_field() }}
                                         <div class="card-body row">
                                             <div class="col-sm-4">
                                                 <div class="form-group">
                                                     <label>Amount</label>
-                                                    <input type="number" class="form-control" id="amount" name="acc_name" placeholder="Enter Amount" min="1" required>
+                                                    <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter Amount" min="1" required>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="card-footer">
+                                            <input type="hidden" name="product_name" value="Online Top-up">
+                                            <input type="hidden" name="product_category" value="Any Service">
+                                            <input type="hidden" name="product_profile" value="Any Service">
+                                            <input type="hidden" name="customer_type" value="B2B">
                                             <button type="submit" class="btn btn-warning float-right">Pay Online</button>
                                         </div>
                                         {{ Form::close() }}

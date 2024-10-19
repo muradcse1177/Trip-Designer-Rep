@@ -41,7 +41,7 @@ class homeController extends Controller
 
                 $rows10 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
 
-                $rows6 = DB::table('b2c_blog')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(8);
+                $rows6 = DB::table('b2c_blog')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(6);
                 return view('home',
                     [
                         'airports' => $rows1, 't_country' => $rows2, 't_package' => $rows3, 'visas' => $rows4,

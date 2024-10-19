@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use App\Library\SslCommerz\SslCommerzNotification;
+use Illuminate\Support\Facades\Session;
 
 class SslCommerzPaymentController extends Controller
 {
@@ -18,7 +19,6 @@ class SslCommerzPaymentController extends Controller
     {
         return view('exampleHosted');
     }
-
     public function index(Request $request)
     {
         # Here you have to receive all the order data to initate the payment.
@@ -80,8 +80,82 @@ class SslCommerzPaymentController extends Controller
         $sslc = new SslCommerzNotification();
         # initiate(Transaction Data , false: Redirect to SSLCOMMERZ gateway/ true: Show all the Payement gateway here )
         $payment_options = $sslc->makePayment($post_data, 'hosted');
+        if (!is_array($payment_options)) {
+            print_r($payment_options);
+            $payment_options = array();
+        }
 
-        dd($payment_options);
+    }
+    public function payOnlineb2b(Request $request)
+    {
+        if( $request->amount<100){
+            return back()->with('errorMessage', 'Please try more than 100 BDT!!');
+        }
+        $agent_id = Session::get('user_id');
+        $agent = DB::table('users')->where('id',$agent_id)->first();
+        $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
+        $post_data = array();
+        $post_data['total_amount'] = $request->amount; # You cant not pay less than 10
+        $post_data['currency'] = "BDT";
+        $post_data['tran_id'] = uniqid(); // tran_id must be unique
+        $post_data['success_url'] = url('/')."/success-payment-request";
+//        $post_data['fail_url'] = url('/')."/failed-b2b";
+//        $post_data['cancel_url'] = url('/')."/canceled-b2b";
+        $post_data['emi_option'] = "1";
+        $post_data['emi_max_inst_option'] = "36";
+
+        # CUSTOMER INFORMATION
+        $post_data['cus_name'] = $agent->company_name;
+        $post_data['cus_email'] = $agent->company_email;
+        $post_data['cus_add1'] = @$agent->address;
+        $post_data['cus_add2'] = "";
+        $post_data['cus_city'] = "";
+        $post_data['cus_state'] = "";
+        $post_data['cus_postcode'] = "";
+        $post_data['cus_country'] = "Bangladesh";
+        $post_data['cus_phone'] = @$agent->phone_code.$agent->company_pnone;
+        $post_data['cus_fax'] = "";
+
+        # SHIPMENT INFORMATION
+        $post_data['ship_name'] = "Web Portal";
+        $post_data['ship_add1'] = "Dhaka";
+        $post_data['ship_add2'] = "Dhaka";
+        $post_data['ship_city'] = "Dhaka";
+        $post_data['ship_state'] = "Dhaka";
+        $post_data['ship_postcode'] = "1000";
+        $post_data['ship_phone'] = "";
+        $post_data['ship_country'] = "Bangladesh";
+
+        $post_data['shipping_method'] = "NO";
+        $post_data['product_name'] = $request->product_name;
+        $post_data['product_category'] = $request->product_category;
+        $post_data['product_profile'] = $request->product_profile;
+        $post_data['customer_type'] = $request->customer_type;
+        $post_data['ip_address'] = app('App\Http\Controllers\authController')->get_client_ip();
+        $post_data['local_id'] = $num;
+        //dd($post_data);
+        #Before  going to initiate the payment order status need to insert or update as Pending.
+        $update_product = DB::table('payment_orders')
+            ->where('transaction_id', $post_data['tran_id'])
+            ->updateOrInsert([
+                'name' => $post_data['cus_name'],
+                'email' => $post_data['cus_email'],
+                'phone' => $post_data['cus_phone'],
+                'amount' => $post_data['total_amount'],
+                'status' => 'Pending',
+                'address' => $post_data['cus_add1'],
+                'transaction_id' => $post_data['tran_id'],
+                'currency' => $post_data['currency'],
+                'product_name' => $post_data['product_name'],
+                'product_category' => $post_data['product_category'],
+                'product_profile' => $post_data['product_profile'],
+                'customer_type' => $post_data['customer_type'],
+                'ip_address' => $post_data['ip_address'],
+                'local_id' => $post_data['local_id'],
+            ]);
+        $sslc = new SslCommerzNotification();
+        # initiate(Transaction Data , false: Redirect to SSLCOMMERZ gateway/ true: Show all the Payement gateway here )
+        $payment_options = $sslc->makePayment($post_data, 'hosted');
         if (!is_array($payment_options)) {
             print_r($payment_options);
             $payment_options = array();
@@ -136,18 +210,18 @@ class SslCommerzPaymentController extends Controller
 
 
         #Before  going to initiate the payment order status need to update as Pending.
-        $update_product = DB::table('orders')
-            ->where('transaction_id', $post_data['tran_id'])
-            ->updateOrInsert([
-                'name' => $post_data['cus_name'],
-                'email' => $post_data['cus_email'],
-                'phone' => $post_data['cus_phone'],
-                'amount' => $post_data['total_amount'],
-                'status' => 'Pending',
-                'address' => $post_data['cus_add1'],
-                'transaction_id' => $post_data['tran_id'],
-                'currency' => $post_data['currency']
-            ]);
+//        $update_product = DB::table('orders')
+//            ->where('transaction_id', $post_data['tran_id'])
+//            ->updateOrInsert([
+//                'name' => $post_data['cus_name'],
+//                'email' => $post_data['cus_email'],
+//                'phone' => $post_data['cus_phone'],
+//                'amount' => $post_data['total_amount'],
+//                'status' => 'Pending',
+//                'address' => $post_data['cus_add1'],
+//                'transaction_id' => $post_data['tran_id'],
+//                'currency' => $post_data['currency']
+//            ]);
 
         $sslc = new SslCommerzNotification();
         # initiate(Transaction Data , false: Redirect to SSLCOMMERZ gateway/ true: Show all the Payement gateway here )
@@ -160,20 +234,17 @@ class SslCommerzPaymentController extends Controller
 
     }
 
-    public function success(Request $request)
+    public function successPaymentRequest(Request $request)
     {
-        echo "Transaction is Successful";
-
         $tran_id = $request->input('tran_id');
         $amount = $request->input('amount');
         $currency = $request->input('currency');
+        dd($request);
 
         $sslc = new SslCommerzNotification();
 
         #Check order status in order tabel against the transaction id or order id.
-        $order_details = DB::table('orders')
-            ->where('transaction_id', $tran_id)
-            ->select('transaction_id', 'status', 'currency', 'amount')->first();
+        $order_details = DB::table('payment_orders')->where('transaction_id', $tran_id)->first();
 
         if ($order_details->status == 'Pending') {
             $validation = $sslc->orderValidate($request->all(), $tran_id, $amount, $currency);
@@ -184,23 +255,93 @@ class SslCommerzPaymentController extends Controller
                 in order table as Processing or Complete.
                 Here you can also sent sms or email for successfull transaction to customer
                 */
-                $update_product = DB::table('orders')
+                $update_product = DB::table('payment_orders')
                     ->where('transaction_id', $tran_id)
-                    ->update(['status' => 'Processing']);
+                    ->update(['status' => 'Complete']);
+                if($order_details->customer_type == 'B2B'){
+                    return redirect()->to('payment-request')->with('successMessage', 'Transaction is successfully Completed!!');
+                }
+                if($order_details->customer_type == 'B2C'){
+                    return redirect()->to('my-booking')->with('successMessage', 'Transaction is successfully Completed!!');
+                }
 
-                echo "<br >Transaction is successfully Completed";
+//                echo "<br >Transaction is successfully Completed";
             }
         } else if ($order_details->status == 'Processing' || $order_details->status == 'Complete') {
             /*
              That means through IPN Order status already updated. Now you can just show the customer that transaction is completed. No need to udate database.
              */
-            echo "Transaction is successfully Completed";
+            if($order_details->customer_type == 'B2B'){
+                return redirect()->to('payment-request')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            if($order_details->customer_type == 'B2C'){
+                return redirect()->to('my-booking')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            //echo "Transaction is successfully Completed";
         } else {
             #That means something wrong happened. You can redirect customer to your product page.
-            echo "Invalid Transaction";
+            if($order_details->customer_type == 'B2B'){
+                return redirect()->to('payment-request')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            if($order_details->customer_type == 'B2C'){
+                return redirect()->to('my-booking')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            //echo "Invalid Transaction";
         }
+    }
+    public function success(Request $request)
+    {
+        $tran_id = $request->input('tran_id');
+        $amount = $request->input('amount');
+        $currency = $request->input('currency');
 
+        $sslc = new SslCommerzNotification();
 
+        #Check order status in order tabel against the transaction id or order id.
+        $order_details = DB::table('payment_orders')->where('transaction_id', $tran_id)->first();
+
+        if ($order_details->status == 'Pending') {
+            $validation = $sslc->orderValidate($request->all(), $tran_id, $amount, $currency);
+
+            if ($validation) {
+                /*
+                That means IPN did not work or IPN URL was not set in your merchant panel. Here you need to update order status
+                in order table as Processing or Complete.
+                Here you can also sent sms or email for successfull transaction to customer
+                */
+                $update_product = DB::table('payment_orders')
+                    ->where('transaction_id', $tran_id)
+                    ->update(['status' => 'Complete']);
+                if($order_details->customer_type == 'B2B'){
+                    return redirect()->to('payment-request')->with('successMessage', 'Transaction is successfully Completed!!');
+                }
+                if($order_details->customer_type == 'B2C'){
+                    return redirect()->to('my-booking')->with('successMessage', 'Transaction is successfully Completed!!');
+                }
+
+//                echo "<br >Transaction is successfully Completed";
+            }
+        } else if ($order_details->status == 'Processing' || $order_details->status == 'Complete') {
+            /*
+             That means through IPN Order status already updated. Now you can just show the customer that transaction is completed. No need to udate database.
+             */
+            if($order_details->customer_type == 'B2B'){
+                return redirect()->to('payment-request')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            if($order_details->customer_type == 'B2C'){
+                return redirect()->to('my-booking')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            //echo "Transaction is successfully Completed";
+        } else {
+            #That means something wrong happened. You can redirect customer to your product page.
+            if($order_details->customer_type == 'B2B'){
+                return redirect()->to('payment-request')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            if($order_details->customer_type == 'B2C'){
+                return redirect()->to('my-booking')->with('successMessage', 'Transaction is successfully Completed!!');
+            }
+            //echo "Invalid Transaction";
+        }
     }
 
     public function fail(Request $request)

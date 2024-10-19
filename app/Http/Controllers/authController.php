@@ -9,6 +9,24 @@ use Illuminate\Support\Facades\Session;
 
 class authController extends Controller
 {
+    function get_client_ip() {
+        $ipaddress = '';
+        if (isset($_SERVER['HTTP_CLIENT_IP']))
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        else if(isset($_SERVER['REMOTE_ADDR']))
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        else
+            $ipaddress = 'UNKNOWN';
+        return $ipaddress;
+    }
     public function domainCheck(){
         try{
             //$c_domain = $_SERVER['SERVER_NAME'];
@@ -161,7 +179,7 @@ class authController extends Controller
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
                     if ($result) {
-                        return redirect()->to('all-login')->with('errorMessage', 'Registered successfully. Please log in.');
+                        return redirect()->to('all-login')->with('successMessage', 'Registered successfully. Please log in.');
                     } else {
                         return back()->with('errorMessage', 'Please try again!!');
                     }
@@ -201,7 +219,7 @@ class authController extends Controller
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
                     if ($result) {
-                        return redirect()->to('all-login')->with('errorMessage', 'Registered successfully. Please log in.');
+                        return redirect()->to('all-login')->with('successMessage', 'Registered successfully. Please log in.');
                     } else {
                         return back()->with('errorMessage', 'Please try again!!');
                     }

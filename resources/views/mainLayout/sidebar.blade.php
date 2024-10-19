@@ -85,8 +85,8 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                <li class="nav-item @yield('hotelMenu')">
+                    <a href="#" class="nav-link @yield('hotel')">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
                             Hotel Booking
@@ -95,8 +95,8 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                            <a href="{{url('hotelBooking')}}" class="nav-link @yield('hotelBooking')">
+                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
                                 <p>New Hotel Booking</p>
                             </a>
                         </li>
