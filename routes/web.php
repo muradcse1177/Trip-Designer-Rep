@@ -160,6 +160,17 @@ Route::middleware(['role'])->group(function () {
     Route::post('updateTourPackagePaymentStatus', 'App\Http\Controllers\tourController@updateTourPackagePaymentStatus');
 
     //----------------------------------------------------------
+    //Umrah Package----------------------------------------------------------
+    Route::get('newUmrahPackage', 'App\Http\Controllers\umrahController@newUmrahPackage');
+    Route::post('createNewUmrahPackage', 'App\Http\Controllers\umrahController@createNewUmrahPackage');
+    Route::get('editUmrahPackagePage', 'App\Http\Controllers\umrahController@editUmrahPackagePage');
+    Route::post('updateUmrahPackage', 'App\Http\Controllers\umrahController@updateUmrahPackage');
+    Route::post('deleteUmrahPackage', 'App\Http\Controllers\umrahController@deleteUmrahPackage');
+    Route::get('viewUmrahPackage', 'App\Http\Controllers\umrahController@viewUmrahPackage');
+    Route::get('editUmrahPackagePayment', 'App\Http\Controllers\umrahController@editUmrahPackagePayment');
+    Route::post('updateUmrahPackagePaymentStatus', 'App\Http\Controllers\umrahController@updateUmrahPackagePaymentStatus');
+    //----------------------------------------------------------
+
     //B2B Section
     Route::get('search-tour-package-b2b', 'App\Http\Controllers\tourController@searchTourPackageB2b');
     Route::get('search-visa-b2b', 'App\Http\Controllers\visaController@searchVisaB2b');

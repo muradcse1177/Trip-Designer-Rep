@@ -136,6 +136,23 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item @yield('umrahMenu')">
+                    <a href="#" class="nav-link @yield('umrahPackage')">
+                        <i class="nav-icon fas fa-kaaba"></i>
+                        <p>
+                           Hajj & Umrah
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{url("newUmrahPackage")}}" class="nav-link @yield('newUmrahPackage')">
+                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                <p> Hajj & Umrah</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item @yield('manPowerMenu')">
                     <a href="#" class="nav-link @yield('manPowerPackage')">
                         <i class="nav-icon fas fa-user-friends"></i>
