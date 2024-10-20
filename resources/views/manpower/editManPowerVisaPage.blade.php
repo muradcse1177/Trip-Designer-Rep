@@ -1,5 +1,5 @@
 @extends('mainLayout.layout')
-@section('title','Trip Designer || Work Permit Processing')
+@section('title','Trip Designer || Work Permit Visa Processing')
 @section('newManPowerPackage','active')
 @section('manPowerPackage','active')
 @section('manPowerMenu','menu-open')
@@ -19,14 +19,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Work Permit Management</h1>
+                        <h1>Work Permit Visa Management</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{url('/')}}">Home</a>
                             </li>
-                            <li class="breadcrumb-item active">Work Permit Management</li>
+                            <li class="breadcrumb-item active">Work Permit Visa Management</li>
                         </ol>
                     </div>
                 </div>
@@ -38,18 +38,18 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card card-warning collapsed-card">
+                        <div class="card card-warning">
                             <div class="card-header">
-                                <h3 class="card-title">Add New Work Permit </h3>
+                                <h3 class="card-title">Edit Work Permit Invoice</h3>
                                 <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
                                     </button>
                                 </div>
                                 <!-- /.card-tools -->
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body" style="display: none;">
-                                {{ Form::open(array('url' => 'addNewWorkPermit',  'method' => 'post' ,'class' =>'form-horizontal')) }}
+                            <div class="card-body" style="display: block;">
+                                {{ Form::open(array('url' => 'editManPowerVisa',  'method' => 'post' ,'class' =>'form-horizontal')) }}
                                 {{ csrf_field() }}
                                 <div class="card-body row">
                                     <div class="col-sm-3">
@@ -58,7 +58,7 @@
                                             <select class="form-control select2bs4" name="c_name" id="c_name" style="width: 100%;" required>
                                                 <option value="">Select Country Name</option>
                                                 @foreach($countries as $country)
-                                                    <option value="{{$country->name}}">{{$country->name}}</option>
+                                                    <option value="{{$country->name}}" <?php if($country->name == $visa->visa_country) echo 'selected'; ?>>{{$country->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -67,7 +67,7 @@
                                         <div class="form-group">
                                             <label>Date</label>
                                             <div class="input-group date" id="dob" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#dob" name="date" placeholder="Enter Date" required/>
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#dob" value="{{@$visa->date}}" name="date" placeholder="Enter Date" required/>
                                                 <div class="input-group-append" data-target="#dob" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -80,7 +80,7 @@
                                             <select class="form-control select2bs4" name="vendor" id="vendor" style="width: 100%;" required>
                                                 <option value="">Select Vendor Name</option>
                                                 @foreach($vendors as $vendor)
-                                                    <option value="{{$vendor->name}}">{{$vendor->name}}</option>
+                                                    <option value="{{$vendor->name}}" <?php if($vendor->name == $visa->vendor) echo 'selected'; ?>>{{$vendor->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -91,7 +91,7 @@
                                             <select class="form-control select2bs4" name="issued_by" id="issued_by" style="width: 100%;" required>
                                                 <option value="">Select Employee Name</option>
                                                 @foreach($employees as $employee)
-                                                    <option value="{{$employee->name}}">{{$employee->name}}</option>
+                                                    <option value="{{$employee->name}}" <?php if($employee->name == $visa->issued_by) echo 'selected'; ?>>{{$employee->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -101,28 +101,29 @@
                                             <label> Status</label>
                                             <select class="form-control select2bs4" name="status" id="status" style="width: 100%;" required>
                                                 <option value="">Select Status Type</option>
-                                                <option value="Received">Received</option>
-                                                <option value="Sent Work Permit">Sent For Work Permit</option>
-                                                <option value="Sent For Visa">Sent For Visa</option>
-                                                <option value="Sent For Manpower">Sent For Manpower </option>
-                                                <option value="Need Ticket">Need Ticket</option>
-                                                <option value="Visa Approved">Visa Approved</option>
-                                                <option value="Cancelled">Visa Cancelled</option>
-                                                <option value="Docs Required">Docs Required</option>
-                                                <option value="Delivered">Delivered</option>
+                                                <option value="Received" <?php if($visa->status == 'Received') echo 'selected'; ?>>Received</option>
+                                                <option value="Sent For Work Permit" <?php if($visa->status == 'Sent For Work Permit') echo 'selected'; ?>>Sent For Work Permit</option>
+                                                <option value="Sent For Visa" <?php if($visa->status == 'Sent For Visa') echo 'selected'; ?>>Sent For Visa</option>
+                                                <option value="Sent For Manpower" <?php if($visa->status == 'Sent For Manpower') echo 'selected'; ?>>Sent For Manpower</option>
+                                                <option value="Need Ticket" <?php if($visa->status == 'Need Ticket') echo 'selected'; ?>>Need Ticket</option>
+                                                <option value="Visa Approved" <?php if($visa->status == 'Visa Approved') echo 'selected'; ?>>Visa Approved</option>
+                                                <option value="Visa Cancelled" <?php if($visa->status == 'Visa Cancelled') echo 'selected'; ?>>Visa Cancelled</option>
+                                                <option value="Docs Required" <?php if($visa->status == 'Docs Required') echo 'selected'; ?>>Docs Required</option>
+                                                <option value="Delivered" <?php if($visa->status == 'Delivered') echo 'selected'; ?>>Delivered</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-group">
-                                            <label>Work Permit Visa Service Details</label>
-                                            <input type="text" class="form-control" id="s_details" name="s_details" placeholder="Enter Visa Service Details" required>
+                                            <label>Visa Service Details</label>
+                                            <input type="text" class="form-control" id="s_details" value="{{@$visa->v_details}}" name="s_details" placeholder="Enter Visa Service Details" required>
                                         </div>
                                     </div>
+
                                     <div class="col-sm-12" >
                                         <div class="form-group">
                                             <label>Package  Deatils</label>
-                                            <textarea class="summernote" name="w_details">Place Write Here...</textarea>
+                                            <textarea class="summernote" name="w_details" placeholder="Place Write Here...">{{@$visa->w_details}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
@@ -136,20 +137,47 @@
                                                 <label>Passenger Number</label>
                                                 <select class="form-control select2bs4" name="pax_number" id="pax_number" style="width: 100%;" required>
                                                     <option value="">Select From</option>
-                                                    <option value="1">One</option>
-                                                    <option value="2">Two</option>
-                                                    <option value="3">Three</option>
-                                                    <option value="4">Four</option>
-                                                    <option value="5">Five</option>
-                                                    <option value="6">Six</option>
-                                                    <option value="7">Seven</option>
-                                                    <option value="8">Eight</option>
-                                                    <option value="9">Nine</option>
-                                                    <option value="10">Ten</option>
+                                                    <option value="1" <?php if($visa->pax_number == '1') echo 'selected'; ?>>One</option>
+                                                    <option value="2" <?php if($visa->pax_number == '2') echo 'selected'; ?>>Two</option>
+                                                    <option value="3" <?php if($visa->pax_number == '3') echo 'selected'; ?>>Three</option>
+                                                    <option value="4" <?php if($visa->pax_number == '4') echo 'selected'; ?>>Four</option>
+                                                    <option value="5" <?php if($visa->pax_number == '5') echo 'selected'; ?>>Five</option>
+                                                    <option value="6" <?php if($visa->pax_number == '6') echo 'selected'; ?>>Six</option>
+                                                    <option value="7" <?php if($visa->pax_number == '7') echo 'selected'; ?>>Seven</option>
+                                                    <option value="8" <?php if($visa->pax_number == '8') echo 'selected'; ?>>Eight</option>
+                                                    <option value="9" <?php if($visa->pax_number == '9') echo 'selected'; ?>>Nine</option>
+                                                    <option value="10" <?php if($visa->pax_number == '10') echo 'selected'; ?>>Ten</option>
+                                                    <option value="11" <?php if($visa->pax_number == '11') echo 'selected'; ?>>Eleven</option>
+                                                    <option value="12" <?php if($visa->pax_number == '12') echo 'selected'; ?>>Twelve</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
+                                    <?php
+                                    $p_detail = json_decode($visa->p_details);
+                                    $pass_number = json_decode($visa->pass_number);
+                                    ?>
+                                    @for ($i=0; $i<$visa->pax_number; $i++)
+                                            <?php
+                                            $row = DB::table('passengers')->where('id',$p_detail[$i])->first();
+                                            ?>
+                                        <div class="col-sm-6 feedback">
+                                            <div class="form-group">
+                                                <label>Passengers</label>
+                                                <select class="form-control select2bs4" name="pax_name[]" style="width: 100%;" required> <option value="">Select Passenger Name</option>
+                                                    @foreach($passengers as $passenger)
+                                                        <option value="<?php echo $passenger->id; ?>" <?php if($p_detail[$i] == $passenger->id) echo 'selected';?>><?php echo $passenger->f_name." ".$passenger->l_name; ?></option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 feedback">
+                                            <div class="form-group">
+                                                <label>Passport Number</label>
+                                                <input type="text" class="form-control" id="pass_number" value="{{$pass_number[$i]}}" name="pass_number[]"  placeholder="Enter Passport Number" required>
+                                            </div>
+                                        </div>
+                                    @endfor
                                     <div class="col-sm-12">
                                         <div class="form-group" style="background: #e7e7e1;">
                                             <label style="margin-left: 5px;">Price  Details</label>
@@ -158,25 +186,25 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Agent Price</label>
-                                            <input type="number" class="form-control" id="a_price" name="a_price" min="1" placeholder="Enter Agent Price" required>
+                                            <input type="number" class="form-control" id="a_price" value="{{$visa->v_a_price}}" name="a_price" min="1" placeholder="Enter Agent Price" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Client Price</label>
-                                            <input type="number" class="form-control" id="c_price" name="c_price" min="1"  placeholder="Enter Client Price" required>
+                                            <input type="number" class="form-control" id="c_price" value="{{$visa->v_c_price}}" name="c_price" min="1"  placeholder="Enter Client Price" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>VAT</label>
-                                            <input type="number" class="form-control" id="vat" name="vat" min="0" value="0" placeholder="Enter VAT">
+                                            <input type="number" class="form-control" id="vat" name="vat" value="{{$visa->v_vat}}" min="0"  placeholder="Enter VAT">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>AIT</label>
-                                            <input type="number" class="form-control" id="ait" name="ait" min="0" value="0" placeholder="Enter AIT">
+                                            <input type="number" class="form-control" id="ait" value="{{$visa->v_ait}}" name="ait" min="0"  placeholder="Enter AIT">
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
@@ -190,7 +218,7 @@
                                             <select class="form-control select2bs4" name="payment_type" id="payment_type" style="width: 100%;" required>
                                                 <option value="">Select Payment Type</option>
                                                 @foreach($payment_types as $payment_type)
-                                                    <option value="{{$payment_type->type}}">{{$payment_type->type}}</option>
+                                                    <option value="{{$payment_type->type}}" <?php if($visa->v_p_type == $payment_type->type) echo 'selected'; ?>>{{$payment_type->type}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -199,18 +227,19 @@
                                         <div class="form-group">
                                             <div class="form-group">
                                                 <label>Due Amount</label>
-                                                <input type="number" class="form-control" id="due" name="due" min="0" value="0" placeholder="Enter Due Amount">
+                                                <input type="number" class="form-control" id="due" name="due" min="0"  value="{{$visa->v_due}}" placeholder="Enter Due Amount">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Payments Details</label>
-                                            <textarea class="form-control" id="p_details" name="p_details" rows="5" placeholder="Write Payments Detail..."></textarea>
+                                            <textarea class="form-control" id="p_details" name="p_details" rows="5"  placeholder="Write Payments Detail...">{!! $visa->v_p_details !!}</textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-footer">
+                                    <input type="hidden" name="id" value="{{$_GET['id']}}">
                                     <button type="submit" class="btn btn-warning float-right">Save</button>
                                 </div>
                                 {{ Form::close() }}
@@ -220,126 +249,8 @@
                         <!-- /.card -->
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card card-info">
-                            <div class="card-header">
-                                <h3 class="card-title">Work Permit Management</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                                <!-- /.card-tools -->
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="example11" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Date</th>
-                                        <th>Country</th>
-                                        <th>Details</th>
-                                        <th>Passengers</th>
-                                        <th>Status</th>
-                                        <th>Price</th>
-                                        <th>Due</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                        $j = 1;
-                                    @endphp
-                                    @foreach($visas as $visa)
-                                        <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$visa->date}}</td>
-                                            <td>
-                                                <div>Country:{{$visa->visa_country}}</div>
-                                                <div>Vendor:{{$visa->vendor}}</div>
-                                            </td>
-                                            <td>{{$visa->v_details}}</td>
-                                                <?php
-                                                $p = json_decode($visa->p_details);
-                                                ?>
-
-                                            <td>
-                                                @foreach($p as $pas)
-                                                        <?php
-                                                        $name = DB::table('passengers')
-                                                            ->where('id',$pas)
-                                                            ->where('upload_by',Session::get('user_id'))
-                                                            ->first();
-                                                        ?>
-                                                    <div>{{$j.'.'.$name->f_name.' '.$name->l_name}}</div>
-                                                    @php
-                                                        $j++;
-                                                    @endphp
-                                                @endforeach
-                                            </td>
-                                            <td>{{$visa->status}}</td>
-                                            <td>
-                                                A.Price:{{$visa->v_a_price}}
-                                                C.Price:{{$visa->v_c_price + $visa->v_vat + $visa->v_ait}}
-                                            </td>
-                                            <td>
-                                                @if((int)$visa->v_due > 0)
-                                                    <button type="button" class="btn btn-danger">{{$visa->v_due}}</button>
-                                                @else
-                                                    {{$visa->	v_due}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info">Action</button>
-                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu" style="">
-                                                        <a class="dropdown-item" href="{{url('viewManPowerVisa?id='.$visa->id)}}">View</a>
-                                                        <a class="dropdown-item" href="{{url('editManPowerVisaPage?id='.$visa->id)}}">Edit</a>
-                                                        <a class="dropdown-item" href="{{url('editManPowerVisaPaymentStatus?id='.$visa->id)}}">Edit Payment</a>
-                                                        <a class="dropdown-item delete" data-id="{{$visa->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteVisa?id='.$visa->id)}}">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @php
-                                            $i++;
-                                            $j = 1;
-                                        @endphp
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                </div>
             </div>
             <!-- /.container-fluid -->
-            <div class="modal fade" id="modal-danger">
-                <div class="modal-dialog">
-                    <div class="modal-content bg-danger">
-                        <div class="modal-body">
-                            <p style="text-align: center; font-size: 25px;">Are You Sure!!</p>
-                        </div>
-                        {{ Form::open(array('url' => 'deleteManPowerVisa',  'method' => 'post')) }}
-                        {{ csrf_field() }}
-                        <div class="modal-footer justify-content-between">
-                            <input type="hidden" name="id" class="id">
-                            <button type="submit" class="btn btn-outline-light">Delete</button>
-                        </div>
-                        {{ Form::close() }}
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
         </section>
     </div>
 @endsection
@@ -349,11 +260,6 @@
         $('.select2bs4').select2({
             theme: 'bootstrap4',
         })
-        $(document).on('click', '.delete', function(e){
-            e.preventDefault();
-            var id = $(this).data('id');
-            $('.id').val(id);
-        });
         $('#dob').datetimepicker({
             format: 'YYYY-MM-DD',
             maxDate: new Date(),
@@ -386,7 +292,7 @@
                 }
                 ?>
                     html += '</select></div></div>';
-                html += '<div class="col-sm-6"> <div class="form-group"> <label>Passport Number</label> <input type="text" class="form-control" id="pass_number" name="pass_number[]" min="1" placeholder="Enter Passport Number" required> </div> </div>'
+                html += '<div class="col-sm-6"> <div class="form-group"> <label>Passport Number</label> <input type="number" class="form-control" id="pass_number" name="pass_number[]" min="1" placeholder="Enter Passport Number" required> </div> </div>'
             }
             html += '</div>';
 

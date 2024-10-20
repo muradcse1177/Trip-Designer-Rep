@@ -186,6 +186,13 @@ Route::middleware(['role'])->group(function () {
 
     //Manpower Package----------------------------------------------------------
     Route::get('newManPowerPackage', 'App\Http\Controllers\manpowerController@newManPowerPackage');
+    Route::post('addNewWorkPermit', 'App\Http\Controllers\manpowerController@addNewWorkPermit');
+    Route::get('viewManPowerVisa', 'App\Http\Controllers\manpowerController@viewManPowerVisa');
+    Route::get('editManPowerVisaPage', 'App\Http\Controllers\manpowerController@editManPowerVisaPage');
+    Route::post('editManPowerVisa', 'App\Http\Controllers\manpowerController@editManPowerVisa');
+    Route::post('deleteManPowerVisa', 'App\Http\Controllers\manpowerController@deleteManPowerVisa');
+    Route::get('editManPowerVisaPaymentStatus', 'App\Http\Controllers\manpowerController@editManPowerVisaPaymentStatus');
+    Route::post('updateManpowerVisaPaymentStatus', 'App\Http\Controllers\manpowerController@updateManpowerVisaPaymentStatus');
     //----------------------------------------------------------
 
     //User Management------------------------------------------------
