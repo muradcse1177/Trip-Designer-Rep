@@ -122,7 +122,18 @@
                                             <input type="number" class="form-control" id="p_p_child" min="0" name="p_p_child" placeholder="Enter Price Per Child" required>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Vendors</label>
+                                            <select class="form-control select2bs4" name="vendor" id="vendor" style="width: 100%;" required>
+                                                <option value="">Select Vendor</option>
+                                                @foreach($vendors as $vendor)
+                                                    <option value="{{$vendor->name}}">{{$vendor->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
                                         <div class="form-group">
                                             <label>Slug</label>
                                             <input type="text" class="form-control" id="slug" name="slug" placeholder="Enter Slug" required>
@@ -212,7 +223,7 @@
                                     <tr>
                                         <th>S.L</th>
                                         <th>Country Name</th>
-                                        <th>Package Name</th>
+                                        <th>Package</th>
                                         <th>Price</th>
                                         <th>View</th>
                                         <th>Action</th>
@@ -226,13 +237,18 @@
                                         <tr>
                                             <td>{{$i}}</td>
                                             <td>{{$package->c_name}}</td>
-                                            <td>{{$package->p_name}} - {{$package->p_code}}</td>
+                                            <td>
+                                                Name:{{$package->p_name}} <br>
+                                                Code:{{$package->p_code}}<br>
+                                                Vendor: {{$package->vendor}}
+                                            </td>
                                             <td>
                                                 Price Per Adult : {{$package->p_p_adult}}/- <br>
                                                 Price Per Child:  {{$package->p_p_child}}/-
                                             </td>
                                             <td>
-                                                <a href="{{url('tour-package/'.$package->slug)}}">View Package</a>
+                                                <a href="{{url('tour-package/'.$package->slug)}}">B2C Package</a><br>
+                                                <a href="{{url('tour-package-b2b/'.$package->slug)}}">B2B Package</a>
                                             </td>
                                             <td>
                                                 <div class="btn-group">
@@ -290,6 +306,10 @@
     <script src="{{url('/public/plugins/codemirror/mode/xml/xml.js')}}"></script>
     <script src="{{url('/public/plugins/codemirror/mode/htmlmixed/htmlmixed.js')}}"></script>
     <script>
+        $('.select2').select2()
+        $('.select2bs4').select2({
+            theme: 'bootstrap4',
+        })
         $(document).on('click', '.delete', function(e){
             e.preventDefault();
             var id = $(this).data('id');

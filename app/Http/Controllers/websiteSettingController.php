@@ -467,9 +467,10 @@ class websiteSettingController extends Controller
 
     public function b2cTourPackage(Request $request){
         try{
+            $rows2 = DB::table('vendors')->where('agent_id',Session::get('user_id'))->get();
             $rows = DB::table('b2c_tour_package')->where('agent_id',Session::get('user_id'))->get();
             $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',Session::get('user_id'))->get();
-            return view('websiteSetting.b2cTourPackage',['packages' => $rows,'countries' => $rows1]);
+            return view('websiteSetting.b2cTourPackage',['packages' => $rows,'countries' => $rows1,'vendors' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -500,6 +501,7 @@ class websiteSettingController extends Controller
                 'p_p_adult' => $request->p_p_adult,
                 'p_p_child' => $request->p_p_child,
                 'slug' => $request->slug,
+                'vendor' => $request->vendor,
                 'highlights' => json_encode($request->highlights),
                 'title' => json_encode($request->title),
                 'itinary' => json_encode($request->description),
@@ -524,7 +526,8 @@ class websiteSettingController extends Controller
         try{
             $rows = DB::table('b2c_tour_package')->where('id',$request->id)->first();
             $rows1 = DB::table('b2c_tour_package_country')->get();
-            return view('websiteSetting.editB2CTourPackagePage',['package' => $rows,'countries' => $rows1]);
+            $rows2 = DB::table('vendors')->where('agent_id',Session::get('user_id'))->get();
+            return view('websiteSetting.editB2CTourPackagePage',['package' => $rows,'countries' => $rows1,'vendors' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -568,6 +571,7 @@ class websiteSettingController extends Controller
                     'p_p_adult' => $request->p_p_adult,
                     'p_p_child' => $request->p_p_child,
                     'slug' => $request->slug,
+                    'vendor' => $request->vendor,
                     'highlights' => json_encode($request->highlights),
                     'title' => json_encode($request->title),
                     'itinary' => json_encode($request->description),

@@ -69,31 +69,38 @@
                                                     <td>
                                                         <div style="position: relative; text-align: center; color: black;">
                                                             <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                                            <div style="position: absolute; bottom: 15px;"><b>{{$package->title.' '.'(Starting From -'.$package->start_date.')'}}</b></div>
+                                                            <div style="position: absolute; bottom: 15px;"><b>Package Details</b></div>
                                                         </div>
-
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <table class="table">
+                                            <table class="table table-bordered">
                                                 <tr>
                                                     <td>
-                                                        Package Covered
+                                                        <b>Package Name</b>
                                                     </td>
                                                     <td>
-                                                        {{$package->p_cover}}
+                                                        {{$package->title}}
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        Package Duration
+                                                        <b>Package Code</b>
+                                                    </td>
+                                                    <td>
+                                                        {{$package->p_code}}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <b>Package Duration</b>
                                                     </td>
                                                     <td>
                                                         {{$package->start_date .' '. 'to'.' '.$package->end_date}}
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <table class="table">
+                                            <table class="table ">
                                                 <tr>
                                                     <td>
                                                         <div style="position: relative; text-align: center; color: black;">
@@ -108,13 +115,13 @@
                                             $pax = json_decode($package->traveler);
                                             ?>
 
-                                            <table class="table">
+                                            <table class="table table-bordered">
                                                 @for($i=0; $i<$package->g_details; $i++)
                                                         <?php
                                                         $passenger = DB::table('passengers')->where('id',$pax[$i])->first();
                                                         ?>
                                                     <tr>
-                                                        <th>Name</th>
+                                                        <th>Guest {{$i+1}}</th>
                                                         <td>{{$passenger->f_name.' '.$passenger->l_name}}</td>
                                                     </tr>
                                                 @endfor
@@ -129,7 +136,7 @@
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <table class="table table-borderless">
+                                            <table class="table table-bordered">
                                                 <tr>
                                                     <td rowspan="6">
                                                         <div>
@@ -157,17 +164,17 @@
                                                     <td  align="right">{{$package->due.'/-'}}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td align="right"><b style="color: red;">Amount need to be paid</b></td>
+                                                    <td align="right"><b style="color: red;">Total Paid Amount</b></td>
                                                     <td  align="right"><b style="color: red;">{{$package->p_c_details + $package->p_vat + $package->p_ait - $package->due.'/-'}}</b></td>
                                                 </tr>
                                             </table>
-                                            @if(@$package->p_details)
+                                            @if(@$package->highlights)
                                             <table class="table table-borderless">
                                                 <tr>
                                                     <td>
                                                         <div style="position: relative; text-align: center; color: black;">
                                                             <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                                            <div style="position: absolute; bottom: 15px;"><b>Package Details</b></div>
+                                                            <div style="position: absolute; bottom: 15px;"><b>Package Highlights</b></div>
                                                         </div>
 
                                                     </td>
@@ -176,11 +183,48 @@
                                             <table class="table table-borderless">
                                                 <tr>
                                                     <td>
-                                                        {!! nl2br($package->p_details) !!}
+                                                        {!! nl2br(json_decode($package->highlights)) !!}
                                                     </td>
                                                 </tr>
                                             </table>
                                             @endif
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td>
+                                                        <div style="position: relative; text-align: center; color: black;">
+                                                            <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
+                                                            <div style="position: absolute; bottom: 15px;"><b>Day Wise Itinerary</b></div>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                                <?php
+                                                    $i =0;
+                                                $d_titles = json_decode($package->day_title);
+                                                $d_ininaris = json_decode($package->dat_itinary);
+                                                ?>
+                                            <table class="table table-bordered">
+                                                @foreach($d_titles as $d_title)
+                                                <tr>
+                                                    <td>
+                                                        {{$d_titles[$i]}}
+                                                    </td>
+                                                    <td>
+                                                            <?php
+                                                            $output = '<ul style="list-style-type: disc !important; adding-left:1em !important; margin-left:1em;">';
+                                                            $listformat = explode("\n", $d_titles[$i]);
+                                                            foreach ($listformat as $test => $line) {
+                                                                $output .= "<li>".$line."</li>";
+                                                            };
+                                                            $output .='</ul>';
+                                                            ?>
+                                                        {!! $output !!}
+                                                    </td>
+                                                </tr>
+                                                    <?php $i++; ?>
+                                                @endforeach
+                                            </table>
                                             @if(@$package->p_inclusions)
                                             <table class="table table-borderless">
                                                 <tr>

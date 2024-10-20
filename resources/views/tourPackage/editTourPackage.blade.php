@@ -52,7 +52,7 @@
                                 {{ Form::open(array('url' => 'updateTourPackage',  'method' => 'post' ,'class' =>'form-horizontal')) }}
                                 {{ csrf_field() }}
                                 <div class="card-body row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Country</label>
                                             <select class="form-control select2bs4" name="country" id="country" style="width: 100%;" required>
@@ -63,19 +63,42 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Title</label>
-                                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title" value="{{@$package->title}}" required>
+                                            <label>Package Name</label>
+                                            <input type="text" class="form-control" id="title" name="title" value="{{@$package->title}}" placeholder="Enter Package Name" required>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Package Cover</label>
-                                            <input type="text" class="form-control" id="p_cover" name="p_cover" placeholder="Enter Package Cover" value="{{@$package->p_cover}}" required>
+                                            <label>Package Code</label>
+                                            <input type="text" class="form-control" id="p_code"  name="p_code" value="{{@$package->p_code}}" placeholder="Enter Package Code" required>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Package Night</label>
+                                            <select class="form-control select2bs4 night" name="night" id="night" style="width: 100%;" required>
+                                                <option value="">Select Package Night</option>
+                                                <option value="1" <?php if($package->night == 1) echo 'selected'; ?> >1 Night</option>
+                                                <option value="2" <?php if($package->night == 2) echo 'selected'; ?>>2 Night</option>
+                                                <option value="3" <?php if($package->night == 3) echo 'selected'; ?>>3 Night</option>
+                                                <option value="4" <?php if($package->night == 4) echo 'selected'; ?>>4 Night</option>
+                                                <option value="5" <?php if($package->night == 5) echo 'selected'; ?>>5 Night</option>
+                                                <option value="6" <?php if($package->night == 6) echo 'selected'; ?>>6 Night</option>
+                                                <option value="7" <?php if($package->night == 7) echo 'selected'; ?>>7 Night</option>
+                                                <option value="8" <?php if($package->night == 8) echo 'selected'; ?>>8 Night</option>
+                                                <option value="9" <?php if($package->night == 9) echo 'selected'; ?>>9 Night</option>
+                                                <option value="10" <?php if($package->night == 10) echo 'selected'; ?>>10 Night</option>
+                                                <option value="11" <?php if($package->night == 11) echo 'selected'; ?>>11 Night</option>
+                                                <option value="12" <?php if($package->night == 12) echo 'selected'; ?>>12 Night</option>
+                                                <option value="13" <?php if($package->night == 13) echo 'selected'; ?>>13 Night</option>
+                                                <option value="14" <?php if($package->night == 14) echo 'selected'; ?>>14 Night</option>
+                                                <option value="15" <?php if($package->night == 15) echo 'selected'; ?>>15 Night</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Start Date</label>
                                             <div class="input-group date" id="start_date" data-target-input="nearest">
@@ -86,7 +109,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>End Date</label>
                                             <div class="input-group date" id="end_date" data-target-input="nearest">
@@ -97,7 +120,18 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Vendors</label>
+                                            <select class="form-control select2bs4" name="vendor" id="vendor" style="width: 100%;" required>
+                                                <option value="">Select Vendor</option>
+                                                @foreach($vendors as $vendor)
+                                                    <option value="{{$vendor->name}}" <?php if($package->vendor == $vendor->name) echo 'selected'; ?>>{{$vendor->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Guest Number</label>
                                             <select class="form-control select2bs4" name="pax_number" id="pax_number" style="width: 100%;" required>
@@ -141,34 +175,42 @@
                                             <input type="number" class="form-control" id="ait" name="ait" min="0"  placeholder="Enter AIT" value="{{@$package->p_ait}}">
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-12" >
                                         <div class="form-group">
-                                            <label>Package Details</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_details" placeholder="Place Write Here...">{{@$package->p_details}}</textarea>
+                                            <label>Package  Highlights</label>
+                                            <textarea class="summernote" name="highlights" placeholder="Place Write Here...">{{json_decode(@$package->highlights)}}</textarea>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="card-body row highlights">
+                                    <?php
+                                        $nights = $package->night;
+                                        $day_titles = json_decode($package->day_title);
+                                        $dat_itinarys = json_decode($package->dat_itinary);
+                                    ?>
+                                    @for($i=0;$i<=$nights; $i++)
+                                        <div class="col-sm-12"> <div class="form-group"> <label>Day Title</label><input type="text" class="form-control" value="{{$day_titles[$i]}}"   name="d_title[]" placeholder="Enter Title" required> </div> </div>
+                                        <div class="col-sm-12"> <div class="form-group"> <label>Day Description</label><textarea type="text" class="form-control"  name="description[]" placeholder="Enter Description" rows="3" required> {{$dat_itinarys[$i]}}</textarea> </div> </div>
+                                    @endfor
+
+                                </div>
+                                <div class="card-body row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Package Inclusions</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_inclusions" placeholder="Place Write Here...">{{@$package->p_inclusions}}</textarea>
+                                            <textarea id="summernote" class="summernote" row="3" name="p_inclusions" placeholder="Place Write Here...">{{json_decode(@$package->p_inclusions)}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Package Exclusions</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_exclusions" placeholder="Place Write Here...">{{@$package->p_exclusions}}</textarea>
+                                            <textarea id="summernote" class="summernote" row="3" name="p_exclusions" placeholder="Place Write Here...">{{json_decode(@$package->p_exclusions)}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Terms and Conditions</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_tnt" placeholder="Place Write Here...">{{@$package->p_tnt}}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label>Cancellation Policies</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_cancel" placeholder="Place Write Here...">{{@$package->p_policy}}</textarea>
+                                            <textarea id="summernote" class="summernote" row="3" name="p_tnt" placeholder="Place Write Here...">{{json_decode(@$package->p_tnt)}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
@@ -198,7 +240,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Payments Details</label>
-                                            <textarea class="form-control" id="pay_details" name="pay_details" rows="5" placeholder="Write Payments Detail..."> {{@$package->pay_details}}</textarea>
+                                            <textarea class="form-control" id="pay_details" name="pay_details" rows="5" placeholder="Write Payments Detail..."> {{json_decode(@$package->pay_details)}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +281,7 @@
             var html= '<div class="row feedback">';
             for(var i=0; i<pax_value; i++){
                 var pax_name = 'pax_name'+i;
-                html += '<div class="col-md-4"> <div class="form-group"> <label>Passenger</label> <select class="form-control select2bs4" name="pax_name[]" id="'+pax_name+'" style="width: 100%;" required> <option value="">Select Passenger Name</option>';
+                html += '<div class="col-md-3"> <div class="form-group"> <label>Passenger</label> <select class="form-control select2bs4" name="pax_name[]" id="'+pax_name+'" style="width: 100%;" required> <option value="">Select Passenger Name</option>';
                 <?php
                 foreach($passengers as $passenger)
                 {
@@ -265,5 +307,16 @@
                 theme: "monokai"
             });
         })
+        $('.night').on('change', function() {
+            var night  = parseInt(this.value);
+            var day = night + 1 ;
+            var html = "";
+            for (var i = 0; i<day; i++ ){
+                html += '<div class="col-sm-12"> <div class="form-group"> <label>Day Title</label><input type="text" class="form-control"   name="d_title[]" placeholder="Enter Title" required> </div> </div>';
+                html += '<div class="col-sm-12"> <div class="form-group"> <label>Day Description</label><textarea type="text" class="form-control"   name="description[]" placeholder="Enter Description" rows="3" required></textarea> </div> </div>';
+            }
+            $(".highlights").show();
+            $(".highlights").empty().append(html);
+        });
     </script>
 @endsection

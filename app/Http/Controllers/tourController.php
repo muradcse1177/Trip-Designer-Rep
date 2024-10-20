@@ -23,7 +23,7 @@ class tourController extends Controller
     }
     public function newTourPackage(Request $request){
         try{
-            $rows1 = DB::table('tour_countries')->get();
+            $rows1 = DB::table('country')->get();
             $rows2 = DB::table('package_details')
                 ->where('deleted',0)
                 ->where('agent_id',Session::get('user_id'))
@@ -36,7 +36,8 @@ class tourController extends Controller
                 ->get();
             $rows3 = DB::table('payment_type')
                 ->get();
-            return view('tourPackage.newTourPackage',['countries' => $rows1,'packages' => $rows2,'payment_types' => $rows3,'passengers' => $rows4]);
+            $rows5 = DB::table('vendors') ->where('agent_id',Session::get('user_id'))->get();
+            return view('tourPackage.newTourPackage',['countries' => $rows1,'packages' => $rows2,'payment_types' => $rows3,'passengers' => $rows4,'vendors' => $rows5]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -50,20 +51,23 @@ class tourController extends Controller
                     'agent_id' => Session::get('user_id'),
                     'p_countries' => $request->country,
                     'title' => $request->title,
-                    'p_cover' => $request->p_cover,
+                    'p_code' => $request->p_code,
+                    'night' => $request->night,
+                    'vendor' => $request->vendor,
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
+                    'highlights' => json_encode($request->highlights),
                     'traveler' => json_encode($request->pax_name),
+                    'day_title' => json_encode($request->d_title),
+                    'dat_itinary' => json_encode($request->description),
                     'g_details' => $request->pax_number,
                     'p_a_price' => $request->a_price,
                     'p_c_details' => $request->c_price,
                     'p_vat' => $request->vat,
                     'p_ait' => $request->ait,
-                    'p_details' => $request->p_details,
-                    'p_inclusions' => $request->p_inclusions,
-                    'p_exclusions' => $request->p_exclusions,
-                    'p_tnt' => $request->p_tnt,
-                    'p_policy' => $request->p_cancel,
+                    'p_inclusions' => json_encode($request->p_inclusions),
+                    'p_exclusions' => json_encode($request->p_exclusions),
+                    'p_tnt' => json_encode($request->p_tnt),
                     'payment_type' => $request->payment_type,
                     'due' => $request->due,
                     'pay_details' => $request->pay_details,
@@ -101,7 +105,8 @@ class tourController extends Controller
     }
     public function editPackagePage(Request $request){
         try{
-            $rows1 = DB::table('tour_countries')->get();
+            $rows1 = DB::table('country')->get();
+            $rows7 = DB::table('vendors') ->where('agent_id',Session::get('user_id'))->get();
             $rows5 = DB::table('package_details')
                 ->where('deleted',0)
                 ->where('agent_id',Session::get('user_id'))
@@ -114,7 +119,7 @@ class tourController extends Controller
                 ->get();
             $rows6 = DB::table('payment_type')
                 ->get();
-            return view('tourPackage.editTourPackage',['countries' => $rows1,'package' => $rows5,'passengers' => $rows4,'payment_types' => $rows6]);
+            return view('tourPackage.editTourPackage',['countries' => $rows1,'package' => $rows5,'passengers' => $rows4,'payment_types' => $rows6,'vendors' => $rows7]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -130,24 +135,28 @@ class tourController extends Controller
                         ->update([
                             'p_countries' => $request->country,
                             'title' => $request->title,
-                            'p_cover' => $request->p_cover,
+                            'p_code' => $request->p_code,
+                            'night' => $request->night,
+                            'vendor' => $request->vendor,
                             'start_date' => $request->start_date,
                             'end_date' => $request->end_date,
+                            'highlights' => json_encode($request->highlights),
                             'traveler' => json_encode($request->pax_name),
+                            'day_title' => json_encode($request->d_title),
+                            'dat_itinary' => json_encode($request->description),
                             'g_details' => $request->pax_number,
                             'p_a_price' => $request->a_price,
                             'p_c_details' => $request->c_price,
                             'p_vat' => $request->vat,
                             'p_ait' => $request->ait,
-                            'p_details' => $request->p_details,
-                            'p_inclusions' => $request->p_inclusions,
-                            'p_exclusions' => $request->p_exclusions,
-                            'p_tnt' => $request->p_tnt,
-                            'p_policy' => $request->p_cancel,
+                            'p_inclusions' => json_encode($request->p_inclusions),
+                            'p_exclusions' => json_encode($request->p_exclusions),
+                            'p_tnt' => json_encode($request->p_tnt),
                             'payment_type' => $request->payment_type,
                             'due' => $request->due,
                             'pay_details' => $request->pay_details,
                             'updated_at' => date('Y-m-d H:i:s')
+
                         ]);
                     if ($result) {
                         $result =DB::table('accounts')
@@ -219,6 +228,49 @@ class tourController extends Controller
                 ->where('id',Session::get('user_id'))
                 ->first();
             return view('tourPackage.viewTourPackage',['package' => $rows1,'company' => $rows2]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function editTourPackagePayment (Request $request){
+        try{
+            $rows1 = DB::table('package_details')
+                ->where('agent_id',Session::get('user_id'))
+                ->where('id',$request->id)
+                ->first();
+            $rows2 = DB::table('payment_type')
+                ->get();
+            return view('tourPackage.editTourPackagePayment',['visa' => $rows1,'payment_types' => $rows2]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function updateTourPackagePaymentStatus (Request $request){
+        try{
+            if($request) {
+                if($request->id) {
+                    $result =DB::table('package_details')
+                        ->where('id', $request->id)
+                        ->update([
+                            'payment_type' => $request->payment_type,
+                            'due' => $request->due,
+                            'pay_details' => $request->p_details,
+                        ]);
+                    if ($result) {
+                        return redirect()->to('newTourPackage')->with('successMessage', 'Payment Updated successfully!!');
+                    } else {
+                        return back()->with('errorMessage', 'Please try again!!');
+                    }
+                }
+                else {
+                    return back()->with('errorMessage', 'Bad Request!!');
+                }
+            }
+            else{
+                return back()->with('errorMessage', 'Please fill up the form!!');
+            }
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());

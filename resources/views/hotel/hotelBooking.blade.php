@@ -276,7 +276,7 @@
                                             </td>
                                             <td>
                                                 A.Price:{{$package->a_price}}
-                                                C.Price:{{$package->c_price}}
+                                                C.Price:{{$package->c_price + $package->vat +$package->ait}}
                                             </td>
                                             <td>
                                                 @if((int)$package->due_amount > 0)

@@ -122,6 +122,23 @@
                                             <input type="number" class="form-control" id="p_p_child" value="{{@$package->p_p_child}}" min="0" name="p_p_child" placeholder="Enter Price Per Child" required>
                                         </div>
                                     </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Vendors</label>
+                                            <select class="form-control select2bs4" name="vendor" id="vendor" style="width: 100%;" required>
+                                                <option value="">Select Vendor</option>
+                                                @foreach($vendors as $vendor)
+                                                    <option value="{{$vendor->name}}" <?php if($package->vendor == $vendor->name) echo 'selected';?>>{{$vendor->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label>Slug</label>
+                                            <input type="text" class="form-control" value="{{@$package->slug}}" id="slug" name="slug" placeholder="Enter Slug" required>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-sm-12">
                                     <div class="form-group">

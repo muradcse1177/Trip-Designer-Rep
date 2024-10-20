@@ -76,7 +76,7 @@
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <table class="table">
+                                            <table class="table table-bordered">
                                                 <tr>
                                                     <td>
                                                        <b>Hotel Name</b>
@@ -125,7 +125,7 @@
                                             $pax = json_decode($package->pax);
                                             ?>
 
-                                            <table class="table">
+                                            <table class="table table-bordered">
                                                 @for($i=0; $i<$package->pax_number; $i++)
                                                         <?php
                                                         $passenger = DB::table('passengers')->where('id',$pax[$i])->first();
@@ -146,7 +146,7 @@
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <table class="table table-borderless">
+                                            <table class="table table-bordered">
                                                 <tr>
                                                     <td rowspan="6">
                                                         <div>
@@ -174,7 +174,7 @@
                                                     <td  align="right">{{$package->due_amount.'/-'}}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td align="right"><b style="color: red;">Amount need to be paid</b></td>
+                                                    <td align="right"><b style="color: red;">Total Paid Amount</b></td>
                                                     <td  align="right"><b style="color: red;">{{$package->c_price + $package->vat + $package->ait - $package->due_amount.'/-'}}</b></td>
                                                 </tr>
                                             </table>

@@ -156,7 +156,10 @@ Route::middleware(['role'])->group(function () {
     Route::post('updateTourPackage', 'App\Http\Controllers\tourController@updateTourPackage');
     Route::post('deleteTourPackage', 'App\Http\Controllers\tourController@deleteTourPackage');
     Route::get('viewTourPackage', 'App\Http\Controllers\tourController@viewTourPackage');
+    Route::get('editTourPackagePayment', 'App\Http\Controllers\tourController@editTourPackagePayment');
+    Route::post('updateTourPackagePaymentStatus', 'App\Http\Controllers\tourController@updateTourPackagePaymentStatus');
 
+    //----------------------------------------------------------
     //B2B Section
     Route::get('search-tour-package-b2b', 'App\Http\Controllers\tourController@searchTourPackageB2b');
     Route::get('search-visa-b2b', 'App\Http\Controllers\visaController@searchVisaB2b');
