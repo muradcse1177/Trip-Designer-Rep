@@ -133,7 +133,7 @@ class usersController extends Controller
             $rows = DB::table('country')->get();
             $rows1 = DB::table('passengers')
                 ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
+                ->where('upload_by',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->paginate(20);
             return view('users.users',['countries' => $rows,'passengers' => $rows1]);
@@ -145,6 +145,7 @@ class usersController extends Controller
     public function agency(Request $request){
         try{
             $rows1 = DB::table('users')
+                ->where('role','!=',5)
                 ->orderBy('id','desc')
                 ->paginate(20);
             return view('agency.agency',['users' => $rows1]);
@@ -156,7 +157,7 @@ class usersController extends Controller
     public function contacts(Request $request){
         try{
             $rows1 = DB::table('contacts')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             return view('contacts.contacts',['passengers' => $rows1]);
@@ -169,7 +170,7 @@ class usersController extends Controller
         try{
             if($request) {
                 $row = DB::table('contacts')
-                    ->where('agent_id',Session::get('user_id'))
+                    ->where('agent_id',Session::get('agent_id'))
                     ->where('phone',$request->phone)
                     ->get();
                 if($row->count()>= 1){
@@ -177,7 +178,7 @@ class usersController extends Controller
                 }
                 else{
                     $result = DB::table('contacts')->insert([
-                        'agent_id' => Session::get('user_id'),
+                        'agent_id' => Session::get('agent_id'),
                         'name' => $request->name,
                         'phone' => $request->phone,
                         'email' => $request->email,
@@ -203,7 +204,7 @@ class usersController extends Controller
             if($request) {
                 $result = DB::table('contacts')
                     ->where('id', $request->id)
-                    ->where('agent_id',Session::get('user_id'))
+                    ->where('agent_id',Session::get('agent_id'))
                     ->update([
                         'name' => $request->name,
                         'phone' => $request->phone,
@@ -243,7 +244,7 @@ class usersController extends Controller
                 ->orWhere('email',$request->s)
                 ->orWhere('p_number',$request->s)
                 ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
+                ->where('upload_by',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->paginate(20);
             return view('users.users',['countries' => $rows,'passengers' => $rows1]);
@@ -298,7 +299,7 @@ class usersController extends Controller
                     'p_number' => $p_number,
                     'p_exp_date' => $p_exp_date,
                     't_type' => $t_type,
-                    'upload_by' => Session::get('user_id'),
+                    'upload_by' => Session::get('agent_id'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
                 if ($result) {
@@ -551,7 +552,7 @@ class usersController extends Controller
     public function editPassengerPage(Request $request){
         try{
             $rows = DB::table('country')->get();
-            $rows1 = DB::table('passengers')->where('upload_by',Session::get('user_id'))->where('id',$request->id)->orderBy('id','desc')->first();
+            $rows1 = DB::table('passengers')->where('upload_by',Session::get('agent_id'))->where('id',$request->id)->orderBy('id','desc')->first();
             //dd($rows1);
             return view('users.editPassengerPage',['countries' => $rows,'passengers' => $rows1]);
         }
@@ -589,7 +590,7 @@ class usersController extends Controller
     public function orderReceiver(Request $request){
         try{
             $rows1 = DB::table('order_request')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             return view('orderReceiver.orderReceiver',['orders' => $rows1]);

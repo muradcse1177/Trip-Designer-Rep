@@ -43,7 +43,7 @@
                                 {{ Form::open(array('url' => 'editEmployee',  'method' => 'post' ,'class' =>'form-horizontal')) }}
                                 {{ csrf_field() }}
                                 <div class="card-body row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Employee Designation</label>
                                             <select class="form-control select2bs4" name="designation" id="designation" style="width: 100%;" required>
@@ -54,10 +54,21 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Employee Name</label>
                                             <input type="text" class="form-control" id="name" name="name" value="{{@$employee->name}}" placeholder="Enter Employee Name" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label class="form-label">Country Code</label>
+                                            <select class="select form-control" name="phoneCode" required>
+                                                @foreach($countries as $country)
+                                                    <option value="{{$country->phonecode}}" <?php if($country->phonecode == '880') echo 'selected'; ?> >{{'+'.$country->phonecode}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">

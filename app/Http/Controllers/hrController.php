@@ -12,7 +12,7 @@ class hrController extends Controller
     public function designation(Request $request){
         try{
             $rows1 = DB::table('designations')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             return view('hr.designation',['designations' => $rows1]);
@@ -23,12 +23,12 @@ class hrController extends Controller
     }
     public function addDesignation(Request $request){
         try{
-            $row = DB::table('designations')->where('agent_id', Session::get('user_id')) ->where('name', $request->name)->get();
+            $row = DB::table('designations')->where('agent_id', Session::get('agent_id')) ->where('name', $request->name)->get();
             if($row->count()>0){
                 return back()->with('errorMessage', 'Designation Already Exits!! Please try again!!');
             }
             $result = DB::table('designations')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'name' => $request->name,
             ]);
             if ($result) {
@@ -57,7 +57,7 @@ class hrController extends Controller
 
             $result = DB::table('designations')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'name' => $request->name,
                 ]);
@@ -77,7 +77,7 @@ class hrController extends Controller
                 if($request->id) {
                     $result =DB::table('designations')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('designation')->with('successMessage', 'Designation deleted successfully!!');
@@ -101,14 +101,15 @@ class hrController extends Controller
         try{
             $rows1 = DB::table('employees')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows2 = DB::table('designations')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
-            return view('hr.employeeSettings',['employees' => $rows1,'designations' => $rows2]);
+            $rows3 = DB::table('countries')->get();
+            return view('hr.employeeSettings',['employees' => $rows1,'designations' => $rows2,'countries' => $rows3]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -146,7 +147,7 @@ class hrController extends Controller
                     ]);
                     if ($result) {
                         $result = DB::table('employees')->insert([
-                            'agent_id' => Session::get('user_id'),
+                            'agent_id' => Session::get('agent_id'),
                             'name' => $name,
                             'phone' => $phone,
                             'email' => $email,
@@ -175,9 +176,10 @@ class hrController extends Controller
     }
     public function editEmployeePage(Request $request){
         try{
-            $rows1 = DB::table('employees')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
-            $rows2 = DB::table('designations')->where('agent_id',Session::get('user_id'))->get();
-            return view('hr.employeeEditPage',['employee' => $rows1,'designations' => $rows2]);
+            $rows1 = DB::table('employees')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
+            $rows2 = DB::table('designations')->where('agent_id',Session::get('agent_id'))->get();
+            $rows3 = DB::table('countries')->get();
+            return view('hr.employeeEditPage',['employee' => $rows1,'designations' => $rows2,'countries' => $rows3]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());

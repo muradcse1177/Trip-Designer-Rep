@@ -1,7 +1,6 @@
 @extends('mainLayout.layout')
 @section('title','Trip Designer || Contacts Management ')
 @section('contacts','active')
-@section('userMenu','menu-open')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

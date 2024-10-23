@@ -26,17 +26,17 @@ class umrahController extends Controller
             $rows1 = DB::table('country')->get();
             $rows2 = DB::table('umrah_invoice')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('updated_at','desc')
                 ->get();
             $rows4 = DB::table('passengers')
                 ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
+                ->where('upload_by',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows3 = DB::table('payment_type')
                 ->get();
-            $rows5 = DB::table('vendors') ->where('agent_id',Session::get('user_id'))->get();
+            $rows5 = DB::table('vendors') ->where('agent_id',Session::get('agent_id'))->get();
             return view('hajj-umrah.newUmrahPackage',['countries' => $rows1,'packages' => $rows2,'payment_types' => $rows3,'passengers' => $rows4,'vendors' => $rows5]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -48,7 +48,7 @@ class umrahController extends Controller
             if($request) {
                 //dd($request);
                 $result = DB::table('umrah_invoice')->insert([
-                    'agent_id' => Session::get('user_id'),
+                    'agent_id' => Session::get('agent_id'),
                     'p_countries' => $request->country,
                     'title' => $request->title,
                     'p_code' => $request->p_code,
@@ -75,7 +75,7 @@ class umrahController extends Controller
                 if ($result) {
                     $id = DB::getPdo()->lastInsertId();
                     $result1 = DB::table('accounts')->insert([
-                        'agent_id' => Session::get('user_id'),
+                        'agent_id' => Session::get('agent_id'),
                         'invoice_id' =>$id,
                         'date' => date('Y-m-d'),
                         'transaction_type' => 'Debit',
@@ -107,15 +107,15 @@ class umrahController extends Controller
     public function editUmrahPackagePage(Request $request){
         try{
             $rows1 = DB::table('country')->get();
-            $rows7 = DB::table('vendors') ->where('agent_id',Session::get('user_id'))->get();
+            $rows7 = DB::table('vendors') ->where('agent_id',Session::get('agent_id'))->get();
             $rows5 = DB::table('umrah_invoice')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('id',$request->id)
                 ->first();
             $rows4 = DB::table('passengers')
                 ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
+                ->where('upload_by',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows6 = DB::table('payment_type')
@@ -132,7 +132,7 @@ class umrahController extends Controller
                 if($request->id) {
                     $result =DB::table('umrah_invoice')
                         ->where('id', $request->id)
-                        ->where('agent_id', Session::get('user_id'))
+                        ->where('agent_id', Session::get('agent_id'))
                         ->update([
                             'p_countries' => $request->country,
                             'title' => $request->title,
@@ -162,7 +162,7 @@ class umrahController extends Controller
                     if ($result) {
                         $result =DB::table('accounts')
                             ->where('invoice_id', $request->id)
-                            ->where('agent_id', Session::get('user_id'))
+                            ->where('agent_id', Session::get('agent_id'))
                             ->update([
                                 'buying_price' =>$request->a_price,
                                 'selling_price' =>$request->c_price + $request->vat + $request->ait,
@@ -221,10 +221,10 @@ class umrahController extends Controller
             $rows1 = DB::table('umrah_invoice')
                 ->where('deleted',0)
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             $rows2 = DB::table('users')
-                ->where('id',Session::get('user_id'))
+                ->where('id',Session::get('agent_id'))
                 ->first();
             return view('hajj-umrah.viewUmrahPackage',['package' => $rows1,'company' => $rows2]);
         }
@@ -236,7 +236,7 @@ class umrahController extends Controller
     public function editUmrahPackagePayment (Request $request){
         try{
             $rows1 = DB::table('umrah_invoice')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('id',$request->id)
                 ->first();
             $rows2 = DB::table('payment_type')

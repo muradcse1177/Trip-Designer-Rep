@@ -263,7 +263,7 @@
                                                         <?php
                                                         $name = DB::table('passengers')
                                                             ->where('id',$pas)
-                                                            ->where('upload_by',Session::get('user_id'))
+                                                            ->where('upload_by',Session::get('agent_id'))
                                                             ->first();
                                                         $phone = @$name->phone;
                                                         ?>

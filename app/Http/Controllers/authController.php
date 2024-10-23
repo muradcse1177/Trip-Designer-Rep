@@ -262,9 +262,9 @@ class authController extends Controller
                         ->first();
                     if (Hash::check($password, $rows->password)) {
                         $role = $rows->role;
-                        if($role == $request->password)
                         Session::put('user_info', $rows);
                         Session::put('user_id', $rows->id);
+                        Session::put('user_role', $role);
                         Cookie::queue('user', $rows->id, time()+31556926 ,'/');
                         if($role == 1){
                             Session::put('superAdmin', $rows->id);
@@ -272,6 +272,7 @@ class authController extends Controller
                         }
                         if($role == 2){
                             Session::put('admin', $rows->id);
+                            Session::put('agent_id', $rows->id);
                             return redirect()->to('main-dashboard');
                         }
                         if($role == 3){
@@ -282,6 +283,8 @@ class authController extends Controller
                             return redirect()->to('/');
                         }
                         if($role == 5){
+                            $emp = DB::table('employees')->where('email', $email)->first();
+                            Session::put('agent_id', $emp->agent_id);
                             Session::put('employee', $rows->id);
                             return redirect()->to('main-dashboard');
                         }

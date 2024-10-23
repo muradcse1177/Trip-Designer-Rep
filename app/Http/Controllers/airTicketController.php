@@ -17,16 +17,16 @@ class airTicketController extends Controller
     public function newAirTicket(Request $request){
         try{
             $rows = DB::table('vendors')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('deleted',0)
                 ->get();
             $rows1 = DB::table('employees')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('deleted',0)
                 ->get();
             $rows2 = DB::table('passengers')
                 ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
+                ->where('upload_by',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows3 = DB::table('airport_details')
@@ -35,7 +35,7 @@ class airTicketController extends Controller
                 ->get();
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->paginate(50);
             $rows6 = DB::table('payment_type')
@@ -74,7 +74,7 @@ class airTicketController extends Controller
                 $p_details = $request->p_details;
                 $due = $request->due;
                 $result = DB::table('air_ticket_invoice')->insert([
-                    'agent_id' => Session::get('user_id'),
+                    'agent_id' => Session::get('agent_id'),
                     'reservation_pnr' => $reservation_pnr,
                     'airline_pnr' => $airline_pnr,
                     'issue_date' => $issue_date,
@@ -103,7 +103,7 @@ class airTicketController extends Controller
                 if ($result) {
                     $id = DB::getPdo()->lastInsertId();
                     $result1 = DB::table('accounts')->insert([
-                        'agent_id' => Session::get('user_id'),
+                        'agent_id' => Session::get('agent_id'),
                         'invoice_id' =>$id,
                         'date' => $issue_date,
                         'transaction_type' => 'Debit',
@@ -129,11 +129,11 @@ class airTicketController extends Controller
     public function editTicketPage(Request $request){
         try{
             $rows = DB::table('vendors')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('deleted',0)
                 ->get();
             $rows1 = DB::table('employees')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('deleted',0)
                 ->get();
             if($request->reissue==1){
@@ -143,7 +143,7 @@ class airTicketController extends Controller
             }else{
                 $rows2 = DB::table('passengers')
                     ->where('deleted',0)
-                    ->where('upload_by',Session::get('user_id'))
+                    ->where('upload_by',Session::get('agent_id'))
                     ->orderBy('id','desc')
                     ->get();
                 $rows3 = DB::table('airport_details')
@@ -153,7 +153,7 @@ class airTicketController extends Controller
             }
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('id',$request->id)
                 ->first();
             $rows6 = DB::table('payment_type')
@@ -170,7 +170,7 @@ class airTicketController extends Controller
                 if($request->id) {
                     if($request->reissue == 1){
                         $rows = DB::table('air_ticket_invoice')
-                            ->where('agent_id',Session::get('user_id'))
+                            ->where('agent_id',Session::get('agent_id'))
                             ->where('id',$request->id)
                             ->where('deleted',0)
                             ->first();
@@ -199,7 +199,7 @@ class airTicketController extends Controller
                         $p_details = $request->p_details;
                         $due = $request->due;
                         $result = DB::table('air_ticket_invoice')->insert([
-                            'agent_id' => Session::get('user_id'),
+                            'agent_id' => Session::get('agent_id'),
                             'reservation_pnr' => $reservation_pnr,
                             'airline_pnr' => $airline_pnr,
                             'issue_date' => date('Y-m-d'),
@@ -229,7 +229,7 @@ class airTicketController extends Controller
                         if ($result) {
                             $result =DB::table('accounts')
                                 ->where('invoice_id', $request->id)
-                                ->where('agent_id', Session::get('user_id'))
+                                ->where('agent_id', Session::get('agent_id'))
                                 ->update([
                                     'date' => date('Y-m-d'),
                                     'transaction_type' => 'Debit',
@@ -246,7 +246,7 @@ class airTicketController extends Controller
                     }
                     if($request->refund == 1){
                         $rows = DB::table('air_ticket_invoice')
-                            ->where('agent_id',Session::get('user_id'))
+                            ->where('agent_id',Session::get('agent_id'))
                             ->where('id',$request->id)
                             ->where('deleted',0)
                             ->first();
@@ -275,7 +275,7 @@ class airTicketController extends Controller
                         $p_details = $request->p_details;
                         $due = $request->due;
                         $result = DB::table('air_ticket_invoice')->insert([
-                            'agent_id' => Session::get('user_id'),
+                            'agent_id' => Session::get('agent_id'),
                             'reservation_pnr' => $reservation_pnr,
                             'airline_pnr' => $airline_pnr,
                             'issue_date' => $issue_date,
@@ -305,7 +305,7 @@ class airTicketController extends Controller
                         if ($result) {
                             $result =DB::table('accounts')
                                 ->where('invoice_id', $request->id)
-                                ->where('agent_id', Session::get('user_id'))
+                                ->where('agent_id', Session::get('agent_id'))
                                 ->update([
                                     'date' => date('Y-m-d'),
                                     'transaction_type' => 'Debit',
@@ -322,7 +322,7 @@ class airTicketController extends Controller
                     }
                     if($request->cancel == 1){
                         $rows = DB::table('air_ticket_invoice')
-                            ->where('agent_id',Session::get('user_id'))
+                            ->where('agent_id',Session::get('agent_id'))
                             ->where('id',$request->id)
                             ->where('deleted',0)
                             ->first();
@@ -351,7 +351,7 @@ class airTicketController extends Controller
                         $p_details = $request->p_details;
                         $due = $request->due;
                         $result = DB::table('air_ticket_invoice')->insert([
-                            'agent_id' => Session::get('user_id'),
+                            'agent_id' => Session::get('agent_id'),
                             'reservation_pnr' => $reservation_pnr,
                             'airline_pnr' => $airline_pnr,
                             'issue_date' => $issue_date,
@@ -381,7 +381,7 @@ class airTicketController extends Controller
                         if ($result) {
                             $result =DB::table('accounts')
                                 ->where('invoice_id', $request->id)
-                                ->where('agent_id', Session::get('user_id'))
+                                ->where('agent_id', Session::get('agent_id'))
                                 ->update([
                                     'date' => date('Y-m-d'),
                                     'transaction_type' => 'Debit',
@@ -445,7 +445,7 @@ class airTicketController extends Controller
                         if ($result) {
                             $result =DB::table('accounts')
                                 ->where('invoice_id', $request->id)
-                                ->where('agent_id', Session::get('user_id'))
+                                ->where('agent_id', Session::get('agent_id'))
                                 ->update([
                                     'buying_price' => $a_price,
                                     'selling_price' =>$c_price + $vat + $ait,
@@ -501,7 +501,7 @@ class airTicketController extends Controller
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('status','Reissued')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('updated_at','desc')
                 ->paginate(30);
             return view('airTicket.reissueAirTicket',['tickets' => $rows5,]);
@@ -513,7 +513,7 @@ class airTicketController extends Controller
     public function searchPNRforReissue(Request $request){
         try{
             $rows = DB::table('air_ticket_invoice')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('reservation_pnr',$request->pnr)
                 ->orWhere('airline_pnr',$request->pnr)
                 ->where('status','Issued')
@@ -535,7 +535,7 @@ class airTicketController extends Controller
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('status','Refunded')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('updated_at','desc')
                 ->paginate(30);
             return view('airTicket.refundAirTicket',['tickets' => $rows5,]);
@@ -547,7 +547,7 @@ class airTicketController extends Controller
     public function searchPNRforRefund(Request $request){
         try{
             $rows = DB::table('air_ticket_invoice')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('reservation_pnr',$request->pnr)
                 ->orWhere('airline_pnr',$request->pnr)
                 ->where('status','Issued')
@@ -569,7 +569,7 @@ class airTicketController extends Controller
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('status','Cancelled')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('updated_at','desc')
                 ->get();
             return view('airTicket.cancelAirTicket',['tickets' => $rows5,]);
@@ -581,7 +581,7 @@ class airTicketController extends Controller
     public function searchPNRforCancel(Request $request){
         try{
             $rows = DB::table('air_ticket_invoice')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('reservation_pnr',$request->pnr)
                 ->orWhere('airline_pnr',$request->pnr)
                 ->where('status','Issued')
@@ -603,10 +603,10 @@ class airTicketController extends Controller
             $rows1 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             $rows2 = DB::table('users')
-                ->where('id',Session::get('user_id'))
+                ->where('id',Session::get('agent_id'))
                 ->first();
             $rows3 = DB::table('air_ticket_tnt')->first();
             return view('airTicket.viewTicket',['ticket' => $rows1,'company' => $rows2,'airTicketTnT' => $rows3,]);
@@ -620,10 +620,10 @@ class airTicketController extends Controller
             $rows1 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             $rows2 = DB::table('users')
-                ->where('id',Session::get('user_id'))
+                ->where('id',Session::get('agent_id'))
                 ->first();
             $rows3 = DB::table('air_ticket_tnt')->first();
             return view('airTicket.printAirTicket',['ticket' => $rows1,'company' => $rows2,'airTicketTnT' => $rows3,]);
@@ -638,10 +638,10 @@ class airTicketController extends Controller
             $rows1 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('id',120)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             $rows2 = DB::table('users')
-                ->where('id',Session::get('user_id'))
+                ->where('id',Session::get('agent_id'))
                 ->first();
             $rows3 = DB::table('air_ticket_tnt')->first();
             $data = [
@@ -668,7 +668,7 @@ class airTicketController extends Controller
             $rows1 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             $rows2 = DB::table('payment_type')
                 ->get();
@@ -710,16 +710,16 @@ class airTicketController extends Controller
     public function filterAirTicket(Request $request){
         try{
             $rows = DB::table('vendors')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('deleted',0)
                 ->get();
             $rows1 = DB::table('employees')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('deleted',0)
                 ->get();
             $rows2 = DB::table('passengers')
                 ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
+                ->where('upload_by',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows3 = DB::table('airport_details')
@@ -728,12 +728,12 @@ class airTicketController extends Controller
                 ->get();
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows5 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where(function ($query) use($request) {
                     if($request->pnr  != '')
                         $query->where('reservation_pnr', $request->pnr) ;
@@ -780,7 +780,7 @@ class airTicketController extends Controller
                     DB::raw('issue_date as date, SUM(c_price) as cost ')
                 )
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('issue_date', '>=', $first_day_this_month)
                 ->where('issue_date', '<=' , $last_day_this_month)
                 ->groupBy('issue_date')

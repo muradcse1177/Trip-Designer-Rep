@@ -10,8 +10,8 @@ class websiteSettingController extends Controller
 {
     public function b2cVisaManagement(Request $request){
         try{
-            $rows1 = DB::table('b2c_visa_country')->where('agent_id',Session::get('user_id'))->get();
-            $rows2 = DB::table('b2c_visa')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            $rows1 = DB::table('b2c_visa_country')->where('agent_id',Session::get('agent_id'))->get();
+            $rows2 = DB::table('b2c_visa')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
             return view('websiteSetting.visaManagement',['countries' => $rows1,'visas' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -20,8 +20,8 @@ class websiteSettingController extends Controller
     }
     public function editB2CVisaPage(Request $request){
         try{
-            $rows1 = DB::table('b2c_visa_country')->where('agent_id',Session::get('user_id'))->get();
-            $rows2 = DB::table('b2c_visa')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            $rows1 = DB::table('b2c_visa_country')->where('agent_id',Session::get('agent_id'))->get();
+            $rows2 = DB::table('b2c_visa')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
             return view('websiteSetting.editB2CVisaPage',['countries' => $rows1,'visas' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -35,7 +35,7 @@ class websiteSettingController extends Controller
             $request->v_c_photo->move(public_path('images/upload/company/'), $fileName);
             $logo = 'public/images/upload/company/'.$fileName;
             $result = DB::table('b2c_visa')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'country' => $request->c_name,
                 'title' => $request->title,
                 'v_c_photo' => $logo,
@@ -59,7 +59,7 @@ class websiteSettingController extends Controller
     public function editNewB2CVisa(Request $request){
         try {
             if ($request) {
-                $rows = DB::table('b2c_visa')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+                $rows = DB::table('b2c_visa')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
                 if($request->v_c_photo){
                     $fileName = time() . '.' . $request->v_c_photo->extension();
                     $request->v_c_photo->move(public_path('images/upload/company/'), $fileName);
@@ -70,7 +70,7 @@ class websiteSettingController extends Controller
                 }
                 $result =DB::table('b2c_visa')
                     ->where('id', $rows->id)
-                    ->where('agent_id',Session::get('user_id'))
+                    ->where('agent_id',Session::get('agent_id'))
                     ->update([
                         'country' => $request->c_name,
                         'title' => $request->title,
@@ -100,7 +100,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_visa')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cVisaManagement')->with('successMessage', 'Visa deleted successfully!!');
@@ -122,7 +122,7 @@ class websiteSettingController extends Controller
     }
     public function b2cCompany(Request $request){
         try{
-            $rows = DB::table('company_info')->where('agent_id',Session::get('user_id'))->first();
+            $rows = DB::table('company_info')->where('agent_id',Session::get('agent_id'))->first();
             return view('websiteSetting.companyInfo',['info' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -132,9 +132,9 @@ class websiteSettingController extends Controller
     public function addCompanyInfo(Request $request){
         try {
             if ($request) {
-                $rows = DB::table('company_info')->where('agent_id',Session::get('user_id'))->get()->count();
+                $rows = DB::table('company_info')->where('agent_id',Session::get('agent_id'))->get()->count();
                 if($rows>0){
-                    $rows = DB::table('company_info')->where('agent_id',Session::get('user_id'))->first();
+                    $rows = DB::table('company_info')->where('agent_id',Session::get('agent_id'))->first();
                     if($request->logo){
                         $request->validate([
                             'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
@@ -149,7 +149,7 @@ class websiteSettingController extends Controller
                     }
                     $result =DB::table('company_info')
                         ->where('id', $rows->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->update([
                             'name' => $request->name,
                             'email' => $request->email,
@@ -186,7 +186,7 @@ class websiteSettingController extends Controller
                     $logo = 'public/images/upload/company/'.$fileName;
 
                     $result = DB::table('company_info')->insert([
-                        'agent_id' => Session::get('user_id'),
+                        'agent_id' => Session::get('agent_id'),
                         'name' => $request->name,
                         'email' => $request->email,
                         'phone1' => $request->phone1,
@@ -220,7 +220,7 @@ class websiteSettingController extends Controller
     }
     public function tourPackCountry(Request $request){
         try{
-            $rows = DB::table('b2c_tour_package_country')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            $rows = DB::table('b2c_tour_package_country')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
             return view('websiteSetting.tourPackCountry',['countries' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -229,7 +229,7 @@ class websiteSettingController extends Controller
     }
     public function b2cManpowerCountry(Request $request){
         try{
-            $rows = DB::table('b2c_manpower_country')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            $rows = DB::table('b2c_manpower_country')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
             return view('websiteSetting.b2cManpowerCountry',['countries' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -239,7 +239,7 @@ class websiteSettingController extends Controller
 
     public function b2cVisaCountry(Request $request){
         try{
-            $rows = DB::table('b2c_visa_country')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            $rows = DB::table('b2c_visa_country')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
             return view('websiteSetting.b2cVisaCountry',['countries' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -250,7 +250,7 @@ class websiteSettingController extends Controller
         try{
             //dd($request);
             $result = DB::table('b2c_tour_package_country')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'name' => $request->name,
             ]);
             if ($result) {
@@ -267,7 +267,7 @@ class websiteSettingController extends Controller
         try{
             //dd($request);
             $result = DB::table('b2c_manpower_country')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'name' => $request->name,
             ]);
             if ($result) {
@@ -283,7 +283,7 @@ class websiteSettingController extends Controller
     public function addVisaCountry(Request $request){
         try{
             $result = DB::table('b2c_visa_country')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'name' => $request->name,
             ]);
             if ($result) {
@@ -300,7 +300,7 @@ class websiteSettingController extends Controller
         try{
             $rows1 = DB::table('b2c_tour_package_country')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             return view('websiteSetting.editTourCountryName',['tours' => $rows1]);
         }
@@ -312,7 +312,7 @@ class websiteSettingController extends Controller
         try{
             $rows1 = DB::table('b2c_visa_country')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             return view('websiteSetting.editVisaCountryName',['visa' => $rows1]);
         }
@@ -324,7 +324,7 @@ class websiteSettingController extends Controller
         try{
             $result = DB::table('b2c_tour_package_country')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'name' => $request->name,
                 ]);
@@ -342,7 +342,7 @@ class websiteSettingController extends Controller
         try{
             $rows1 = DB::table('b2c_manpower_country')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             return view('websiteSetting.editManpowerCountryName',['visa' => $rows1]);
         }
@@ -354,7 +354,7 @@ class websiteSettingController extends Controller
         try{
             $result = DB::table('b2c_manpower_country')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'name' => $request->name,
                 ]);
@@ -372,7 +372,7 @@ class websiteSettingController extends Controller
         try{
             $result = DB::table('b2c_visa_country')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'name' => $request->name,
                 ]);
@@ -392,7 +392,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_tour_package_country')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('tourPackCountry')->with('successMessage', 'Country deleted successfully!!');
@@ -418,7 +418,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_visa_country')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cVisaCountry')->with('successMessage', 'Country deleted successfully!!');
@@ -444,7 +444,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_manpower_country')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cManpowerCountry')->with('successMessage', 'Country deleted successfully!!');
@@ -467,9 +467,9 @@ class websiteSettingController extends Controller
 
     public function b2cTourPackage(Request $request){
         try{
-            $rows2 = DB::table('vendors')->where('agent_id',Session::get('user_id'))->get();
-            $rows = DB::table('b2c_tour_package')->where('agent_id',Session::get('user_id'))->get();
-            $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',Session::get('user_id'))->get();
+            $rows2 = DB::table('vendors')->where('agent_id',Session::get('agent_id'))->get();
+            $rows = DB::table('b2c_tour_package')->where('agent_id',Session::get('agent_id'))->get();
+            $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',Session::get('agent_id'))->get();
             return view('websiteSetting.b2cTourPackage',['packages' => $rows,'countries' => $rows1,'vendors' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -491,7 +491,7 @@ class websiteSettingController extends Controller
             }
             $p_m_photos = json_encode($p_m_photo);
             $result = DB::table('b2c_tour_package')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'c_name' => $request->c_name,
                 'p_name' => $request->p_name,
                 'p_code' => $request->p_code,
@@ -526,7 +526,7 @@ class websiteSettingController extends Controller
         try{
             $rows = DB::table('b2c_tour_package')->where('id',$request->id)->first();
             $rows1 = DB::table('b2c_tour_package_country')->get();
-            $rows2 = DB::table('vendors')->where('agent_id',Session::get('user_id'))->get();
+            $rows2 = DB::table('vendors')->where('agent_id',Session::get('agent_id'))->get();
             return view('websiteSetting.editB2CTourPackagePage',['package' => $rows,'countries' => $rows1,'vendors' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -535,7 +535,7 @@ class websiteSettingController extends Controller
     }
     public function editB2CTourPackage (Request $request){
         try{
-            $rows = DB::table('b2c_tour_package')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            $rows = DB::table('b2c_tour_package')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
             if($request->p_c_photo){
                 $fileName = time() . '.' . $request->p_c_photo->extension();
                 $request->p_c_photo->move(public_path('images/upload/tour/'), $fileName);
@@ -560,7 +560,7 @@ class websiteSettingController extends Controller
             }
             $result = DB::table('b2c_tour_package')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'c_name' => $request->c_name,
                     'p_name' => $request->p_name,
@@ -596,7 +596,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_tour_package')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cTourPackage')->with('successMessage', 'Tour Package deleted successfully!!');
@@ -618,8 +618,8 @@ class websiteSettingController extends Controller
     }
     public function b2cManpowerManagement(Request $request){
         try{
-            $rows = DB::table('b2c_manpower')->where('agent_id',Session::get('user_id'))->get();
-            $rows1 = DB::table('b2c_manpower_country')->where('agent_id',Session::get('user_id'))->get();
+            $rows = DB::table('b2c_manpower')->where('agent_id',Session::get('agent_id'))->get();
+            $rows1 = DB::table('b2c_manpower_country')->where('agent_id',Session::get('agent_id'))->get();
             return view('websiteSetting.b2cManpowerManagement',['packages' => $rows,'countries' => $rows1]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -633,7 +633,7 @@ class websiteSettingController extends Controller
             $c_photos = 'public/images/upload/manpower/'.$fileName;
 
             $result = DB::table('b2c_manpower')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'country' => $request->c_name,
                 'c_photo' => $c_photos,
                 'salary' => $request->salary,
@@ -671,7 +671,7 @@ class websiteSettingController extends Controller
     }
     public function editB2CManpowerPackage (Request $request){
         try{
-            $rows = DB::table('b2c_manpower')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            $rows = DB::table('b2c_manpower')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
             if($request->c_photo){
                 $fileName = time() . '.' . $request->c_photo->extension();
                 $request->c_photo->move(public_path('images/upload/manpower/'), $fileName);
@@ -682,7 +682,7 @@ class websiteSettingController extends Controller
             }
             $result = DB::table('b2c_manpower')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'country' => $request->c_name,
                     'c_photo' => $c_photo,
@@ -714,7 +714,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_manpower')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cManpowerManagement')->with('successMessage', 'Manpower Package deleted successfully!!');
@@ -736,7 +736,7 @@ class websiteSettingController extends Controller
     }
     public function b2cServiceManagement(Request $request){
         try{
-            $rows = DB::table('b2c_service')->where('agent_id',Session::get('user_id'))->get();
+            $rows = DB::table('b2c_service')->where('agent_id',Session::get('agent_id'))->get();
             return view('websiteSetting.b2cServiceManagement',['services' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -752,7 +752,7 @@ class websiteSettingController extends Controller
             $c_photo = 'public/images/upload/services/'.$fileName;
             //dd($request);
             $result = DB::table('b2c_service')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'name' => $request->name,
                 'title' => $request->title,
                 'slug' => $request->slug,
@@ -785,7 +785,7 @@ class websiteSettingController extends Controller
     }
     public function editB2CService  (Request $request){
         try{
-            $rows = DB::table('b2c_service')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            $rows = DB::table('b2c_service')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
             if($request->c_photo){
                 $fileName = time() . '.' . $request->c_photo->extension();
                 $request->c_photo->move(public_path('images/upload/services/'), $fileName);
@@ -796,7 +796,7 @@ class websiteSettingController extends Controller
             }
             $result = DB::table('b2c_service')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'name' => $request->name,
                     'title' => $request->title,
@@ -823,7 +823,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_service')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cServiceManagement')->with('successMessage', 'Service  deleted successfully!!');
@@ -845,7 +845,7 @@ class websiteSettingController extends Controller
     }
     public function b2cHajjUmrahManagememt(Request $request){
         try{
-            $rows = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('user_id'))->get();
+            $rows = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('agent_id'))->get();
             return view('websiteSetting.b2cHajjUmrahManagememt',['packages' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -867,7 +867,7 @@ class websiteSettingController extends Controller
             }
             $p_m_photos = json_encode($p_m_photo);
             $result = DB::table('b2c_hajj_umrah')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'type' => $request->type,
                 'p_name' => $request->p_name,
                 'p_code' => $request->p_code,
@@ -909,7 +909,7 @@ class websiteSettingController extends Controller
     }
     public function editB2CHajjUmrahPackage (Request $request){
         try{
-            $rows = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            $rows = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
             if($request->p_c_photo){
                 $fileName = time() . '.' . $request->p_c_photo->extension();
                 $request->p_c_photo->move(public_path('images/upload/hajj/'), $fileName);
@@ -935,7 +935,7 @@ class websiteSettingController extends Controller
             //dd($request);
             $result = DB::table('b2c_hajj_umrah')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'type' => $request->type,
                     'p_name' => $request->p_name,
@@ -971,7 +971,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_hajj_umrah')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('b2cHajjUmrahManagememt')->with('successMessage', 'ajj & Umrah Package deleted successfully!!');
@@ -993,7 +993,7 @@ class websiteSettingController extends Controller
     }
     public function blogManagement(Request $request){
         try{
-            $rows = DB::table('b2c_blog')->where('agent_id',Session::get('user_id'))->get();
+            $rows = DB::table('b2c_blog')->where('agent_id',Session::get('agent_id'))->get();
             return view('websiteSetting.blogManagement',['blogs' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -1007,7 +1007,7 @@ class websiteSettingController extends Controller
             $b_c_photo = 'public/images/upload/blog/'.$fileName;
             //dd($request);
             $result = DB::table('b2c_blog')->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'b_title' => $request->b_title,
                 'b_category' => $request->b_category,
                 'slug' => $request->slug,
@@ -1043,7 +1043,7 @@ class websiteSettingController extends Controller
 
     public function editB2CBlog (Request $request){
         try{
-            $rows = DB::table('b2c_blog')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            $rows = DB::table('b2c_blog')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
             if($request->b_c_photo){
                 $fileName = time() . '.' . $request->b_c_photo->extension();
                 $request->b_c_photo->move(public_path('images/upload/blog/'), $fileName);
@@ -1054,7 +1054,7 @@ class websiteSettingController extends Controller
             }
             $result = DB::table('b2c_blog')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'b_title' => $request->b_title,
                     'b_category' => $request->b_category,
@@ -1083,7 +1083,7 @@ class websiteSettingController extends Controller
                 if($request->id) {
                     $result =DB::table('b2c_blog')
                         ->where('id', $request->id)
-                        ->where('agent_id',Session::get('user_id'))
+                        ->where('agent_id',Session::get('agent_id'))
                         ->delete();
                     if ($result) {
                         return redirect()->to('blogManagement')->with('successMessage', 'Blog  deleted successfully!!');
@@ -1105,7 +1105,7 @@ class websiteSettingController extends Controller
     }
     public function domainManage(Request $request){
         try{
-            $rows = DB::table('domain')->where('agent_id',Session::get('user_id'))->first();
+            $rows = DB::table('domain')->where('agent_id',Session::get('agent_id'))->first();
             return view('websiteSetting.domainManage',['domainy' => $rows,]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -1120,7 +1120,7 @@ class websiteSettingController extends Controller
             }
             else{
                 $result = DB::table('domain')->insert([
-                    'agent_id' => Session::get('user_id'),
+                    'agent_id' => Session::get('agent_id'),
                     'name' => $request->name,
                 ]);
                 if($result){

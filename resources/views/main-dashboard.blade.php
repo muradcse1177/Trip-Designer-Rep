@@ -136,30 +136,40 @@
                                                             <ul class="nav flex-column">
                                                                 <li class="nav-item" >
                                                                     <a href="#" class="nav-link" >
-                                                                        @if(@$include[0] = 'Hotel')
-                                                                            <span class="float-left badge" style="margin-right: 20px; background-color: #04107C; color:white;">
-                                                                                <div class="actv-wrap-ico"><i class="fa fa-hotel"></i></div>
-                                                                                <div class="actv-wrap-caps">Hotel</div>
-                                                                            </span>
-                                                                        @endif
-                                                                        @if(@$include[1] = 'SightSeeing')
-                                                                            <span class="float-left badge" style="margin-right: 20px;background-color: #04107C; color:white;">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-3">
+                                                                                @if(@$include[0] = 'Hotel')
+                                                                                    <span class="float-left badge" style="background-color: #04107C; color:white;">
+                                                                                        <div class="actv-wrap-ico"><i class="fa fa-hotel"></i></div>
+                                                                                        <div class="actv-wrap-caps">Hotel</div>
+                                                                                    </span>
+                                                                                @endif
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                @if(@$include[1] = 'SightSeeing')
+                                                                                    <span class="float-left badge" style="background-color: #04107C; color:white;">
                                                                                 <div class="actv-wrap-ico"><i class="fa fa-umbrella-beach"></i></div>
                                                                                 <div class="actv-wrap-caps">SightSeeing</div>
                                                                             </span>
-                                                                        @endif
-                                                                        @if(@$include[2] = 'Transfer')
-                                                                            <span class="float-left badge" style="background-color: #04107C; color:white;">
+                                                                                @endif
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                @if(@$include[2] = 'Transfer')
+                                                                                    <span class="float-right badge" style="background-color: #04107C; color:white;">
                                                                                 <div class="actv-wrap-ico"><i class="fa fa-train"></i></div>
                                                                                 <div class="actv-wrap-caps">Transfer</div>
                                                                             </span>
-                                                                        @endif
-                                                                        @if(@$include[3] = 'Meal')
-                                                                            <span class="float-right badge" style="background-color: #04107C; color:white;">
+                                                                                @endif
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                @if(@$include[3] = 'Meal')
+                                                                                    <span class="float-right badge" style="background-color: #04107C; color:white;">
                                                                                 <div class="actv-wrap-ico"><i class="fa fa-hamburger"></i></div>
                                                                                 <div class="actv-wrap-caps">Meal</div>
                                                                             </span>
-                                                                        @endif
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
                                                                     </a><br><br>
                                                                 </li>
                                                                 <li class="nav-item">
@@ -334,42 +344,56 @@
                                                                 <ul class="nav flex-column">
                                                                     <li class="nav-item" >
                                                                         <a href="#" class="nav-link" >
-                                                                            @if(@$include[0] = 'Hotel')
-                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                                <div class="actv-wrap-ico"><i class="fa fa-hotel"></i></div>
-                                                                                <div class="actv-wrap-caps">Hotel</div>
-                                                                            </span>
-                                                                            @endif
-                                                                            @if(@$include[1] = 'SightSeeing')
-                                                                                <span class="float-left badge" style="margin-right: 6px;background-color: #04107C; color:white;">
-                                                                                <div class="actv-wrap-ico"><i class="fa fa-umbrella-beach"></i></div>
-                                                                                <div class="actv-wrap-caps">Sight</div>
-                                                                            </span>
-                                                                            @endif
-                                                                            @if(@$include[2] = 'Transfer')
-                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                                <div class="actv-wrap-ico"><i class="fa fa-train"></i></div>
-                                                                                <div class="actv-wrap-caps">Transfer</div>
-                                                                            </span>
-                                                                            @endif
-                                                                            @if(@$include[3] = 'Meal')
-                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                                <div class="actv-wrap-ico"><i class="fa fa-hamburger"></i></div>
-                                                                                <div class="actv-wrap-caps">Meal</div>
-                                                                            </span>
-                                                                            @endif
-                                                                            @if(@$include[4] = 'Visa')
-                                                                                <span class="float-left badge" style="margin-right: 6px; background-color: #04107C; color:white;">
-                                                                                <div class="actv-wrap-ico"><i class="fa fa-passport"></i></div>
-                                                                                <div class="actv-wrap-caps">Visa</div>
-                                                                            </span>
-                                                                            @endif
-                                                                            @if(@$include[5] = 'Flight')
-                                                                                <span class="float-right badge" style="background-color: #04107C; color:white;">
-                                                                                <div class="actv-wrap-ico"><i class="fa fa-plane"></i></div>
-                                                                                <div class="actv-wrap-caps">Flight</div>
-                                                                            </span>
-                                                                            @endif
+                                                                            <div class="row">
+                                                                                <div class="col-sm-2">
+                                                                                    @if(@$include[0] = 'Hotel')
+                                                                                        <span class="float-left badge" style="background-color: #04107C; color:white;">
+                                                                                        <div class="actv-wrap-ico"><i class="fa fa-hotel"></i></div>
+                                                                                        <div class="actv-wrap-caps">Hotel</div>
+                                                                                    </span>
+                                                                                    @endif
+                                                                                </div>
+                                                                                <div class="col-sm-2">
+                                                                                    @if(@$include[1] = 'SightSeeing')
+                                                                                        <span class="float-left badge" style="background-color: #04107C; color:white;">
+                                                                                        <div class="actv-wrap-ico"><i class="fa fa-umbrella-beach"></i></div>
+                                                                                        <div class="actv-wrap-caps">Sight</div>
+                                                                                    </span>
+                                                                                    @endif
+                                                                                </div>
+                                                                                <div class="col-sm-2">
+                                                                                    @if(@$include[2] = 'Transfer')
+                                                                                        <span class="float-left badge" style="background-color: #04107C; color:white;">
+                                                                                        <div class="actv-wrap-ico"><i class="fa fa-train"></i></div>
+                                                                                        <div class="actv-wrap-caps">Trans.</div>
+                                                                                    </span>
+                                                                                   @endif
+                                                                                </div>
+                                                                                <div class="col-sm-2">
+                                                                                    @if(@$include[3] = 'Meal')
+                                                                                        <span class="float-left badge" style="background-color: #04107C; color:white;">
+                                                                                        <div class="actv-wrap-ico"><i class="fa fa-hamburger"></i></div>
+                                                                                        <div class="actv-wrap-caps">Meal</div>
+                                                                                    </span>
+                                                                                    @endif
+                                                                                </div>
+                                                                                <div class="col-sm-2">
+                                                                                    @if(@$include[4] = 'Visa')
+                                                                                        <span class="float-left badge" style="margin-right: 10%; background-color: #04107C; color:white;">
+                                                                                        <div class="actv-wrap-ico"><i class="fa fa-passport"></i></div>
+                                                                                        <div class="actv-wrap-caps">Visa</div>
+                                                                                    </span>
+                                                                                    @endif
+                                                                                </div>
+                                                                                <div class="col-sm-2">
+                                                                                    @if(@$include[5] = 'Flight')
+                                                                                        <span class="float-right badge" style="background-color: #04107C; color:white;">
+                                                                                        <div class="actv-wrap-ico"><i class="fa fa-plane"></i></div>
+                                                                                        <div class="actv-wrap-caps">Flight</div>
+                                                                                    </span>
+                                                                                   @endif
+                                                                                </div>
+                                                                            </div>
                                                                         </a><br><br>
                                                                     </li>
                                                                     <li class="nav-item">

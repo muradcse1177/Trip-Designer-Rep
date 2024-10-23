@@ -311,7 +311,7 @@ class accountsController extends Controller
     }
     public function generalInvoice (Request $request){
         try{
-            $rows1 = DB::table('g_invoice')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            $rows1 = DB::table('g_invoice')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
             return view('invoice.gInvoice',['invoices' => $rows1]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -320,7 +320,7 @@ class accountsController extends Controller
     }
     public function printGInvoice (Request $request){
         try{
-            $rows1 = DB::table('g_invoice')->where('agent_id',Session::get('user_id'))->where('id', $request->id)->first();
+            $rows1 = DB::table('g_invoice')->where('agent_id',Session::get('agent_id'))->where('id', $request->id)->first();
             return view('invoice.printGInvoice',['invoice' => $rows1]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -332,7 +332,7 @@ class accountsController extends Controller
             $invoice = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,5);
             $result = DB::table('g_invoice')->insert([
                 'invoice_id' => $invoice,
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'email' => $request->email,
@@ -360,7 +360,7 @@ class accountsController extends Controller
         try{
             $result =DB::table('g_invoice')
                 ->where('id', $request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->delete();
             if ($result) {
                 return redirect()->to('g_invoice')->with('successMessage', 'Data Delete successfully!!');

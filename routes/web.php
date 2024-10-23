@@ -199,6 +199,7 @@ Route::middleware(['role'])->group(function () {
     Route::get('users', 'App\Http\Controllers\usersController@users');
     Route::get('usersInfo', 'App\Http\Controllers\usersController@usersInfo');
     Route::get('isPassengerActive', 'App\Http\Controllers\usersController@isPassengerActive');
+    Route::get('isPassengerActive', 'App\Http\Controllers\usersController@isPassengerActive');
     Route::get('isPassengerInActive', 'App\Http\Controllers\usersController@isPassengerInActive');
     Route::post('createNewPassenger', 'App\Http\Controllers\usersController@createNewPassenger');
     Route::get('editPassengerPage', 'App\Http\Controllers\usersController@editPassengerPage');

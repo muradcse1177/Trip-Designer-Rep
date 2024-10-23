@@ -11,7 +11,7 @@ class hotelController extends Controller
     public function hotelBooking(Request $request){
         try{
             $rows1 = DB::table('hotel_invoice')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows2 = DB::table('payment_type')->get();
@@ -28,7 +28,7 @@ class hotelController extends Controller
             if($request) {
                 //dd($request);
                 $result = DB::table('hotel_invoice')->insert([
-                    'agent_id' => Session::get('user_id'),
+                    'agent_id' => Session::get('agent_id'),
                     'h_name' => $request->h_name,
                     'h_address' => $request->h_address,
                     'h_phone' => $request->h_phone,
@@ -51,7 +51,7 @@ class hotelController extends Controller
                 if ($result) {
                     $id = DB::getPdo()->lastInsertId();
                     $result1 = DB::table('accounts')->insert([
-                        'agent_id' => Session::get('user_id'),
+                        'agent_id' => Session::get('agent_id'),
                         'invoice_id' =>$id,
                         'date' => date('Y-m-d'),
                         'transaction_type' => 'Debit',
@@ -83,10 +83,10 @@ class hotelController extends Controller
         try{
             $rows1 = DB::table('hotel_invoice')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             $rows2 = DB::table('users')
-                ->where('id',Session::get('user_id'))
+                ->where('id',Session::get('agent_id'))
                 ->first();
             return view('hotel.viewHotelBooking',['package' => $rows1,'company' => $rows2]);
         }
@@ -98,12 +98,12 @@ class hotelController extends Controller
     public function editHotelBookingPage(Request $request){
         try{
             $rows5 = DB::table('hotel_invoice')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('id',$request->id)
                 ->first();
             $rows4 = DB::table('passengers')
                 ->where('deleted',0)
-                ->where('upload_by',Session::get('user_id'))
+                ->where('upload_by',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows6 = DB::table('payment_type')
@@ -121,7 +121,7 @@ class hotelController extends Controller
                 if($request->id) {
                     $result =DB::table('hotel_invoice')
                         ->where('id', $request->id)
-                        ->where('agent_id', Session::get('user_id'))
+                        ->where('agent_id', Session::get('agent_id'))
                         ->update([
                             'h_name' => $request->h_name,
                             'h_address' => $request->h_address,
@@ -145,7 +145,7 @@ class hotelController extends Controller
                     if ($result) {
                         $result =DB::table('accounts')
                             ->where('invoice_id', $request->id)
-                            ->where('agent_id', Session::get('user_id'))
+                            ->where('agent_id', Session::get('agent_id'))
                             ->update([
                                 'buying_price' =>$request->a_price,
                                 'selling_price' =>$request->c_price + $request->vat + $request->ait,
@@ -204,7 +204,7 @@ class hotelController extends Controller
         try{
             $rows1 = DB::table('hotel_invoice')
                 ->where('id',$request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->first();
             $rows2 = DB::table('payment_type')
                 ->get();

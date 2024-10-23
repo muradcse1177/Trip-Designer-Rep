@@ -13,7 +13,7 @@ class settingController extends Controller
         try{
             $rows1 = DB::table('vendors')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             return view('settings.vendorSettings',['vendors' => $rows1]);
@@ -30,7 +30,7 @@ class settingController extends Controller
                 $email = $request->email;
                 $address = $request->address;
                 $result = DB::table('vendors')->insert([
-                    'agent_id' => Session::get('user_id'),
+                    'agent_id' => Session::get('agent_id'),
                     'name' => $name,
                     'phone' => $phone,
                     'email' => $email,
@@ -53,7 +53,7 @@ class settingController extends Controller
     }
     public function editVendorPage(Request $request){
         try{
-            $rows1 = DB::table('vendors')->where('agent_id',Session::get('user_id'))->where('id',$request->id)->first();
+            $rows1 = DB::table('vendors')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
             return view('settings.vendorEditPage',['vendor' => $rows1]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -126,7 +126,7 @@ class settingController extends Controller
         try{
             $rows2 = DB::table('countries')->get();
             $rows1 = DB::table('users')
-                ->where('id',Session::get('user_id'))
+                ->where('id',Session::get('agent_id'))
                 ->first();
             return view('settings.companyInfo',['company' => $rows1,'countries' => $rows2]);
         }
@@ -164,7 +164,7 @@ class settingController extends Controller
                         $c_logo = $rows->logo;
                     }
                     $result =DB::table('users')
-                        ->where('id', Session::get('user_id'))
+                        ->where('id', Session::get('agent_id'))
                         ->update([
                             'company_email' => $request->email,
                             'company_pnone' => $request->phone,

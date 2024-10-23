@@ -262,17 +262,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5><b>Exclusion</b></h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="row">
-                                                            {!! nl2br(json_decode($permit->exclusion)) !!}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
                                                 @if(json_decode($permit->tnt) !=null)
                                                     <div class="card">
                                                         <div class="card-header">

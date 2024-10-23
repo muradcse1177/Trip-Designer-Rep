@@ -86,7 +86,9 @@
                                             <th>Status</th>
                                             <th>Price Details</th>
                                             <th>Due</th>
+                                            @if(Session::get('user_role')==2 || Session::get('user_role')==1)
                                             <th>Profit</th>
+                                            @endif
                                             <th>Action</th>
                                         </tr>
                                         </thead>
@@ -115,7 +117,7 @@
                                                             <?php
                                                             $name = DB::table('passengers')
                                                                 ->where('id',$pas)
-                                                                ->where('upload_by',Session::get('user_id'))
+                                                                ->where('upload_by',Session::get('agent_id'))
                                                                 ->first();
                                                             $phone = @$name->phone;
                                                             ?>
@@ -151,9 +153,11 @@
                                                         {{$ticket->	due_amount.'/-'}}
                                                     @endif
                                                 </td>
+                                                @if(Session::get('user_role')==2 || Session::get('user_role')==1)
                                                 <td>
                                                     {{$ticket->	c_price + $ticket->	vat + $ticket->	ait - $ticket->	a_price}}/-
                                                 </td>
+                                                @endif
                                                 <td>
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-info">Action</button>
@@ -178,22 +182,24 @@
                                             @endphp
                                         @endforeach
                                         </tbody>
-                                        <tfoot>
-                                        <tr>
-                                            <td align="right" colspan="5"><b>Total</b></td>
-                                            <td align="left">
-                                                <p>A.Price:{{$sum_a_price}}/-</p>
-                                                <p>C.Price:{{$sum_c_price}}/-</p>
-                                            </td>
-                                            <th align="left">
-                                                <div style="color: red;"><b>{{$sum_due}}/-</b></div>
-                                            </th>
-                                            <th align="left">
-                                                <div style="color: green;"><b>{{$sum_c_price - $sum_a_price}}/-</b></div>
-                                            </th>
-                                            <th align="left"></th>
-                                        </tr>
-                                        </tfoot>
+                                        @if(Session::get('user_role')==2 || Session::get('user_role')==1)
+                                            <tfoot>
+                                            <tr>
+                                                <td align="right" colspan="5"><b>Total</b></td>
+                                                <td align="left">
+                                                    <p>A.Price:{{$sum_a_price}}/-</p>
+                                                    <p>C.Price:{{$sum_c_price}}/-</p>
+                                                </td>
+                                                <th align="left">
+                                                    <div style="color: red;"><b>{{$sum_due}}/-</b></div>
+                                                </th>
+                                                <th align="left">
+                                                    <div style="color: green;"><b>{{$sum_c_price - $sum_a_price}}/-</b></div>
+                                                </th>
+                                                <th align="left"></th>
+                                            </tr>
+                                            </tfoot>
+                                        @endif
                                     </table>
                                 </div><br>
                                 <div class="table-responsive">

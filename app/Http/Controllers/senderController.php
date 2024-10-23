@@ -45,7 +45,7 @@ class senderController extends Controller
             $msg = $request->sms;
             $numbers = $request->number;
             $result = DB::table('sms_log')->insert([
-                'agent_id' =>Session::get('user_id'),
+                'agent_id' =>Session::get('agent_id'),
                 'number' => $numbers,
                 'sms' => $msg,
                 'status' => 'Sent',
@@ -63,7 +63,7 @@ class senderController extends Controller
     }
     public function smsLog(Request $request){
         try{
-            $rows = DB::table('sms_log')->where('agent_id',Session::get('user_id'))->get();
+            $rows = DB::table('sms_log')->where('agent_id',Session::get('agent_id'))->get();
             return view('sender.smsLog', ['sms' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){
