@@ -3,7 +3,7 @@
 @section('css')
 @endsection
 @section('content')
-    <div class="image-cover hero-header bg-white" style="background:url({{url('/public/b2c/assets/images/a.jpg')}})no-repeat; height: 60%;">
+    <div class="image-cover hero-header bg-white" style="background:url({{url('/public/b2c/assets/images/a.jpg')}})no-repeat; height: 50%;">
         <div class="container">
 
             <!-- Search Form -->
@@ -21,22 +21,22 @@
 {{--                                <a class="nav-link active" data-bs-toggle="tab" href="#flights"><i class="fa-solid fa-jet-fighter me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Flights';?></a>--}}
 {{--                            </li>--}}
                             <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#tours"><i class="fa-solid fa-umbrella-beach me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Tour Package';?></a>
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tours"><i class="fa-solid fa-umbrella-beach me-2"></i> <?php if(@$a != 'a')   echo 'Tour Package';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " data-bs-toggle="tab" href="#visa"><i class="fa-solid fa-passport me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Visa';?></a>
+                                <a class="nav-link " data-bs-toggle="tab" href="#visa"><i class="fa-solid fa-passport me-2"></i> <?php if(@$a != 'a')   echo 'Visa';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " data-bs-toggle="tab" href="#work-permit"><i class="fa-solid fa-solid fa-user-secret me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Work Permit';?></a>
+                                <a class="nav-link " data-bs-toggle="tab" href="#work-permit"><i class="fa-solid fa-solid fa-user-secret me-2"></i> <?php if(@$a != 'a')   echo 'Work Permit';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#hajj-umrah"><i class="fa-solid fa-kaaba me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Hajj Umrah';?></a>
+                                <a class="nav-link" data-bs-toggle="tab" href="#hajj-umrah"><i class="fa-solid fa-kaaba me-2"></i> <?php if(@$a != 'a')  echo 'Hajj Umrah';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#education"><i class="fa-solid fa-graduation-cap me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'Education';?></a>
+                                <a class="nav-link" data-bs-toggle="tab" href="#education"><i class="fa-solid fa-graduation-cap me-2"></i> <?php if(@$a != 'a') echo 'Education';?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#services"><i class="fa-solid fa-list-check me-2"></i> <?php if(@$a == 'a') echo ''; else  echo 'services';?></a>
+                                <a class="nav-link" data-bs-toggle="tab" href="#services"><i class="fa-solid fa-list-check me-2"></i> <?php if(@$a != 'a') echo 'services';?></a>
                             </li>
                         </ul>
                         <div class="tab-content">

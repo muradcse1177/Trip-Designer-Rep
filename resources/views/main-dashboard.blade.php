@@ -130,7 +130,7 @@
                                                     <div class="card card-widget widget-user-2 shadow-sm" style="border-radius: 10px; border-style: dotted;">
                                                         <!-- Add the bg color to the header using any of the bg-* classes -->
                                                         <div class="widget-user-header">
-                                                            <img src="{{url($package->p_c_photo)}}" class="img-fluid" alt="" style="object-fit: cover;width: 100%; border-radius: 10px">
+                                                            <img src="{{url($package->p_c_photo)}}" class="img-fluid" alt="" style="object-fit: cover; width: 100%; border-radius: 10px">
                                                         </div>
                                                         <div class="card-footer p-0">
                                                             <ul class="nav flex-column">

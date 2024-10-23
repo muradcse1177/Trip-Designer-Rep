@@ -174,6 +174,7 @@
             });
         });
     })(jQuery);
+
 </script>
 
 </body>

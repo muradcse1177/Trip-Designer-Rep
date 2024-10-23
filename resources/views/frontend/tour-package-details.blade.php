@@ -1,11 +1,23 @@
 @extends('frontend.layout.body')
 @section('title','Trip Designer - Tour Package - The Best Tour Package Provider in Bangladesh.')
 @section('content')
-    <div id="main-wrapper">
-        <br><br>
-
-        <!-- ============================ Breadcrumbs End ================================== -->
-        <!-- ============================ Destination Detail Start ================================== -->
+    <div class="clearfix"></div>
+    <div class="py-2 gray-simple position-relative">
+        <div class="container">
+            <!-- Search Form -->
+            <div class="row justify-content-center align-items-center">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class=""><a href="{{url('/')}}" class="text-primary">Home</a></li>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <li class="breadcrumb-item float-right"><a href="{{url('tour-package')}}" class="text-primary float-right">Tour Package</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!-- </row> -->
+        </div>
+    </div>
         <section class="pt-3">
             <div class="container">
                 <div class="row">
@@ -310,7 +322,6 @@
             </div>
         </section>
         <!-- ============================ Similar Destination End ================================== -->
-    </div>
     <div class="modal fade" id="tour-request" tabindex="-1" role="dialog" aria-labelledby="loginmodal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered login-pop-form" role="document">
             <div class="modal-content" id="loginmodal">
