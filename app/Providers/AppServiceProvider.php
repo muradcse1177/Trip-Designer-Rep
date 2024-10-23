@@ -38,6 +38,13 @@ class AppServiceProvider extends ServiceProvider
             $view->with('domain', $fixed_domain);
             $view->with('c_info', $c_info);
             $company = DB::table('users')->where('id',Session::get('user_id'))->first();
+            if(@$company->role == 5){
+                $employee = DB::table('employees')->where('email',$company->company_email)->first();
+                $role = DB::table('assign_role')->where('agent_id',$employee->agent_id)->where('designation',$employee->designation)->first();
+                $attributes = DB::table('attribute')->get();
+                $view->with('role', $role);
+                $view->with('attributes', $attributes);
+            }
             $view->with('company_info', $company);
         });
         Paginator::useBootstrap();

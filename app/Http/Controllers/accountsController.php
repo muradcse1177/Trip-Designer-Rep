@@ -27,7 +27,11 @@ class accountsController extends Controller
                 ->where('source','Office Accounts')
                 ->orderBy('id','desc')
                 ->get();
-            return view('accounts.officeExpenses',['transactions' => $rows1]);
+            $rows2 = DB::table('accounts_head')
+                ->where('agent_id',Session::get('user_id'))
+                ->orderBy('id','desc')
+                ->get();
+            return view('accounts.officeExpenses',['transactions' => $rows1,'heads' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -35,12 +39,18 @@ class accountsController extends Controller
     }
     public function filterOfficeExpense(Request $request){
         try{
+            $rows2 = DB::table('accounts_head')
+                ->where('agent_id',Session::get('user_id'))
+                ->orderBy('id','desc')
+                ->get();
             $rows1 = DB::table('accounts')
                 ->where('agent_id',Session::get('user_id'))
                 ->where('source','Office Accounts')
                 ->where(function ($query) use($request) {
                     if($request->acc_type  != '' )
                         $query->where('transaction_type', '=', $request->acc_type);
+                    if($request->head  != '' )
+                        $query->where('head', '=', $request->head);
                     if($request->from_issue_date  != '' and $request->to_issue_date  != ''){
                         $query->whereBetween('date', [$request->from_issue_date, $request->to_issue_date]);
                     }
@@ -53,7 +63,7 @@ class accountsController extends Controller
                 })
                 ->orderBy('date','desc')
                 ->get();
-            return view('accounts.officeExpenses',['transactions' => $rows1]);
+            return view('accounts.officeExpenses',['transactions' => $rows1,'heads' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -70,10 +80,11 @@ class accountsController extends Controller
                 $debit = 0;
                 $credit = $request->amount;
             }
-            $invoice =  rand(1111111111,9999999999);
+            $invoice = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,5);
             $result = DB::table('accounts')->insert([
                 'invoice_id' => $invoice,
                 'date' => $request->date,
+                'head' => $request->head,
                 'agent_id' => Session::get('user_id'),
                 'transaction_type' => $request->type,
                 'source' => 'Office Accounts',
@@ -83,7 +94,7 @@ class accountsController extends Controller
                 'status' => 'Approved',
             ]);
             if ($result) {
-                return redirect()->to('transactions')->with('successMessage', 'Office Income/Expense added successfully!!');
+                return redirect()->to('officeExpenses')->with('successMessage', 'Office Income/Expense added successfully!!');
             } else {
                 return back()->with('errorMessage', 'Please try again!!');
             }
@@ -126,7 +137,7 @@ class accountsController extends Controller
     public function addBankAccounts(Request $request){
         try{
 
-            $result = DB::table('bank_account_super')->insert([
+            $result = DB::table('bank_accounts')->insert([
                 'name' => $request->name,
                 'agent_id' => Session::get('user_id'),
                 'amount' => $request->amount,
@@ -372,7 +383,6 @@ class accountsController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-
     public function addManualPayment (Request $request){
         try{
             $invoice = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,8);
@@ -411,7 +421,6 @@ class accountsController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-
     public function updateManualPayment(Request $request){
         try{
             $rows2 = DB::table('payment_history')
@@ -450,6 +459,84 @@ class accountsController extends Controller
                 else {
                     return back()->with('errorMessage', 'Please try again!!');
                 }
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function accountsHead (Request $request){
+        try{
+            $rows1 = DB::table('accounts_head')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            return view('accounts.accountsHead',['heads' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function addAccountsHead (Request $request){
+        try{
+            $row = DB::table('accounts_head')->where('agent_id', Session::get('user_id')) ->where('head', $request->name)->get();
+            if($row->count()>0){
+                return back()->with('errorMessage', 'Head Name Already Exits!! Please try again!!');
+            }
+            $result = DB::table('accounts_head')
+            ->insert([
+                'agent_id' => Session::get('user_id'),
+                'head' => $request->name,
+            ]);
+            if ($result) {
+                return redirect()->to('accountsHead')->with('successMessage', 'Accounts head added successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function editAccountHead(Request $request){
+        try{
+            $rows1 = DB::table('accounts_head')
+                ->where('id',$request->id)
+                ->first();
+            return view('accounts.editAccountsHead',['account' => $rows1]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function updateAccountsHead(Request $request){
+        try{
+            $result =DB::table('accounts_head')
+                ->where('id', $request->id)
+                ->where('agent_id',Session::get('user_id'))
+                ->update([
+                    'head' => $request->name,
+                ]);
+            if ($result) {
+                return redirect()->to('accountsHead')->with('successMessage', 'Data update successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function deleteAccountHead(Request $request){
+        try{
+            $result =DB::table('accounts_head')
+                ->where('id', $request->id)
+                ->where('agent_id',Session::get('user_id'))
+                ->delete();
+            if ($result) {
+                return redirect()->to('accountsHead')->with('successMessage', 'Data Delete successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
             }
         }
         catch(\Illuminate\Database\QueryException $ex){

@@ -175,6 +175,7 @@ class authController extends Controller
                         'phone_code' => $phoneCode,
                         'company_pnone' => $phone,
                         'password' => $password,
+                        'status' => 'Active',
                         'role' => 3,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
@@ -214,7 +215,6 @@ class authController extends Controller
                         'phone_code' => $phoneCode,
                         'company_pnone' => $phone,
                         'password' => $password,
-                        'status' => 2,
                         'role' => 2,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
@@ -245,6 +245,9 @@ class authController extends Controller
                 }
                 if(Session::get('customer')){
                     return redirect()->to('/');
+                }
+                if(Session::get('employee')){
+                    return redirect()->to('main-dashboard');
                 }
             }
             else{
@@ -277,6 +280,10 @@ class authController extends Controller
                                 return redirect()->to(Session::get('reference_url'));
                             }
                             return redirect()->to('/');
+                        }
+                        if($role == 5){
+                            Session::put('employee', $rows->id);
+                            return redirect()->to('main-dashboard');
                         }
                     }
                     else{

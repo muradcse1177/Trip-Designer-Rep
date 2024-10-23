@@ -240,7 +240,7 @@
                                             <table class="table table-borderless">
                                                 <tr>
                                                     <td>
-                                                        {!! nl2br($package->p_inclusions) !!}
+                                                        {!! nl2br(json_decode($package->p_inclusions)) !!}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -260,7 +260,7 @@
                                             <table class="table table-borderless">
                                                 <tr>
                                                     <td>
-                                                        {!! nl2br($package->p_exclusions) !!}
+                                                        {!! nl2br(json_decode($package->p_exclusions)) !!}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -280,7 +280,7 @@
                                         <table class="table table-borderless">
                                             <tr>
                                                 <td>
-                                                    {!! nl2br($package->p_tnt) !!}
+                                                    {!! nl2br(json_decode($package->p_tnt)) !!}
                                                 </td>
                                             </tr>
                                         </table>
@@ -300,7 +300,7 @@
                                         <table class="table table-borderless">
                                             <tr>
                                                 <td>
-                                                    {!! nl2br($package->p_policy) !!}
+                                                    {!! nl2br(json_decode($package->p_policy)) !!}
                                                 </td>
                                             </tr>
                                         </table>

@@ -8,7 +8,7 @@
 
             <!-- Search Form -->
             <div class="row justify-content-center align-items-center">
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                     <div class="search-wrap bg-white rounded-3 p-3">
                         <ul class="nav nav-pills primary-soft medium justify-content-left mb-3" id="tour-pills-tab" role="tablist">
                             <?php

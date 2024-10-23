@@ -48,7 +48,7 @@
                                         <div class="form-group">
                                             <label>From Date</label>
                                             <div class="input-group date" id="from_issue_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#from_issue_date" name="from_issue_date" value="{{@$_GET['from_issue_date']}}" />
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#from_issue_date" name="from_issue_date" placeholder="Enter from date" value="{{@$_GET['from_issue_date']}}" />
                                                 <div class="input-group-append" data-target="#from_issue_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -58,8 +58,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>To Date</label>
-                                            <div class="input-group date" id="to_issue_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#to_issue_date" name="to_issue_date" value="{{@$_GET['to_issue_date']}}" />
+                                            <div class="input-group date" id="to_issue_date" data-target-input="nearest"><input type="text" class="form-control datetimepicker-input" data-target="#to_issue_date" name="to_issue_date" placeholder="Enter to date" value="{{@$_GET['to_issue_date']}}" />
                                                 <div class="input-group-append" data-target="#to_issue_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -91,6 +90,7 @@
                                     <tr>
                                         <th>S.L</th>
                                         <th>Date</th>
+                                        <th>Invoice</th>
                                         <th>Source</th>
                                         <th>Purpose</th>
                                         <th>Debit</th>
@@ -114,6 +114,7 @@
                                         <tr>
                                             <td>{{$i}}</td>
                                             <td>{{$transaction->date}}</td>
+                                            <td>{{$transaction->invoice_id}}</td>
                                             <td>{{$transaction->source}}</td>
                                             <td>{{$transaction->purpose}}</td>
                                             @if($transaction->transaction_type	 == 'Debit')
@@ -151,6 +152,7 @@
                                     <tr>
                                         <th></th>
                                         <th align="center"></th>
+                                        <th align="left"></th>
                                         <th align="left"></th>
                                         <th align="left"></th>
                                         <th align="left">

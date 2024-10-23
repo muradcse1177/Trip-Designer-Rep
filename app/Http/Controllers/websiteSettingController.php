@@ -719,7 +719,6 @@ class websiteSettingController extends Controller
                     if ($result) {
                         return redirect()->to('b2cManpowerManagement')->with('successMessage', 'Manpower Package deleted successfully!!');
                     } else {
-                        dd('ok');
                         return back()->with('errorMessage', 'Please try again!!');
                     }
                 }

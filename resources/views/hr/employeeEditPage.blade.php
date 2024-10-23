@@ -1,8 +1,8 @@
 @extends('mainLayout.layout')
 @section('title','Trip Designer || Employee Management')
 @section('Employees','active')
-@section('EmployeeMenu','menu-open')
-@section('settings','active')
+@section('hrMenu','menu-open')
+@section('hr','active')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -45,6 +45,17 @@
                                 <div class="card-body row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
+                                            <label>Employee Designation</label>
+                                            <select class="form-control select2bs4" name="designation" id="designation" style="width: 100%;" required>
+                                                <option value="">Select Designation</option>
+                                                @foreach($designations as $designation)
+                                                    <option value="{{$designation->name}}"<?php if($designation->name == $employee->designation) echo 'selected'?> >{{$designation->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
                                             <label>Employee Name</label>
                                             <input type="text" class="form-control" id="name" name="name" value="{{@$employee->name}}" placeholder="Enter Employee Name" required>
                                         </div>
@@ -52,16 +63,22 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Employee Phone</label>
-                                            <input type="phone" class="form-control" id="phone" name="phone" value="{{@$employee->phone}}" placeholder="Enter Employee Phone">
+                                            <input type="number" class="form-control" id="phone" name="phone" maxlength='10' oninput="maxLengthCheck(this)" value="{{@$employee->phone}}" placeholder="Enter Employee Phone"required>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Employee Email</label>
-                                            <input type="email" class="form-control" id="email" name="email" value="{{@$employee->email}}" placeholder="Enter Employee Email">
+                                            <input type="email" class="form-control" id="email" name="email" value="{{@$employee->email}}" placeholder="Enter Employee Email" required>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Employee Password</label>
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter Employee Password">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Employee Address</label>
                                             <input type="text" class="form-control" id="address" name="address" value="{{@$employee->address}}" placeholder="Enter Employee Address">
@@ -86,6 +103,10 @@
 @endsection
 @section('js')
     <script>
+        $('.select2').select2()
+        $('.select2bs4').select2({
+            theme: 'bootstrap4',
+        })
         $(function () {
             $("#example11").DataTable({
                 "responsive": true,
@@ -98,5 +119,10 @@
                 "info": true,
             }).buttons().container().appendTo('#example11_wrapper .col-md-6:eq(0)');
         });
+        function maxLengthCheck(object)
+        {
+            if (object.value.length > object.maxLength)
+                object.value = object.value.slice(0, object.maxLength)
+        }
     </script>
 @endsection

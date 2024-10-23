@@ -237,8 +237,31 @@ Route::middleware(['role'])->group(function () {
     Route::post('addManualPayment', 'App\Http\Controllers\accountsController@addManualPayment');
     Route::get('editManualPaymentPage', 'App\Http\Controllers\accountsController@editManualPaymentPage');
     Route::post('updateManualPayment', 'App\Http\Controllers\accountsController@updateManualPayment');
+    Route::get('accountsHead', 'App\Http\Controllers\accountsController@accountsHead');
+    Route::post('addAccountsHead', 'App\Http\Controllers\accountsController@addAccountsHead');
+    Route::get('editAccountHead', 'App\Http\Controllers\accountsController@editAccountHead');
+    Route::post('updateAccountsHead', 'App\Http\Controllers\accountsController@updateAccountsHead');
+    Route::post('deleteAccountHead', 'App\Http\Controllers\accountsController@deleteAccountHead');
                                 //-------------
     Route::post('pay-online-b2b', [SslCommerzPaymentController::class, 'payOnlineb2b']);
+    //----------------------------------------------------------
+
+    //HR Management------------------------------------------------
+    Route::get('designation', 'App\Http\Controllers\hrController@designation');
+    Route::post('addDesignation', 'App\Http\Controllers\hrController@addDesignation');
+    Route::get('editDesignationPage', 'App\Http\Controllers\hrController@editDesignationPage');
+    Route::post('updateDesignation', 'App\Http\Controllers\hrController@updateDesignation');
+    Route::post('deleteDesignation', 'App\Http\Controllers\hrController@deleteDesignation');
+
+    Route::get('employees', 'App\Http\Controllers\hrController@employeeSettings');
+    Route::post('addNewEmployee', 'App\Http\Controllers\hrController@addNewEmployee');
+    Route::get('editEmployeePage', 'App\Http\Controllers\hrController@editEmployeePage');
+    Route::post('editEmployee', 'App\Http\Controllers\hrController@editEmployee');
+    Route::post('deleteEmployee', 'App\Http\Controllers\hrController@deleteEmployee');
+
+    Route::get('roles', 'App\Http\Controllers\hrController@roles');
+    Route::post('addRole', 'App\Http\Controllers\hrController@addRole');
+    Route::post('deleteRole', 'App\Http\Controllers\hrController@deleteRole');
     //----------------------------------------------------------
 
     //Statement Management------------------------------------------------
@@ -261,11 +284,6 @@ Route::middleware(['role'])->group(function () {
     Route::post('editVendor', 'App\Http\Controllers\settingController@editVendor');
     Route::post('deleteVendor', 'App\Http\Controllers\settingController@deleteVendor');
 
-    Route::get('employees', 'App\Http\Controllers\settingController@employeeSettings');
-    Route::post('addNewEmployee', 'App\Http\Controllers\settingController@addNewEmployee');
-    Route::get('editEmployeePage', 'App\Http\Controllers\settingController@editEmployeePage');
-    Route::post('editEmployee', 'App\Http\Controllers\settingController@editEmployee');
-    Route::post('deleteEmployee', 'App\Http\Controllers\settingController@deleteEmployee');
 
     Route::get('companyInfo', 'App\Http\Controllers\settingController@companyInfo');
     Route::post('updateCompany', 'App\Http\Controllers\settingController@updateCompany');

@@ -55,6 +55,18 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
+                                            <label>Accounts Head Type</label>
+                                            <select class="form-control select2bs4" name="head" id="head" style="width: 100%;" required>
+                                                <option value="">Select Head Type</option>
+                                                @foreach($heads as $head)
+                                                    <option value="{{$head->head}}">{{$head->head}}</option>
+                                                @endforeach
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
                                             <label>Date</label>
                                             <div class="input-group date" id="dob" data-target-input="nearest">
                                                 <input type="text" class="form-control datetimepicker-input" data-target="#dob" name="date" placeholder="Enter Date" required/>
@@ -70,7 +82,7 @@
                                             <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter Amount" min="1" required>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-8">
                                         <div class="form-group">
                                             <label>Purpose</label>
                                             <input type="text" class="form-control" id="purpose" name="purpose" placeholder="Enter Purpose"  required>
@@ -108,7 +120,7 @@
                                         <div class="form-group">
                                             <label>From Date</label>
                                             <div class="input-group date" id="from_issue_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#from_issue_date" name="from_issue_date" value="{{@$_GET['from_issue_date']}}" />
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#from_issue_date" name="from_issue_date" placeholder="Enter From Date" value="{{@$_GET['from_issue_date']}}" />
                                                 <div class="input-group-append" data-target="#from_issue_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -119,7 +131,7 @@
                                         <div class="form-group">
                                             <label>To Date</label>
                                             <div class="input-group date" id="to_issue_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#to_issue_date" name="to_issue_date" value="{{@$_GET['to_issue_date']}}" />
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#to_issue_date" name="to_issue_date" placeholder="Enter To Date" value="{{@$_GET['to_issue_date']}}" />
                                                 <div class="input-group-append" data-target="#to_issue_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -136,12 +148,24 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12" align="right">
+                                    <div class="col-sm-3">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-warning float-right">Filter</button>
+                                            <label>Accounts Head Type</label>
+                                            <select class="form-control select2bs4" name="head" id="head" style="width: 100%;" required>
+                                                <option value="">Select Head Type</option>
+                                                @foreach($heads as $head)
+                                                    <option value="{{$head->head}}" @if(@$_GET['head'] == $head->head) Selected @endif>{{$head->head}}</option>
+                                                @endforeach
+
+                                            </select>
                                         </div>
                                     </div>
-                                </div><br>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-warning btn-block float-right">Filter</button>
+                                        </div>
+                                    </div>
+                                </div><hr>
                                 {{ Form::close() }}
                                 <table id="example11" class="table table-bordered table-hover">
                                     <thead>
@@ -149,6 +173,7 @@
                                         <th>S.L</th>
                                         <th>Date</th>
                                         <th>Expense Type</th>
+                                        <th>Invoice</th>
                                         <th>Purpose</th>
                                         <th>Expanse Amount</th>
                                         <th>Income Amount</th>
@@ -166,6 +191,7 @@
                                             <td>{{$i}}</td>
                                             <td>{{$transaction->date}}</td>
                                             <td>{{$transaction->transaction_type}}</td>
+                                            <td>{{$transaction->invoice_id}}</td>
                                             <td>{{$transaction->purpose}}</td>
                                             <td>{{$transaction->buying_price}}</td>
                                             <td>{{$transaction->selling_price}}</td>
@@ -184,6 +210,7 @@
                                     <tr>
                                         <th></th>
                                         <th align="center"></th>
+                                        <th align="left"></th>
                                         <th align="left"></th>
                                         <th align="left"></th>
                                         <th align="left">
@@ -209,6 +236,10 @@
 @endsection
 @section('js')
     <script>
+        $('.select2').select2()
+        $('.select2bs4').select2({
+            theme: 'bootstrap4',
+        })
         $('#dob').datetimepicker({
             format: 'YYYY-MM-DD',
             maxDate: new Date(),
