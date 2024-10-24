@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class authController extends Controller
@@ -51,6 +52,57 @@ class authController extends Controller
     public  function allLogin(Request $request){
         $countries = DB::table('countries')->get();
         return view('frontend.userAuth.all-login-page',['countries'=> $countries]);
+    }
+    public  function forgotPassword(Request $request){
+        return view('frontend.userAuth.forgot-password');
+    }
+    public  function emailCheck(Request $request){
+        $rows1 = DB::table('users')->where('company_email',$request->email)->first();
+        if($rows1){
+            $six_digit_random_number = random_int(100000, 999999);
+            $result = DB::table('users')
+                ->where('id', $rows1->id)
+                ->update([
+                    'otp' => $six_digit_random_number,
+                ]);
+            $email = [$request->email,];
+            $data = [
+                'name' => $rows1->company_name,
+                'email' => $rows1->company_email,
+                'otp' => $six_digit_random_number,
+            ];
+            Mail::send('email.forgot-password-email', $data, function ($message) use ($email) {
+                $message->subject("Trip Designer: Forgot Password");
+                $message->from('sales@tripdesigner.net', 'Trip Designer Tech');
+                $message->to($email);
+            });
+            return view('frontend.userAuth.forgot-password-email');
+        }else{
+            return redirect()->to('all-login')->with('errorMessage', 'User not found!! Create your account first.');
+        }
+    }
+    public  function otpVerification(Request $request){
+        $rows1 = DB::table('users')->where('otp',$request->code)->first();
+        if($rows1){
+            return view('frontend.userAuth.password-recover',['id'=> $rows1->id]);
+        }else{
+            return back()->with('errorMessage', 'OTP not matched!! Please try again.');
+        }
+    }
+    public  function passwordRecover(Request $request){
+        $password = Hash::make($request->password);
+        $result = DB::table('users')
+            ->where('id', $request->id)
+            ->update([
+                'password' => $password,
+                'otp' => null,
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        if($result){
+            return redirect()->to('all-login')->with('successMessage', 'Password changed successfully. Please log in with new password.');
+        }else{
+            return back()->with('errorMessage', 'Please try again!!');
+        }
     }
     public  function customerSignup(Request $request){
         $countries = DB::table('countries')->get();

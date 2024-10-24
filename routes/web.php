@@ -20,6 +20,11 @@ Route::get('all-login', 'App\Http\Controllers\authController@allLogin');
 Route::get('customer-signup', 'App\Http\Controllers\authController@customerSignup');
 Route::post('create-new-customer', 'App\Http\Controllers\authController@createNewCustomer');
 Route::get('agent-signup', 'App\Http\Controllers\authController@agentSignup');
+Route::get('forgot-password', 'App\Http\Controllers\authController@forgotPassword');
+Route::get('email-check', 'App\Http\Controllers\authController@emailCheck');
+Route::post('otp-verification', 'App\Http\Controllers\authController@otpVerification');
+Route::post('password-recover', 'App\Http\Controllers\authController@passwordRecover');
+
 Route::post('createNewUser', 'App\Http\Controllers\authController@createNewUser');
 Route::get('customer-profile', 'App\Http\Controllers\usersController@customerProfile');
 Route::post('update-customer-profile', 'App\Http\Controllers\usersController@updateCustomerProfile');
