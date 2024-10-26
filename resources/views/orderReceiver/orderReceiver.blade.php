@@ -61,7 +61,10 @@
                                         <tr>
                                             <td>{{$i}}</td>
                                             <td>{{$order->date}}</td>
-                                            <td>{{$order->r_ref}}</td>
+                                            <td>
+                                                Ref:{{$order->r_ref}}
+                                                Order for:{{$order->person}}
+                                            </td>
                                             <td>
                                                 <a href="{{url(''.$order->view)}}" target="_blank">View Details</a>
                                             </td>

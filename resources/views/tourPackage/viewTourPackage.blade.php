@@ -213,7 +213,7 @@
                                                     <td>
                                                             <?php
                                                             $output = '<ul style="list-style-type: disc !important; adding-left:1em !important; margin-left:1em;">';
-                                                            $listformat = explode("\n", $d_titles[$i]);
+                                                            $listformat = explode("\n", $d_ininaris[$i]);
                                                             foreach ($listformat as $test => $line) {
                                                                 $output .= "<li>".$line."</li>";
                                                             };
@@ -308,7 +308,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button class="btn btn-warning float-right printMe">Print Invoice</button>
+                                    <a href="{{url('printTourPackageInvoice?id='.$package->id)}}" target="_blank" class="btn btn-warning float-right printMe">Print Invoice</a>
                                 </div>
                             </div>
                             <!-- /.card-body -->
@@ -328,14 +328,6 @@
         $('.select2bs4').select2({
             theme: 'bootstrap4',
         })
-        $('.printMe').click(function(){
-            var divToPrint=document.getElementById("printArea");
-            newWin= window.open('');
-            newWin.document.write('<link href="{{url('/public/dist/css/adminlte.min.css')}}" rel="stylesheet" type="text/css" />');
-            newWin.document.write(divToPrint.outerHTML);
-            newWin.print();
-            newWin.close();
-        });
 
     </script>
 @endsection

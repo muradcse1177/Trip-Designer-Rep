@@ -358,6 +358,7 @@ class homeController extends Controller
                     'date' => date('Y-m-d'),
                     'r_type' => $request->r_type,
                     'status' => 'Requested',
+                    'order_type' => 'B2C',
                     'remarks' => json_encode($request->remarks),
                 ]);
                 $to = 'tripdesigner.xyz@gmail.com';

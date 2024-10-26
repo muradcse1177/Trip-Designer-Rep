@@ -161,8 +161,11 @@ Route::middleware(['role'])->group(function () {
     Route::post('updateTourPackage', 'App\Http\Controllers\tourController@updateTourPackage');
     Route::post('deleteTourPackage', 'App\Http\Controllers\tourController@deleteTourPackage');
     Route::get('viewTourPackage', 'App\Http\Controllers\tourController@viewTourPackage');
+    Route::get('printTourPackageInvoice', 'App\Http\Controllers\tourController@printTourPackageInvoice');
     Route::get('editTourPackagePayment', 'App\Http\Controllers\tourController@editTourPackagePayment');
     Route::post('updateTourPackagePaymentStatus', 'App\Http\Controllers\tourController@updateTourPackagePaymentStatus');
+    Route::get('book-tour-package-page-b2b', 'App\Http\Controllers\tourController@bookTourPackagePageB2b');
+    Route::post('book-tour-package-b2b', 'App\Http\Controllers\tourController@bookTourPackageB2b');
 
     //----------------------------------------------------------
     //Umrah Package----------------------------------------------------------

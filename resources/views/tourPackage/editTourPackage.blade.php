@@ -240,7 +240,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Payments Details</label>
-                                            <textarea class="form-control" id="pay_details" name="pay_details" rows="5" placeholder="Write Payments Detail..."> {{json_decode(@$package->pay_details)}}</textarea>
+                                            <textarea class="form-control" id="pay_details" name="pay_details" rows="5" placeholder="Write Payments Detail..."> {{@$package->pay_details}}</textarea>
                                         </div>
                                     </div>
                                 </div>

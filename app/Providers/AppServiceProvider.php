@@ -31,13 +31,15 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function($view)
         {
             //$c_domain = $_SERVER['SERVER_NAME'];
+            //dd($c_domain);
             $c_domain = 'tripdesigner.net';
             $fixed_domain = 'https://tripdesigner.net'; //http://localhost/tam
             $rows = DB::table('domain')->where('name',$c_domain)->first();
             $c_info = DB::table('company_info')->where('agent_id',@$rows->agent_id)->first();
             $view->with('domain', $fixed_domain);
             $view->with('c_info', $c_info);
-            $company = DB::table('users')->where('id',Session::get('user_id'))->first();
+            //dd($c_info);
+            $company = DB::table('users')->where('id',Session::get('agent_id'))->first();
             if(@$company->role == 5){
                 $employee = DB::table('employees')->where('email',$company->company_email)->first();
                 $role = DB::table('assign_role')->where('agent_id',$employee->agent_id)->where('designation',$employee->designation)->first();
