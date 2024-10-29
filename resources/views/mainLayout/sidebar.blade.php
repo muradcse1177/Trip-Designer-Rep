@@ -46,7 +46,7 @@
                     <li class="nav-item">
                         <a href="{{url('/orderReceiver')}}" class="nav-link @yield('orderReceiver')">
                             <i class="nav-icon fas fa-shopping-cart"></i>
-                            <p>B2C Order Request</p>
+                            <p>Order Request</p>
                         </a>
                     </li>
                     <li class="nav-item @yield('ticketMenu')">
@@ -496,7 +496,7 @@
                                 <li class="nav-item">
                                     <a href="{{url('/orderReceiver')}}" class="nav-link @yield('orderReceiver')">
                                         <i class="nav-icon fas fa-shopping-cart"></i>
-                                        <p>B2C Order Request</p>
+                                        <p>Order Request</p>
                                     </a>
                                 </li>
                             @endif

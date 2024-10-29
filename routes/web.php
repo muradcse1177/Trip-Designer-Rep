@@ -152,6 +152,8 @@ Route::middleware(['role'])->group(function () {
     Route::post('editVisa', 'App\Http\Controllers\visaController@editVisa');
     Route::post('deleteVisa', 'App\Http\Controllers\visaController@deleteVisa');
     Route::get('printVisaInvoice', 'App\Http\Controllers\visaController@printVisaInvoice');
+    Route::get('book-visa-package-page-b2b', 'App\Http\Controllers\visaController@bookVisaPackagePageB2b');
+    Route::post('book-visa-package-b2b', 'App\Http\Controllers\visaController@bookVisaPackageB2b');
     //----------------------------------------------------------
 
     //Tour Package----------------------------------------------------------
@@ -166,6 +168,8 @@ Route::middleware(['role'])->group(function () {
     Route::post('updateTourPackagePaymentStatus', 'App\Http\Controllers\tourController@updateTourPackagePaymentStatus');
     Route::get('book-tour-package-page-b2b', 'App\Http\Controllers\tourController@bookTourPackagePageB2b');
     Route::post('book-tour-package-b2b', 'App\Http\Controllers\tourController@bookTourPackageB2b');
+    Route::get('download-b2b-tour-package', 'App\Http\Controllers\tourController@downloadB2bTourPackage');
+    Route::get('print-b2b-tour-package', 'App\Http\Controllers\tourController@printB2bTourPackage');
 
     //----------------------------------------------------------
     //Umrah Package----------------------------------------------------------

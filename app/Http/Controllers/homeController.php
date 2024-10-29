@@ -398,7 +398,8 @@ class homeController extends Controller
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
         }
-    }public function contactUS(Request $request){
+    }
+    public function contactUS(Request $request){
         try{
             $domain =$this->domainCheck();
              if($domain['agent_id'])  {

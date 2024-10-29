@@ -208,7 +208,7 @@
                                                 @foreach($d_titles as $d_title)
                                                 <tr>
                                                     <td>
-                                                        {{$d_titles[$i]}}
+                                                        Day {{$i +1}} {{$d_titles[$i]}}
                                                     </td>
                                                     <td>
                                                             <?php

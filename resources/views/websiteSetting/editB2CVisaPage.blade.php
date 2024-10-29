@@ -81,6 +81,18 @@
                                             <input type="file" class="form-control" id="v_c_photo" name="v_c_photo" accept="image/*"  placeholder="Enter Company Logo" <?php if(@$visas->v_c_photo) echo ''; else echo 'required'; ?> >
                                         </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Adult Price</label>
+                                            <input type="number" min="1" class="form-control" id="a_price" name="a_price" value="{{@$visas->a_price}}" placeholder="Enter Adult Price" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Child Price</label>
+                                            <input type="number" min="1" class="form-control" id="c_price" name="c_price" value="{{@$visas->c_price}}" placeholder="Enter Child Price" required>
+                                        </div>
+                                    </div>
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Visa Meta Keyword</label>

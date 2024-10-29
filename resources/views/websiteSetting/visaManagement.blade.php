@@ -81,6 +81,18 @@
                                             <input type="file" class="form-control" id="v_c_photo" name="v_c_photo" accept="image/*"  placeholder="Enter Company Logo" required>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Adult Price</label>
+                                            <input type="number" min="1" class="form-control" id="a_price" name="a_price" placeholder="Enter Adult Price" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Child Price</label>
+                                            <input type="number" min="1" class="form-control" id="c_price" name="c_price" placeholder="Enter Child Price" required>
+                                        </div>
+                                    </div>
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Visa Meta Keyword</label>
@@ -140,6 +152,7 @@
                                         <th>S.L</th>
                                         <th>Country</th>
                                         <th>B2C View</th>
+                                        <th>B2B View</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -152,6 +165,7 @@
                                             <td>{{$i}}</td>
                                             <td>{{$visa->country}}</td>
                                             <td><a href="{{'visa/'.$visa->slug}}" target="_blank">B2C View</a></td>
+                                            <td><a href="{{'visa-b2b/'.$visa->slug}}" target="_blank">B2B View</a></td>
                                             <td>
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-info">Action</button>

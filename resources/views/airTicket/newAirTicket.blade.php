@@ -296,7 +296,7 @@
                                         <div class="form-group">
                                             <label>From Issue Date</label>
                                             <div class="input-group date" id="from_issue_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#from_issue_date" name="from_issue_date" value="{{@$_GET['from_issue_date']}}" />
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#from_issue_date" name="from_issue_date" placeholder="Enter From Date" value="{{@$_GET['from_issue_date']}}" />
                                                 <div class="input-group-append" data-target="#from_issue_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -307,7 +307,7 @@
                                         <div class="form-group">
                                             <label>To Issue Date</label>
                                             <div class="input-group date" id="to_issue_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#to_issue_date" name="to_issue_date" value="{{@$_GET['to_issue_date']}}" />
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#to_issue_date" name="to_issue_date"  placeholder="Enter To Date" value="{{@$_GET['to_issue_date']}}" />
                                                 <div class="input-group-append" data-target="#to_issue_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>

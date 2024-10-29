@@ -312,6 +312,9 @@ class authController extends Controller
                     $rows = DB::table('users')
                         ->where('company_email', $email)
                         ->first();
+                    if($rows->status == 'In Active'){
+                        return back()->with('errorMessage', 'Your Id is Inactive!! Please contact to admin.');
+                    }
                     if (Hash::check($password, $rows->password)) {
                         $role = $rows->role;
                         Session::put('user_info', $rows);

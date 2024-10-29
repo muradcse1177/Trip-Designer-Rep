@@ -316,7 +316,7 @@ class tourController extends Controller
                 return back()->with('errorMessage', 'Bad Request!!');
         }
         else{
-            return back()->with('errorMessage', 'Adult must greater than 1 PAX!!');
+            return back()->with('errorMessage', 'Adult must greater than 2 PAX!!');
         }
     }
     public  function bookTourPackageB2b(Request $request){
@@ -391,6 +391,8 @@ class tourController extends Controller
                                         'r_type' => "Tour Package",
                                         'status' => 'Ordered',
                                         'order_type' => 'B2B',
+                                        'adult' => $request->adult,
+                                        'child' => $request->child,
                                         'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child),
                                     ]);
                                     $to = 'tripdesigner.xyz@gmail.com';
@@ -455,6 +457,76 @@ class tourController extends Controller
                 ->where('id',$request->id)
                 ->first();
             return view('tourPackage.printTourPackageInvoice',['company' => $rows1,'package' => $rows2,]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function downloadB2bTourPackage(Request $request){
+        try{
+            $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
+            $package = DB::table('b2c_tour_package')->where('agent_id',Session::get('agent_id'))->where('slug',$request->slug)->first();
+            $agent = DB::table('users')->where('id', Session::get('agent_id'))->first();
+            $result = DB::table('order_request')->insert([
+                'agent_id' => Session::get('agent_id'),
+                'r_ref' => $num,
+                'name' => $agent->company_name,
+                'email' => $agent->company_email,
+                'phone' => $agent->phone_code.$agent->company_pnone,
+                'person' => $request->adult.' adults and '.$request->child.' child',
+                'view' => 'https://tripdesigner.net/tour-package-b2b/'.$package->slug,
+                'date' => date('Y-m-d'),
+                'r_type' => 'Tour Package',
+                'status' => 'Requested',
+                'order_type' => 'B2B',
+                'adult' => $request->adult,
+                'child' => $request->child,
+                'remarks' => json_encode('Need tour package for '.$request->adult.' adults and '.$request->child.' child'),
+            ]);
+            $to = 'tripdesigner.xyz@gmail.com';
+            $email_cus = [$agent->company_email];
+            $email_admin = [$to];
+            $data = [
+                'tracking' => $num,
+                'name' => $agent->company_name,
+                'email' => $agent->company_email,
+                'phone' => $agent->phone_code.$agent->company_pnone,
+                'person' =>$request->adult.' adults and '.$request->child.' child',
+                'r_type' => 'Tour Package',
+                'status' => 'Requested',
+                'remarks' => json_encode('Need tour package for '.$request->adult.' adults and '.$request->child.' child'),
+            ];
+            if ($result) {
+                Mail::send('email.customer-order-request', $data, function ($message) use ($email_cus) {
+                    $message->subject("Trip Designer: Tour Package Order Request");
+                    $message->from('sales@tripdesigner.net', 'Tour Package Order');
+                    $message->to($email_cus);
+                });
+                Mail::send('email.admin-order-request', $data, function ($message) use ($email_admin,$data) {
+                    $message->subject("Order Request Confirmation Type - ".$data['r_type']);
+                    $message->from('sales@tripdesigner.net', 'Tour Package Order');
+                    $message->to($email_admin);
+                });
+                return redirect()->to('orderReceiver')->with('successMessage', 'Tour Package ordered request sent successfully!!');
+
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function printB2bTourPackage (Request $request){
+        try{
+            $rows1 = DB::table('users')
+                ->where('id',Session::get('agent_id'))
+                ->first();
+            $rows2 = DB::table('b2c_tour_package')
+                ->where('slug',$request->slug)
+                ->first();
+            return view('tourPackage.printB2bTourPackage',['company' => $rows1,'package' => $rows2,'adult' => $request->adult,'child' => $request->child,]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());

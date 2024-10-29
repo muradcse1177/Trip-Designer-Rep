@@ -224,7 +224,7 @@
                                                                         <span style="font-size: 12px;"><b>{{$c_info->currency.' '}}{{$package->p_p_child}}</b></span>
                                                                     </span>  Per Child*</p><br>
                                                                 <button type="button" data-id="{{$package->slug}}" data-toggle="modal" data-target="#exampleModalCenter" class="btn btn-block btn-success delete">Book Now</button>
-                                                                <button type="button" class="btn btn-block btn-warning">Send Inquiry</button>
+                                                                <button type="button" data-id="{{$package->slug}}" data-toggle="modal" data-target="#exampleModalCenter1" class="btn btn-block btn-warning delete">Download</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -291,7 +291,7 @@
                                                                         <span style="font-size: 12px;"><b>{{$c_info->currency.' '}}{{$package->p_p_child}}</b></span>
                                                                     </span>  Per Child*</p><br>
                                                                 <button  data-id="{{$package->slug}}" type="button" data-toggle="modal" data-target="#exampleModalCenter" class="btn btn-block btn-success delete">Book Now</button>
-                                                                <button  type="button" class="btn btn-block btn-warning">Send Inquiry</button>
+                                                                <button type="button" data-id="{{$package->slug}}" data-toggle="modal" data-target="#exampleModalCenter1" class="btn btn-block btn-warning delete">Download</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -453,6 +453,41 @@
                     <input type="hidden" name="slug" class="id">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-success">Update Fare</button>
+                </div>
+                {{ Form::close() }}
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Passengers Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ Form::open(array('url' => 'download-b2b-tour-package',  'method' => 'get' ,'class' =>'form-horizontal')) }}
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Adult Number (12 Years +)</label>
+                                <input type="number" class="form-control" id="adult" value="2" name="adult" min="2" placeholder="Enter Adult Number" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Child Number (0-12 Years)</label>
+                                <input type="number" class="form-control" id="child" value="0" name="child" min="0" placeholder="Enter Child Number" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="slug" class="id">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Download Now</button>
                 </div>
                 {{ Form::close() }}
             </div>

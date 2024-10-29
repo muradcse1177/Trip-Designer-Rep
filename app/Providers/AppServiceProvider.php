@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('*', function($view)
         {
-            //$c_domain = $_SERVER['SERVER_NAME'];
+//            $c_domain = $_SERVER['SERVER_NAME'];
             //dd($c_domain);
             $c_domain = 'tripdesigner.net';
             $fixed_domain = 'https://tripdesigner.net'; //http://localhost/tam
@@ -39,7 +39,10 @@ class AppServiceProvider extends ServiceProvider
             $view->with('domain', $fixed_domain);
             $view->with('c_info', $c_info);
             //dd($c_info);
-            $company = DB::table('users')->where('id',Session::get('agent_id'))->first();
+            $company = DB::table('users')->where('id',Session::get('user_id'))->first();
+            if(@$company->status == 'In Active'){
+                return redirect()->to('all-login')->with('errorMessage', 'Your Id is Inactive!! Please contact to admin.');
+            }
             if(@$company->role == 5){
                 $employee = DB::table('employees')->where('email',$company->company_email)->first();
                 $role = DB::table('assign_role')->where('agent_id',$employee->agent_id)->where('designation',$employee->designation)->first();

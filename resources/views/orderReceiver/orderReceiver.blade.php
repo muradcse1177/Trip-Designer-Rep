@@ -1,5 +1,5 @@
 @extends('mainLayout.layout')
-@section('title','Trip Designer || B2C Order Receiver ')
+@section('title','Trip Designer || Order Receiver ')
 @section('orderReceiver','active')
 @section('content')
     <div class="content-wrapper">
@@ -8,14 +8,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>B2C Order Management</h1>
+                        <h1>Order Management</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
                                 <a href="{{url('/')}}">Home</a>
                             </li>
-                            <li class="breadcrumb-item active">B2C Order Management</li>
+                            <li class="breadcrumb-item active">Order Management</li>
                         </ol>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     <div class="col-md-12">
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title">B2C Order Management</h3>
+                                <h3 class="card-title">Order Management</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                         <i class="fas fa-minus"></i>
@@ -45,6 +45,7 @@
                                         <th>S.L</th>
                                         <th>Date</th>
                                         <th>Order Ref.</th>
+                                        <th>Req. From</th>
                                         <th>View</th>
                                         <th>Status</th>
                                         <th>Client Details</th>
@@ -61,9 +62,19 @@
                                         <tr>
                                             <td>{{$i}}</td>
                                             <td>{{$order->date}}</td>
+                                            @php
+                                                $i=1;
+                                                $slug =basename($order->view);
+                                            @endphp
                                             <td>
-                                                Ref:{{$order->r_ref}}
-                                                Order for:{{$order->person}}
+                                                Ref:{{$order->r_ref}}<br><br>
+                                                @if($order->r_type == 'Tour Package')
+                                                    <a href="{{url('print-b2b-tour-package?slug='.$slug.'&adult='.$order->adult.'&child='.$order->child)}}" type="button" class="btn btn-warning">Download</a>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                Req From: <b>{{$order->order_type}}</b><br>
+                                                Request:{{$order->person}}
                                             </td>
                                             <td>
                                                 <a href="{{url(''.$order->view)}}" target="_blank">View Details</a>

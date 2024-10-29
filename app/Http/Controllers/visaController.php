@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class visaController extends Controller
@@ -422,5 +423,149 @@ class visaController extends Controller
                 'visa' => $rows8,
                 'type' => 'f_service',
             ]);
+    }
+    public  function bookVisaPackagePageB2b(Request $request){
+        if($request->adult >= 1 && $request->child >= 0){
+            $rows4 = DB::table('passengers')
+                ->where('deleted',0)
+                ->where('upload_by',Session::get('agent_id'))
+                ->orderBy('id','desc')
+                ->get();
+            $rows1 = DB::table('b2c_visa')
+                ->where('agent_id',Session::get('agent_id'))
+                ->where('slug',$request->slug)
+                ->first();
+            if($rows1)
+                return view('visa.bookVisaPackagePageB2b',['package' => $rows1,'passengers' => $rows4,'adult' => $request->adult,'child' =>  $request->child]);
+            else
+                return back()->with('errorMessage', 'Bad Request!!');
+        }
+        else{
+            return back()->with('errorMessage', 'Adult must greater than 1 PAX!!');
+        }
+    }
+    public  function bookVisaPackageB2b(Request $request){
+        try {
+            if ($request) {
+                $package = DB::table('b2c_visa')->where('agent_id',Session::get('agent_id'))->where('slug',$request->slug)->first();
+                $total = $package->a_price * $request->adult + $package->c_price * $request->child;
+                $agent = DB::table('users')->where('id', Session::get('agent_id'))->first();
+                $emp = DB::table('employees')->where('id', Session::get('user_id'))->first();
+                if($total > $agent->agency_amount){
+                    return back()->with('errorMessage', 'Please recharge your account to book this Visa!!');
+                }
+                dd($request);
+                if($agent->agency_amount > $total){
+                    $result = DB::table('users')
+                        ->where('id', Session::get('agent_id'))
+                        ->update([
+                            'agency_amount' => $agent->agency_amount - $total,
+                        ]);
+                    if($result){
+                        $invoice = DB::table('visa_invoice')->insert([
+                            'agent_id' => Session::get('agent_id'),
+                            'visa_country' => $package->c_name,
+                            'date' => date('Y-m-d'),
+                            'vendor' => $package->vendor,
+                            'issued_by' => $emp->name,
+                            'v_details' => $package->s_details,
+                            'pax_number' => $request->pax_number,
+                            'p_details' => json_encode($request->pax_name),
+                            'pass_number' => json_encode($request->pass_number),
+                            'v_a_price' => $request->a_price,
+                            'v_c_price' => $request->c_price,
+                            'v_vat' => $request->vat,
+                            'v_ait' => $request->ait,
+                            'v_p_type' => $request->payment_type,
+                            'v_due' => $request->due,
+                            'v_p_details' => $request->p_details,
+                            'status' => $request->status,
+                        ]);
+                        if ($invoice) {
+                            $id = DB::getPdo()->lastInsertId();
+                            $result1 = DB::table('accounts')->insert([
+                                'agent_id' => Session::get('agent_id'),
+                                'invoice_id' => $id,
+                                'date' => date('Y-m-d'),
+                                'transaction_type' => 'Debit',
+                                'head' => 'Tour Package',
+                                'source' => 'Tour Package',
+                                'purpose' => 'Tour Package' . '---' . $request->title,
+                                'buying_price' => $total,
+                                'selling_price' => $total,
+                            ]);
+                            if ($result1) {
+                                $domain =$this->domainCheck();
+                                $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
+                                if($domain['agent_id']) {
+                                    //dd($request);
+                                    $result = DB::table('order_request')->insert([
+                                        'agent_id' => $domain['agent_id'],
+                                        'r_ref' => $num,
+                                        'name' => $agent->company_name,
+                                        'email' => $agent->company_email,
+                                        'phone' => $agent->company_pnone,
+                                        'person' => 'Adult:'.$request->adult .'Child:'. $request->child,
+                                        'view' => 'https://tripdesigner.net/tour-package-b2b/'.$package->slug,
+                                        'date' => date('Y-m-d'),
+                                        'r_type' => "Tour Package",
+                                        'status' => 'Ordered',
+                                        'order_type' => 'B2B',
+                                        'adult' => $request->adult,
+                                        'child' => $request->child,
+                                        'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child),
+                                    ]);
+                                    $to = 'tripdesigner.xyz@gmail.com';
+                                    $email_cus = [$agent->company_email];
+                                    $email_admin = [$to];
+                                    $data = [
+                                        'tracking' => $num,
+                                        'name' => $agent->company_name,
+                                        'email' => $agent->company_email,
+                                        'phone' => $agent->company_pnone,
+                                        'person' => 'Adult:'.$request->adult .'Child:'. $request->child,
+                                        'r_type' => "Tour Package",
+                                        'status' => 'Ordered',
+                                        'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child),
+                                    ];
+                                    if ($result) {
+                                        Mail::send('email.customer-order-request', $data, function ($message) use ($email_cus) {
+                                            $message->subject("Trip Designer: Order Request Confirmation");
+                                            $message->from('sales@tripdesigner.net', 'Tour Package Order');
+                                            $message->to($email_cus);
+                                        });
+                                        Mail::send('email.admin-order-request', $data, function ($message) use ($email_admin,$data) {
+                                            $message->subject("Order Request Confirmation Type - ".$data['r_type']);
+                                            $message->from('sales@tripdesigner.net', 'Tour Package Order');
+                                            $message->to($email_admin);
+                                        });
+                                        return redirect()->to('newTourPackage')->with('successMessage', 'Tour Package Ordered successfully!!');
+
+                                    } else {
+                                        return back()->with('errorMessage', 'Please try again!!');
+                                    }
+                                }
+                                else{
+                                    return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+                                }
+
+                            } else {
+                                return back()->with('errorMessage', 'Please try again!!');
+                            }
+                        } else {
+                            return back()->with('errorMessage', 'Please try again!!');
+                        }
+                    }
+                }else{
+                    return back()->with('errorMessage', 'Please recharge your account to book this tour package!!');
+                }
+
+            } else {
+                return back()->with('errorMessage', 'Please fill up the form!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
     }
 }
