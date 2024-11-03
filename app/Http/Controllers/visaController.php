@@ -447,14 +447,15 @@ class visaController extends Controller
     public  function bookVisaPackageB2b(Request $request){
         try {
             if ($request) {
-                $package = DB::table('b2c_visa')->where('agent_id',Session::get('agent_id'))->where('slug',$request->slug)->first();
+                $package = DB::table('b2c_visa')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
                 $total = $package->a_price * $request->adult + $package->c_price * $request->child;
                 $agent = DB::table('users')->where('id', Session::get('agent_id'))->first();
                 $emp = DB::table('employees')->where('id', Session::get('user_id'))->first();
+                $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
                 if($total > $agent->agency_amount){
                     return back()->with('errorMessage', 'Please recharge your account to book this Visa!!');
                 }
-                dd($request);
+                //dd($request);
                 if($agent->agency_amount > $total){
                     $result = DB::table('users')
                         ->where('id', Session::get('agent_id'))
@@ -464,39 +465,37 @@ class visaController extends Controller
                     if($result){
                         $invoice = DB::table('visa_invoice')->insert([
                             'agent_id' => Session::get('agent_id'),
-                            'visa_country' => $package->c_name,
+                            'visa_country' => $package->country,
                             'date' => date('Y-m-d'),
-                            'vendor' => $package->vendor,
+                            'vendor' => 'Trip Designer',
                             'issued_by' => $emp->name,
-                            'v_details' => $package->s_details,
-                            'pax_number' => $request->pax_number,
-                            'p_details' => json_encode($request->pax_name),
-                            'pass_number' => json_encode($request->pass_number),
-                            'v_a_price' => $request->a_price,
-                            'v_c_price' => $request->c_price,
-                            'v_vat' => $request->vat,
-                            'v_ait' => $request->ait,
-                            'v_p_type' => $request->payment_type,
-                            'v_due' => $request->due,
-                            'v_p_details' => $request->p_details,
-                            'status' => $request->status,
+                            'v_details' => $package->title,
+                            'pax_number' => $request->adult + $request->child,
+                            'p_details' => json_encode($request->name),
+                            'pass_number' => json_encode($request->name),
+                            'v_a_price' => $package->a_price,
+                            'v_c_price' => $package->c_price,
+                            'v_vat' => 0,
+                            'v_ait' => 0,
+                            'v_p_type' => 'Bank Transfer',
+                            'v_due' => 0,
+                            'v_p_details' => 'Balanced from wallet - '.$total .'BDT',
+                            'status' => 'Received',
                         ]);
                         if ($invoice) {
-                            $id = DB::getPdo()->lastInsertId();
                             $result1 = DB::table('accounts')->insert([
                                 'agent_id' => Session::get('agent_id'),
-                                'invoice_id' => $id,
+                                'invoice_id' => $num,
                                 'date' => date('Y-m-d'),
                                 'transaction_type' => 'Debit',
-                                'head' => 'Tour Package',
-                                'source' => 'Tour Package',
-                                'purpose' => 'Tour Package' . '---' . $request->title,
+                                'head' => 'Visa',
+                                'source' => 'Visa B2B',
+                                'purpose' => 'Visa B2B' . '---' . $package->title,
                                 'buying_price' => $total,
                                 'selling_price' => $total,
                             ]);
                             if ($result1) {
                                 $domain =$this->domainCheck();
-                                $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
                                 if($domain['agent_id']) {
                                     //dd($request);
                                     $result = DB::table('order_request')->insert([
@@ -506,10 +505,10 @@ class visaController extends Controller
                                         'email' => $agent->company_email,
                                         'phone' => $agent->company_pnone,
                                         'person' => 'Adult:'.$request->adult .'Child:'. $request->child,
-                                        'view' => 'https://tripdesigner.net/tour-package-b2b/'.$package->slug,
+                                        'view' => 'https://tripdesigner.net/visa-b2b/'.$package->slug,
                                         'date' => date('Y-m-d'),
-                                        'r_type' => "Tour Package",
-                                        'status' => 'Ordered',
+                                        'r_type' => "Visa",
+                                        'status' => 'Received',
                                         'order_type' => 'B2B',
                                         'adult' => $request->adult,
                                         'child' => $request->child,
@@ -524,22 +523,22 @@ class visaController extends Controller
                                         'email' => $agent->company_email,
                                         'phone' => $agent->company_pnone,
                                         'person' => 'Adult:'.$request->adult .'Child:'. $request->child,
-                                        'r_type' => "Tour Package",
-                                        'status' => 'Ordered',
+                                        'r_type' => "Visa",
+                                        'status' => 'Received',
                                         'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child),
                                     ];
                                     if ($result) {
                                         Mail::send('email.customer-order-request', $data, function ($message) use ($email_cus) {
                                             $message->subject("Trip Designer: Order Request Confirmation");
-                                            $message->from('sales@tripdesigner.net', 'Tour Package Order');
+                                            $message->from('sales@tripdesigner.net', 'Visa Order');
                                             $message->to($email_cus);
                                         });
                                         Mail::send('email.admin-order-request', $data, function ($message) use ($email_admin,$data) {
                                             $message->subject("Order Request Confirmation Type - ".$data['r_type']);
-                                            $message->from('sales@tripdesigner.net', 'Tour Package Order');
+                                            $message->from('sales@tripdesigner.net', 'Visa Order');
                                             $message->to($email_admin);
                                         });
-                                        return redirect()->to('newTourPackage')->with('successMessage', 'Tour Package Ordered successfully!!');
+                                        return redirect()->to('newVisaProcess')->with('successMessage', 'Visa Ordered successfully!!');
 
                                     } else {
                                         return back()->with('errorMessage', 'Please try again!!');
@@ -563,6 +562,77 @@ class visaController extends Controller
             } else {
                 return back()->with('errorMessage', 'Please fill up the form!!');
             }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function downloadB2bVisaPackage(Request $request){
+        try{
+            $package = DB::table('b2c_visa')->where('agent_id',Session::get('agent_id'))->where('slug',$request->slug)->first();
+            $agent = DB::table('users')->where('id', Session::get('agent_id'))->first();
+            $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
+            $result = DB::table('order_request')->insert([
+                'agent_id' => Session::get('agent_id'),
+                'r_ref' => $num,
+                'name' => $agent->company_name,
+                'email' => $agent->company_email,
+                'phone' => $agent->phone_code.$agent->company_pnone,
+                'person' => $request->adult.' adults and '.$request->child.' child',
+                'view' => 'https://tripdesigner.net/visa-b2b/'.$package->slug,
+                'date' => date('Y-m-d'),
+                'r_type' => 'Visa',
+                'status' => 'Requested',
+                'order_type' => 'B2B',
+                'adult' => $request->adult,
+                'child' => $request->child,
+                'remarks' => json_encode('Need Visa for '.$request->adult.' adults and '.$request->child.' child'),
+            ]);
+            $to = 'tripdesigner.xyz@gmail.com';
+            $email_cus = [$agent->company_email];
+            $email_admin = [$to];
+            $data = [
+                'tracking' => $num,
+                'name' => $agent->company_name,
+                'email' => $agent->company_email,
+                'phone' => $agent->phone_code.$agent->company_pnone,
+                'person' =>$request->adult.' adults and '.$request->child.' child',
+                'r_type' => 'Visa',
+                'status' => 'Requested',
+                'remarks' => json_encode('Need Visa for '.$request->adult.' adults and '.$request->child.' child'),
+            ];
+            if ($result) {
+                Mail::send('email.customer-order-request', $data, function ($message) use ($email_cus) {
+                    $message->subject("Trip Designer: Visa Order Request");
+                    $message->from('sales@tripdesigner.net', 'Visa Order');
+                    $message->to($email_cus);
+                });
+                Mail::send('email.admin-order-request', $data, function ($message) use ($email_admin,$data) {
+                    $message->subject("Order Request Confirmation Type - ".$data['r_type']);
+                    $message->from('sales@tripdesigner.net', 'Visa Order');
+                    $message->to($email_admin);
+                });
+                return redirect()->to('orderReceiver')->with('successMessage', 'Visa ordered request sent successfully!!');
+
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+    public function prinB2bVisa (Request $request){
+        try{
+            $rows1 = DB::table('users')
+                ->where('id',Session::get('agent_id'))
+                ->first();
+            $rows2 = DB::table('b2c_visa')
+                ->where('slug',$request->slug)
+                ->first();
+            return view('visa.printB2bVisa',['company' => $rows1,'package' => $rows2,'adult' => $request->adult,'child' => $request->child,]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());

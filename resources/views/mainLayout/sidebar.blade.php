@@ -3,7 +3,7 @@
     <a href="{{url('/dashboard')}}" class="brand-link">
         @if(@$company_info->logo)
             <div style="background-color: #FFFFFF; border-radius: 10px;" >
-                <img src="{{url(@$company_info->logo)}}" width="150" height="40" style="margin-left: 20px; margin-top: 5px; margin-bottom: 5px;">
+                <img src="{{$domain.'/'.@$company_info->logo}}" width="150" height="40" style="margin-left: 20px; margin-top: 5px; margin-bottom: 5px;">
             </div>
         @else
             <div>

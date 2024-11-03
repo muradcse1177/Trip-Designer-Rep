@@ -16,7 +16,7 @@
                 <a href="#" class="dropdown-item">
                     <div class="media">
                         <div class="media-body">
-                            <b><p class="text-sm text-muted"><i class="far fa-money-bill-alt mr-1"></i>Balance: {{ number_format((float)(@$company_info->agency_amount), 2, '.', '')}} BDT</p></b>
+                            <b><p class="text-sm text-muted"><i class="far fa-money-bill-alt mr-1"></i>Balance: {{ number_format((float)(@$agent_info->agency_amount), 2, '.', '')}} BDT</p></b>
                         </div>
                     </div>
                 </a>
@@ -24,7 +24,7 @@
                 <a href="#" class="dropdown-item">
                     <div class="media">
                         <div class="media-body">
-                            <p class="text-sm text-muted"><i class="far fa-money-bill-alt mr-1"></i>Authorised: {{ number_format((float)(@$company_info->auth_amount), 2, '.', '')}} BDT</p>
+                            <p class="text-sm text-muted"><i class="far fa-money-bill-alt mr-1"></i>Authorised: {{ number_format((float)(@$agent_info->auth_amount), 2, '.', '')}} BDT</p>
                         </div>
                     </div>
                 </a>

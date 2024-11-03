@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-12">
                 <h2 class="page-header">
-                    <img src="{{url('/'.$c_info->logo)}}" width="160" height="60">
+                    <img src="{{$domain.'/'.@$agent_info->logo}}" width="160" height="60">
                     <small class="float-right">{{$invoice->date}}</small>
                 </h2>
             </div>
@@ -31,10 +31,10 @@
             <div class="col-sm-4 invoice-col">
                 From
                 <address>
-                    <strong>{{$c_info->name}}</strong><br>
-                    Phone: {{$c_info->phone1}}<br>
-                    Email: {{$c_info->email}}<br>
-                    Address: {{$c_info->address}}<br>
+                    <strong>{{$agent_info->company_name}}</strong><br>
+                    Phone: {{$company_info->phone_code.$company_info->company_pnone}}<br>
+                    Email: {{$company_info->company_email}}<br>
+                    Address: {{@$company_info->address}}<br>
                 </address>
             </div>
             <!-- /.col -->

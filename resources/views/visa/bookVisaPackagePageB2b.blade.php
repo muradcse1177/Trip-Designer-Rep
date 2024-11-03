@@ -2,6 +2,7 @@
 @section('title','Trip Designer || Dashboard')
 @section('mainDashboard','active')
 @section('css')
+    <link rel="stylesheet" href="{{url('/public/plugins/ekko-lightbox/ekko-lightbox.css')}}">
 @endsection
 @section('content')
     <div class="content-wrapper">
@@ -11,11 +12,13 @@
                     <div class="col-12 col-sm-12">
                         <div class="card card-warning">
                             <div class="card-header" style="background-color: #D9E0FF;">
-                                <center><h5 style="text-align:; color: #00000;"><b>  {{$package->title}}</b></h5></center>
-                                <center><p style="text-align:; color: #00000;">{{@$c_info->name}}  Authorized Visa Submitting Agents of Embassy in Dhaka, Bangladesh</p></center>
+                                <div class="card-header" style="background-color: #D9E0FF;">
+                                    <center><h5 style="text-align:; color: #00000;"><b>  {{$package->title}}</b></h5></center>
+                                    <center><p style="text-align:; color: #00000;">{{@$c_info->name}}  Authorized Visa Submitting Agents of Embassy in Dhaka, Bangladesh</p></center>
 
+                                </div>
                             </div>
-                            <div class="card-body"
+                            <div class="card-body">
                                 {{ Form::open(array('url' => 'book-visa-package-b2b',  'method' => 'post' ,'class' =>'form-horizontal')) }}
                                 <div class="row">
                                     <div class="col-xl-8 col-lg-8 col-md-12">
@@ -93,11 +96,29 @@
     </div>
 @endsection
 @section('js')
+    <script src="{{url('/public/plugins/filterizr/jquery.filterizr.min.js')}}"></script>
+    <script src="{{url('/public/plugins/ekko-lightbox/ekko-lightbox.min.js')}}"></script>
     <script>
         $('.select2').select2()
         $('.select2bs4').select2({
             theme: 'bootstrap4',
         })
+        $('#start_date,#end_date').datetimepicker({
+            format: 'YYYY-MM-DD',
+        });
+        $(function () {
+            $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+                event.preventDefault();
+                $(this).ekkoLightbox({
+                    alwaysShowClose: true,
+                });
+            });
 
+            $('.filter-container').filterizr({gutterPixels: 3});
+            $('.btn[data-filter]').on('click', function() {
+                $('.btn[data-filter]').removeClass('active');
+                $(this).addClass('active');
+            });
+        })
     </script>
 @endsection

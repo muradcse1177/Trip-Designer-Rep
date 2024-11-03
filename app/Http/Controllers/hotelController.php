@@ -243,4 +243,19 @@ class hotelController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function printHotelBookingB2b(Request $request){
+        try{
+            $rows1 = DB::table('hotel_invoice')
+                ->where('id',$request->id)
+                ->where('agent_id',Session::get('agent_id'))
+                ->first();
+            $rows2 = DB::table('users')
+                ->where('id',Session::get('agent_id'))
+                ->first();
+            return view('hotel.printHotelBookingB2b',['package' => $rows1,'company' => $rows2]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
 }

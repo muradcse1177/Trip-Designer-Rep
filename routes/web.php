@@ -140,6 +140,7 @@ Route::middleware(['role'])->group(function () {
     Route::post('updateHotelBookingPaymentStatus', 'App\Http\Controllers\hotelController@updateHotelBookingPaymentStatus');
     Route::post('updateHotelBooking', 'App\Http\Controllers\hotelController@updateHotelBooking');
     Route::post('deleteHotelBooking', 'App\Http\Controllers\hotelController@deleteHotelBooking');
+    Route::get('printHotelBookingB2b', 'App\Http\Controllers\hotelController@printHotelBookingB2b');
     //----------------------------------------------------------
 
     //Visa Processing----------------------------------------------------------
@@ -154,6 +155,8 @@ Route::middleware(['role'])->group(function () {
     Route::get('printVisaInvoice', 'App\Http\Controllers\visaController@printVisaInvoice');
     Route::get('book-visa-package-page-b2b', 'App\Http\Controllers\visaController@bookVisaPackagePageB2b');
     Route::post('book-visa-package-b2b', 'App\Http\Controllers\visaController@bookVisaPackageB2b');
+    Route::get('download-b2b-visa-package', 'App\Http\Controllers\visaController@downloadB2bVisaPackage');
+    Route::get('print-b2b-visa', 'App\Http\Controllers\visaController@prinB2bVisa');
     //----------------------------------------------------------
 
     //Tour Package----------------------------------------------------------
@@ -205,6 +208,8 @@ Route::middleware(['role'])->group(function () {
     Route::post('deleteManPowerVisa', 'App\Http\Controllers\manpowerController@deleteManPowerVisa');
     Route::get('editManPowerVisaPaymentStatus', 'App\Http\Controllers\manpowerController@editManPowerVisaPaymentStatus');
     Route::post('updateManpowerVisaPaymentStatus', 'App\Http\Controllers\manpowerController@updateManpowerVisaPaymentStatus');
+    Route::get('download-work-permit/{slug}', 'App\Http\Controllers\manpowerController@downloadWorkPermit');
+    Route::get('print-work-permit', 'App\Http\Controllers\manpowerController@printWorkPermit');
     //----------------------------------------------------------
 
     //User Management------------------------------------------------

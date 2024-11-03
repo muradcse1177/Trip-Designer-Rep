@@ -283,8 +283,7 @@
                                                 </div>
                                                 <div class="card">
                                                     <div class="card-body">
-                                                        <button type="button" class="btn btn-block btn-success">Proceed to Book Online</button>
-                                                        <button type="button" class="btn btn-block btn-warning">Send Inquiry</button>
+                                                        <a href="{{url('download-work-permit/'.$permit->slug)}}" type="button" class="btn btn-block btn-warning">Download</a>
                                                     </div>
                                                 </div>
                                             </div>

@@ -118,13 +118,17 @@ class authController extends Controller
     public  function mainDashboard(Request $request){
         $domain =$this->domainCheck();
         $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
-        $rows2 = DB::table('b2c_tour_package')->where('agent_id',$domain['agent_id'])->get();
-        $rows3 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->get();
+        $rows2 = DB::table('b2c_tour_package')->where('agent_id',$domain['agent_id'])->orderBy('p_p_adult','asc')->inRandomOrder()->get()->take(21);
+
+        $rows3 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->orderBy('a_price','asc')->inRandomOrder()->get()->take(21);
         $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
+
         $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
-        $rows6 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->get();
-        $rows7 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->get();
-        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->get();
+        $rows6 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(21);
+
+        $rows7 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->orderBy('p_p_adult','asc')->inRandomOrder()->get()->take(21);
+
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(12);
         return view('main-dashboard',
             [
                 't_country' => $rows1,'t_package' => $rows2,

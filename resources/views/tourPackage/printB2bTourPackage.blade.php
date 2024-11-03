@@ -19,7 +19,7 @@
                 <div id="printArea" style="margin-top: 50px; margin-left: 50px; margin-right: 50px; margin-bottom: 50px;">
                     <font size="3" face="Century Gothic" >
                         <div class="col-12 d-flex justify-content-center">
-                            <h4><b>Tour Package Invoice</b></h4>
+                            <h4><b>Tour Package Details</b></h4>
                         </div>
                         <table class="table">
                             <tr>

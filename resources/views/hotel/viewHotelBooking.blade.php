@@ -79,6 +79,13 @@
                                             <table class="table table-bordered">
                                                 <tr>
                                                     <td>
+                                                       <b>Reservation No.</b>
+                                                    </td>
+                                                    <td>
+                                                        {{$package->reservation}}
+                                                    </td>
+                                                </tr><tr>
+                                                    <td>
                                                        <b>Hotel Name</b>
                                                     </td>
                                                     <td>
@@ -201,7 +208,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button class="btn btn-warning float-right printMe">Print Invoice</button>
+                                    <a href="{{url('printHotelBookingB2b?id='.$package->id)}}" class="btn btn-warning float-right">Print Invoice</a>
                                 </div>
                             </div>
                             <!-- /.card-body -->
@@ -221,14 +228,6 @@
         $('.select2bs4').select2({
             theme: 'bootstrap4',
         })
-        $('.printMe').click(function(){
-            var divToPrint=document.getElementById("printArea");
-            newWin= window.open('');
-            newWin.document.write('<link href="{{url('/public/dist/css/adminlte.min.css')}}" rel="stylesheet" type="text/css" />');
-            newWin.document.write(divToPrint.outerHTML);
-            newWin.print();
-            newWin.close();
-        });
 
     </script>
 @endsection

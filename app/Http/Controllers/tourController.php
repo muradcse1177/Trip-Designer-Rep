@@ -325,6 +325,7 @@ class tourController extends Controller
                 $package = DB::table('b2c_tour_package')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
                 $total = $package->p_p_adult * $request->adult + $package->p_p_child * $request->child;
                 $agent = DB::table('users')->where('id', Session::get('agent_id'))->first();
+                $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
                 if($total > $agent->agency_amount){
                     return back()->with('errorMessage', 'Please recharge your account to book this tour package!!');
                 }
@@ -342,7 +343,7 @@ class tourController extends Controller
                             'title' => $package->p_name,
                             'p_code' => $package->p_code,
                             'night' => $package->night,
-                            'vendor' => $package->vendor,
+                            'vendor' => 'Trip Designer',
                             'start_date' => $request->start_date,
                             'end_date' => $request->end_date,
                             'highlights' => $package->highlights,
@@ -362,10 +363,9 @@ class tourController extends Controller
                             'pay_details' => 'Balanced from wallet - '.$total .'BDT',
                         ]);
                         if ($invoice) {
-                            $id = DB::getPdo()->lastInsertId();
                             $result1 = DB::table('accounts')->insert([
                                 'agent_id' => Session::get('agent_id'),
-                                'invoice_id' => $id,
+                                'invoice_id' => $num,
                                 'date' => date('Y-m-d'),
                                 'transaction_type' => 'Debit',
                                 'head' => 'Tour Package',
@@ -376,7 +376,6 @@ class tourController extends Controller
                             ]);
                             if ($result1) {
                                 $domain =$this->domainCheck();
-                                $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
                                 if($domain['agent_id']) {
                                     //dd($request);
                                     $result = DB::table('order_request')->insert([
