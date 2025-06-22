@@ -345,8 +345,8 @@
                                 </div><br>
                                 {{ Form::close() }}
                                 <div class="table-responsive">
-                                    <table id="passTablea" class="table table-bordered table-hover">
-                                        <thead>
+                                    <table id="passTablea" class="table table-bordered table-hover table-striped">
+                                        <thead class="thead-dark">
                                         <tr>
                                             <th>S.L</th>
                                             <th>Booking Date</th>
@@ -355,122 +355,119 @@
                                             <th>Status</th>
                                             <th>Price Details</th>
                                             <th>Due</th>
-                                            @if(Session::get('user_role')==2 || Session::get('user_role')==1)
-                                            <th>Profit</th>
+                                            @if(Session::get('user_role') == 2 || Session::get('user_role') == 1)
+                                                <th>Profit</th>
                                             @endif
                                             <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @php
-                                            $i=1;
-                                            $j=1;
+                                            $i = 1;
                                             $sum_due = 0;
                                             $sum_a_price = 0;
                                             $sum_c_price = 0;
                                         @endphp
                                         @foreach($tickets as $ticket)
                                             <tr>
-                                                <td>{{$i}}</td>
-                                                <td>{{$ticket->issue_date}}</td>
+                                                <td>{{ $i++ }}</td>
+                                                <td>{{ $ticket->issue_date }}</td>
                                                 <td>
-                                                    <div>R.PNR:{{$ticket->reservation_pnr}} </div>
-                                                    <div>A.PNR:{{$ticket->airline_pnr}} </div>
-                                                    <div>Vendor:{{$ticket->vendor}} </div>
+                                                    <div>R.PNR: {{ $ticket->reservation_pnr }}</div>
+                                                    <div>A.PNR: {{ $ticket->airline_pnr }}</div>
+                                                    <div>Vendor: {{ $ticket->vendor }}</div>
                                                 </td>
-                                                    <?php
-                                                    $p = json_decode($ticket->pax_name);
-                                                    ?>
                                                 <td>
-                                                    @foreach($p as $pas)
-                                                            <?php
-                                                            $name = DB::table('passengers')
-                                                                ->where('id',$pas)
-                                                                ->where('upload_by',Session::get('agent_id'))
-                                                                ->first();
-                                                             $phone = @$name->phone;
-                                                            ?>
-                                                        <div>{{$j.'.'.@$name->f_name.' '.@$name->l_name}}</div>
+                                                    @php
+                                                        $j = 1;
+                                                        $paxList = json_decode($ticket->pax_name);
+                                                        $phone = '';
+                                                    @endphp
+                                                    @foreach($paxList as $pas)
                                                         @php
-                                                            $j++;
+                                                            $name = DB::table('passengers')
+                                                                ->where('id', $pas)
+                                                                ->where('upload_by', Session::get('agent_id'))
+                                                                ->first();
+                                                            $phone = @$name->phone;
                                                         @endphp
+                                                        <div>{{ $j++ . '. ' . @$name->f_name . ' ' . @$name->l_name }}</div>
                                                     @endforeach
-                                                        <div>Phone: {{@$phone}}</div>
+                                                    <div><strong>Phone:</strong> {{ @$phone }}</div>
                                                 </td>
                                                 <td>
-                                                    @if($ticket->	status == 'Issued')
-                                                        <button type="button" class="btn btn-success">{{$ticket->status}}</button>
-                                                    @endif
-                                                    @if($ticket->	status == 'Refunded')
-                                                        <button type="button" class="btn btn-info">{{$ticket->status}}</button>
-                                                    @endif
-                                                    @if($ticket->	status == 'Cancelled')
-                                                        <button type="button" class="btn btn-danger">{{$ticket->status}}</button>
-                                                    @endif
-                                                    @if($ticket->	status == 'Reissued')
-                                                        <button type="button" class="btn btn-warning">{{$ticket->status}}</button>
-                                                    @endif
+                                                <span class="badge
+                                                    @if($ticket->status == 'Issued') badge-success
+                                                    @elseif($ticket->status == 'Refunded') badge-info
+                                                    @elseif($ticket->status == 'Cancelled') badge-danger
+                                                    @elseif($ticket->status == 'Reissued') badge-warning
+                                                    @else badge-secondary
+                                                    @endif">
+                                                    {{ $ticket->status }}
+                                                </span>
                                                 </td>
                                                 <td>
-                                                    <div>A.Price:{{$ticket->	a_price}}/-</div>
-                                                    <div>C.Price:{{$ticket->	c_price + $ticket->	vat + $ticket->	ait}}/-</div>
+                                                    <div>A.Price: {{ $ticket->a_price }}/-</div>
+                                                    <div>C.Price: {{ $ticket->c_price + $ticket->vat + $ticket->ait }}/-</div>
                                                 </td>
                                                 <td>
-                                                    @if((int)$ticket->due_amount > 0)
-                                                        <div style="color: red;"><b>{{$ticket->due_amount}}/-</b></div>
+                                                    @if((int) $ticket->due_amount > 0)
+                                                        <span class="text-danger font-weight-bold">{{ $ticket->due_amount }}/-</span>
                                                     @else
-                                                       {{$ticket->	due_amount.'/-'}}
+                                                        {{ $ticket->due_amount }}/-
                                                     @endif
                                                 </td>
-                                                @if(Session::get('user_role')==2 || Session::get('user_role')==1)
-                                                <td>
-                                                    {{$ticket->	c_price + $ticket->	vat + $ticket->	ait - $ticket->	a_price}}/-
-                                                </td>
+                                                @if(Session::get('user_role') == 2 || Session::get('user_role') == 1)
+                                                    <td>
+                                                        {{ $ticket->c_price + $ticket->vat + $ticket->ait - $ticket->a_price }}/-
+                                                    </td>
                                                 @endif
                                                 <td>
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-info">Action</button>
-                                                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                        <button type="button" class="btn btn-info btn-sm">Action</button>
+                                                        <button type="button" class="btn btn-info btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
                                                             <span class="sr-only">Toggle Dropdown</span>
                                                         </button>
-                                                        <div class="dropdown-menu" role="menu" style="">
-                                                            <a class="dropdown-item" href="{{url('viewTicket?id='.$ticket->id)}}">View</a>
-                                                            <a class="dropdown-item" href="{{url('editTicketPage?id='.$ticket->id)}}">Edit</a>
-                                                            <a class="dropdown-item delete" data-id="{{$ticket->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteTicket?id='.$ticket->id)}}">Delete</a>
-                                                            <a class="dropdown-item" href="{{url('editPaymentStatus?id='.$ticket->id)}}">Edit Payment Status</a>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="{{ url('viewTicket?id=' . $ticket->id) }}">View</a>
+                                                            <a class="dropdown-item" href="{{ url('editTicketPage?id=' . $ticket->id) }}">Edit</a>
+                                                            <a class="dropdown-item delete" data-id="{{ $ticket->id }}" data-toggle="modal" data-target="#modal-danger" href="{{ url('deleteTicket?id=' . $ticket->id) }}">Delete</a>
+                                                            <a class="dropdown-item" href="{{ url('editPaymentStatus?id=' . $ticket->id) }}">Edit Payment Status</a>
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
+
                                             @php
-                                                $i++;
-                                                 $j = 1;
-                                                 $sum_due = $sum_due + $ticket->due_amount;
-                                                 $sum_a_price = $sum_a_price + $ticket->a_price;
-                                                 $sum_c_price = $sum_c_price + $ticket->c_price + $ticket->vat + $ticket->ait;
+                                                $sum_due += $ticket->due_amount;
+                                                $sum_a_price += $ticket->a_price;
+                                                $sum_c_price += ($ticket->c_price + $ticket->vat + $ticket->ait);
                                             @endphp
                                         @endforeach
                                         </tbody>
-                                        @if(Session::get('user_role')==2 || Session::get('user_role')==1)
+
+                                        @if(Session::get('user_role') == 2 || Session::get('user_role') == 1)
                                             <tfoot>
-                                                <tr>
-                                                    <td align="right" colspan="5"><b>Total</b></td>
-                                                    <td align="left">
-                                                        <p>A.Price:{{$sum_a_price}}/-</p>
-                                                        <p>C.Price:{{$sum_c_price}}/-</p>
-                                                    </td>
-                                                    <th align="left">
-                                                        <div style="color: red;"><b>{{$sum_due}}/-</b></div>
-                                                    </th>
-                                                    <th align="left">
-                                                        <div style="color: green;"><b>{{$sum_c_price - $sum_a_price}}/-</b></div>
-                                                    </th>
-                                                    <th align="left"></th>
-                                                </tr>
+                                            <tr>
+                                                <th colspan="5" class="text-right">Total</th>
+                                                <td>
+                                                    <p>A.Price: {{ $sum_a_price }}/-</p>
+                                                    <p>C.Price: {{ $sum_c_price }}/-</p>
+                                                </td>
+                                                <th>
+                                                    <span class="text-danger font-weight-bold">{{ $sum_due }}/-</span>
+                                                </th>
+                                                <th>
+                                                    <span class="text-success font-weight-bold">{{ $sum_c_price - $sum_a_price }}/-</span>
+                                                </th>
+                                                <th></th>
+                                            </tr>
                                             </tfoot>
                                         @endif
                                     </table>
-                                </div><br>
+                                </div>
+
+                                <br>
                                 <div class="table-responsive">
                                     {{ $tickets->links() }}
                                 </div>

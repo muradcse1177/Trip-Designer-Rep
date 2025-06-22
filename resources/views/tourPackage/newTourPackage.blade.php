@@ -49,16 +49,18 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body" style="display: none;">
-                                {{ Form::open(array('url' => 'createNewTourPackage',  'method' => 'post' ,'class' =>'form-horizontal')) }}
+                                {{ Form::open(['url' => 'createNewTourPackage', 'method' => 'post', 'class' => 'form-horizontal']) }}
                                 {{ csrf_field() }}
+
                                 <div class="card-body row">
+                                    {{-- Basic Info --}}
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Country</label>
-                                            <select class="form-control select2bs4" name="country" id="country" style="width: 100%;" required>
+                                            <select class="form-control select2bs4" name="country" required>
                                                 <option value="">Select Country Name</option>
                                                 @foreach($countries as $country)
-                                                    <option value="{{$country->name}}">{{$country->name}}</option>
+                                                    <option value="{{ $country->name }}">{{ $country->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -66,43 +68,33 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Package Name</label>
-                                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Package Name" required>
+                                            <input type="text" class="form-control" name="title" placeholder="Enter Package Name" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Package Code</label>
-                                            <input type="text" class="form-control" id="p_code"  name="p_code" placeholder="Enter Package Code" required>
+                                            <input type="text" class="form-control" name="p_code" placeholder="Enter Package Code" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Package Night</label>
-                                            <select class="form-control select2bs4 night" name="night" id="night" style="width: 100%;" required>
+                                            <select class="form-control select2bs4 night" name="night" required>
                                                 <option value="">Select Package Night</option>
-                                                <option value="1">1 Night</option>
-                                                <option value="2">2 Night</option>
-                                                <option value="3">3 Night</option>
-                                                <option value="4">4 Night</option>
-                                                <option value="5">5 Night</option>
-                                                <option value="6">6 Night</option>
-                                                <option value="7">7 Night</option>
-                                                <option value="8">8 Night</option>
-                                                <option value="9">9 Night</option>
-                                                <option value="10">10 Night</option>
-                                                <option value="11">11 Night</option>
-                                                <option value="12">12 Night</option>
-                                                <option value="13">13 Night</option>
-                                                <option value="14">14 Night</option>
-                                                <option value="15">15 Night</option>
+                                                @for($n = 1; $n <= 20; $n++)
+                                                    <option value="{{ $n }}">{{ $n }} Night</option>
+                                                @endfor
                                             </select>
                                         </div>
                                     </div>
+
+                                    {{-- Dates --}}
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Start Date</label>
                                             <div class="input-group date" id="start_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#start_date" name="start_date" placeholder="Enter Start Date" required/>
+                                                <input type="text" name="start_date" class="form-control datetimepicker-input" data-target="#start_date" placeholder="Enter Start Date" required>
                                                 <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -113,20 +105,22 @@
                                         <div class="form-group">
                                             <label>End Date</label>
                                             <div class="input-group date" id="end_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#end_date" name="end_date" placeholder="Enter End Date" required/>
+                                                <input type="text" name="end_date" class="form-control datetimepicker-input" data-target="#end_date" placeholder="Enter End Date" required>
                                                 <div class="input-group-append" data-target="#end_date" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    {{-- Vendor & Guests --}}
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Vendors</label>
-                                            <select class="form-control select2bs4" name="vendor" id="vendor" style="width: 100%;" required>
+                                            <select class="form-control select2bs4" name="vendor" required>
                                                 <option value="">Select Vendor</option>
                                                 @foreach($vendors as $vendor)
-                                                    <option value="{{$vendor->name}}">{{$vendor->name}}</option>
+                                                    <option value="{{ $vendor->name }}">{{ $vendor->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -134,117 +128,107 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Guest Number</label>
-                                            <select class="form-control select2bs4" name="pax_number" id="pax_number" style="width: 100%;" required>
-                                                <option value="">Select From</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
-                                                <option value="4">Four</option>
-                                                <option value="5">Five</option>
-                                                <option value="6">Six</option>
-                                                <option value="7">Seven</option>
-                                                <option value="8">Eight</option>
-                                                <option value="9">Nine</option>
-                                                <option value="10">Ten</option>
+                                            <select class="form-control select2bs4" name="pax_number" id="pax_number" required>
+                                                <option value="">Select</option>
+                                                @for($g = 1; $g <= 10; $g++)
+                                                    <option value="{{ $g }}">{{ ucfirst(numfmt_format($fmt = numfmt_create('en', NumberFormatter::SPELLOUT), $g)) }}</option>
+                                                @endfor
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12 newPassenger" style="display: none;">
-                                    </div>
+
+                                    {{-- Dynamic Passenger Section --}}
+                                    <div class="col-sm-12 newPassenger" style="display: none;"></div>
+
+                                    {{-- Pricing --}}
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Agent Price</label>
-                                            <input type="number" class="form-control" id="a_price" name="a_price" min="1" placeholder="Enter Agent Price" required>
+                                            <input type="number" class="form-control" name="a_price" min="1" placeholder="Enter Agent Price" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Client Price</label>
-                                            <input type="number" class="form-control" id="c_price" name="c_price" min="1"  placeholder="Enter Client Price" required>
+                                            <input type="number" class="form-control" name="c_price" min="1" placeholder="Enter Client Price" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>VAT</label>
-                                            <input type="number" class="form-control" id="vat" name="vat" min="0" value="0" placeholder="Enter VAT">
+                                            <input type="number" class="form-control" name="vat" min="0" value="0" placeholder="Enter VAT">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>AIT</label>
-                                            <input type="number" class="form-control" id="ait" name="ait" min="0" value="0" placeholder="Enter AIT">
+                                            <input type="number" class="form-control" name="ait" min="0" value="0" placeholder="Enter AIT">
                                         </div>
                                     </div>
-                                    <div class="col-sm-12" >
+
+                                    {{-- Highlights --}}
+                                    <div class="col-sm-12">
                                         <div class="form-group">
-                                            <label>Package  Highlights</label>
+                                            <label>Package Highlights</label>
                                             <textarea class="summernote" name="highlights">Place Write Here...</textarea>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="card-body row highlights" style="display: none;">
 
-                                </div>
-                                <div class="card-body row">
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label>Package Inclusions</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_inclusions">Place Write Here...</textarea>
+                                    {{-- Dynamic Day Plan Section --}}
+                                    <div class="col-sm-12 highlights" style="display: none;"></div>
+
+                                    {{-- Rich Text Details --}}
+                                    @foreach ([
+                                        'p_inclusions' => 'Package Inclusions',
+                                        'p_exclusions' => 'Package Exclusions',
+                                        'p_tnt' => 'Terms and Conditions',
+                                        'p_cancel' => 'Cancellation Policies'
+                                    ] as $name => $label)
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>{{ $label }}</label>
+                                                <textarea class="summernote" name="{{ $name }}">Place Write Here...</textarea>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endforeach
+
+                                    {{-- Payment Section --}}
                                     <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label>Package Exclusions</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_exclusions">Place Write Here...</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label>Terms and Conditions</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_tnt">Place Write Here...</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label>Cancellation Policies</label>
-                                            <textarea id="summernote" class="summernote" row="3" name="p_cancel">Place Write Here...</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <div class="form-group" style="background: #e7e7e1;">
-                                            <label style="margin-left: 5px;">Payment  Details</label>
+                                        <div class="form-group bg-light p-2">
+                                            <label class="mb-0"><strong>Payment Details</strong></label>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label> Payment Type</label>
-                                            <select class="form-control select2bs4" name="payment_type" id="payment_type" style="width: 100%;" required>
+                                            <label>Payment Type</label>
+                                            <select class="form-control select2bs4" name="payment_type" required>
                                                 <option value="">Select Payment Type</option>
-                                                @foreach($payment_types as $payment_type)
-                                                    <option value="{{$payment_type->type}}">{{$payment_type->type}}</option>
+                                                @foreach($payment_types as $type)
+                                                    <option value="{{ $type->type }}">{{ $type->type }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <div class="form-group">
-                                                <label>Due Amount</label>
-                                                <input type="number" class="form-control" id="due" name="due" min="0" value="0" placeholder="Enter Due Amount">
-                                            </div>
+                                            <label>Due Amount</label>
+                                            <input type="number" class="form-control" name="due" min="0" value="0" placeholder="Enter Due Amount">
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
                                         <div class="form-group">
-                                            <label>Payments Details</label>
-                                            <textarea class="form-control" id="pay_details" name="pay_details" rows="5" placeholder="Write Payments Detail..."></textarea>
+                                            <label>Payment Details</label>
+                                            <textarea class="form-control" name="pay_details" rows="5" placeholder="Write Payments Detail..."></textarea>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-warning float-right">Save</button>
                                 </div>
+
                                 {{ Form::close() }}
+
                             </div>
                             <!-- /.card-body -->
                         </div>

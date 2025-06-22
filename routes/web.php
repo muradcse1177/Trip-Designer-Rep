@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\courseController;
+use App\Http\Controllers\hrController;
 use App\Http\Controllers\SslCommerzPaymentController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 //Auth Management-------------------------------------------------------
 Route::get('/register', function () {
@@ -52,7 +56,10 @@ Route::get('hajj-umrah', 'App\Http\Controllers\homeController@hajjUmrah');
 Route::get('hajj-umrah/{slug}', 'App\Http\Controllers\homeController@searchHajjUmrahBySlug');
 Route::get('search-hajj-umrah-package', 'App\Http\Controllers\homeController@searchHajjUmrahPackage');
 Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug');
+Route::get('blogs', 'App\Http\Controllers\homeController@blogs');
+Route::get('course/{slug}', 'App\Http\Controllers\homeController@searchCourseBySlug');
 Route::get('order-request', 'App\Http\Controllers\homeController@orderRequest');
+Route::post('tour-client-details', 'App\Http\Controllers\homeController@tourClientDetails');
 Route::get('success-order-request', 'App\Http\Controllers\homeController@successOrderRequest');
 Route::get('about-us', 'App\Http\Controllers\homeController@aboutUs');
 Route::post('contactUS', 'App\Http\Controllers\homeController@contactUS');
@@ -67,7 +74,7 @@ Route::get('cookie-policy', 'App\Http\Controllers\homeController@CookiePolicy');
 Route::get('login', 'App\Http\Controllers\authController@allLogin');
 Route::get('logout', 'App\Http\Controllers\authController@logout');
 Route::post('verifyUsers', 'App\Http\Controllers\authController@verifyUsers');
-Route::get('dashboard', 'App\Http\Controllers\authController@dashboard');
+//Route::get('dashboard', 'App\Http\Controllers\authController@dashboard');
 Route::get('report-dashboard', 'App\Http\Controllers\authController@dashboard');
 Route::get('main-dashboard', 'App\Http\Controllers\authController@mainDashboard');
 
@@ -86,8 +93,13 @@ Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
 
 Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 
+//SSL Commerz Payment B2C
+Route::post('pay-online-b2b', [SslCommerzPaymentController::class, 'payOnlineb2b']);
+
 //----------------------------------------------------------
 Route::middleware(['role'])->group(function () {
+    //Number Export
+    Route::get('/numbers/{slug}', 'App\Http\Controllers\senderController@allPaxNumber');
     //Dashboard----------------------------------------------------------
     Route::get('/report-dashboard', 'App\Http\Controllers\authController@dashboard');
     Route::get('salesDataGraph', 'App\Http\Controllers\airTicketController@salesDataGraph');
@@ -103,6 +115,7 @@ Route::middleware(['role'])->group(function () {
     Route::post('createNewContacts', 'App\Http\Controllers\usersController@createNewContacts');
     Route::get('editContactsPage', 'App\Http\Controllers\usersController@editContactsPage');
     Route::post('updateContacts', 'App\Http\Controllers\usersController@updateContacts');
+    Route::post('createNewContactsDetails', 'App\Http\Controllers\usersController@createNewContactsDetails');
     //----------------------------------------------------------
 
     //B2C Order Request
@@ -145,6 +158,7 @@ Route::middleware(['role'])->group(function () {
 
     //Visa Processing----------------------------------------------------------
     Route::get('newVisaProcess', 'App\Http\Controllers\visaController@newVisaProcess');
+    Route::get('filter-visa', 'App\Http\Controllers\visaController@filterVisa');
     Route::post('createNewVisa', 'App\Http\Controllers\visaController@createNewVisa');
     Route::get('viewVisa', 'App\Http\Controllers\visaController@viewVisa');
     Route::get('editVisaPaymentStatus', 'App\Http\Controllers\visaController@editVisaPaymentStatus');
@@ -184,6 +198,11 @@ Route::middleware(['role'])->group(function () {
     Route::get('viewUmrahPackage', 'App\Http\Controllers\umrahController@viewUmrahPackage');
     Route::get('editUmrahPackagePayment', 'App\Http\Controllers\umrahController@editUmrahPackagePayment');
     Route::post('updateUmrahPackagePaymentStatus', 'App\Http\Controllers\umrahController@updateUmrahPackagePaymentStatus');
+    Route::get('book-umrah-package-page-b2b', 'App\Http\Controllers\umrahController@bookUmrahPackagePageB2b');
+    Route::post('book-umrah-package-b2b', 'App\Http\Controllers\umrahController@bookUmrahPackageB2b');
+    Route::get('printUmrahPackageInvoice', 'App\Http\Controllers\umrahController@printUmrahPackageInvoice');
+    Route::get('print-b2b-umrah-package', 'App\Http\Controllers\umrahController@printB2bUmrahPackage');
+    Route::get('download-b2b-umrah-package', 'App\Http\Controllers\umrahController@downloadB2bUmrahPackage');
     //----------------------------------------------------------
 
     //B2B Section
@@ -280,6 +299,23 @@ Route::middleware(['role'])->group(function () {
     Route::get('roles', 'App\Http\Controllers\hrController@roles');
     Route::post('addRole', 'App\Http\Controllers\hrController@addRole');
     Route::post('deleteRole', 'App\Http\Controllers\hrController@deleteRole');
+
+    Route::get('leaves', 'App\Http\Controllers\hrController@leaves');
+    Route::post('newLeaveRequest', 'App\Http\Controllers\hrController@newLeaveRequest');
+    Route::get('approveLeave', 'App\Http\Controllers\hrController@approveLeave');
+    Route::get('rejectLeave', 'App\Http\Controllers\hrController@rejectLeave');
+    Route::post('requestEarnedLeave', [hrController::class, 'requestEarnedLeave']);
+    Route::get('approveEarnedLeave', [hrController::class, 'approveEarnedLeave']);
+
+    Route::get('attendance', 'App\Http\Controllers\hrController@attendance');
+    Route::get('entry-attendance', 'App\Http\Controllers\hrController@entryAttendance');
+    Route::get('exit-attendance', 'App\Http\Controllers\hrController@exitAttendance');
+    Route::get('filter-attendance', 'App\Http\Controllers\hrController@filterAttendance');
+    Route::get('download-attendance-pdf', 'App\Http\Controllers\hrController@downloadAttendancePdf');
+    //Route::get('download-attendance-pdf', [hrController::class, 'downloadAttendancePdf'])->name('attendance.download.pdf');
+    Route::get('download-attendance-pdf', [hrController::class, 'downloadAttendancePdf'])->name('attendance.download.pdf');
+
+
     //----------------------------------------------------------
 
     //Statement Management------------------------------------------------
@@ -316,6 +352,15 @@ Route::middleware(['role'])->group(function () {
     Route::get('editAirlinesPage', 'App\Http\Controllers\settingController@editAirlinesPage');
     Route::post('editAirlines', 'App\Http\Controllers\settingController@editAirlines');
     Route::post('deleteAirlines', 'App\Http\Controllers\settingController@deleteAirlines');
+
+    //Course Management
+    Route::get('course-management', 'App\Http\Controllers\courseController@courseManagement');
+    Route::post('add-new-course', 'App\Http\Controllers\courseController@addNewCourse');
+    Route::get('editCoursePage', 'App\Http\Controllers\courseController@editCoursePage');
+    Route::post('updateCourse', 'App\Http\Controllers\courseController@updateCourse');
+    Route::get('/toggle-course-status/{id}', [CourseController::class, 'toggleCourseStatus'])->name('course.toggle');
+    Route::post('/delete-course/{id}', [CourseController::class, 'deleteCourse'])->name('course.delete');
+
 
     //Website Settings Management------------------------------------------------
     Route::get('b2cVisaManagement', 'App\Http\Controllers\websiteSettingController@b2cVisaManagement');

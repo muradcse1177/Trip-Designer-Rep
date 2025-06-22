@@ -10,7 +10,7 @@
             $a = 'b';
         ?>
         @if( $a == 'b')
-            <br><br>
+{{--            <br><br>--}}
         @endif
         <!-- End Navigation -->
         <div class="clearfix"></div>

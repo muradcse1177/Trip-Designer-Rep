@@ -69,13 +69,16 @@
                                             <td>
                                                 Ref:{{$order->r_ref}}<br><br>
                                                 @if($order->r_type == 'Tour Package')
-                                                    <a href="{{url('print-b2b-tour-package?slug='.$slug.'&adult='.$order->adult.'&child='.$order->child)}}" type="button" class="btn btn-warning">Download</a>
+                                                    <a target="_blank" href="{{url('print-b2b-tour-package?slug='.$slug.'&adult='.$order->adult.'&child='.$order->child)}}" type="button" class="btn btn-warning">Download</a>
                                                 @endif
                                                 @if($order->r_type == 'Visa')
-                                                    <a href="{{url('print-b2b-visa?slug='.$slug.'&adult='.$order->adult.'&child='.$order->child)}}" type="button" class="btn btn-warning">Download</a>
+                                                    <a  target="_blank" href="{{url('print-b2b-visa?slug='.$slug.'&adult='.$order->adult.'&child='.$order->child)}}" type="button" class="btn btn-warning">Download</a>
                                                 @endif
                                                 @if($order->r_type == 'Work Permit')
-                                                    <a href="{{url('print-work-permit?slug='.$slug.'&adult=1&child=0')}}" type="button" class="btn btn-warning">Download</a>
+                                                    <a target="_blank" href="{{url('print-work-permit?slug='.$slug.'&adult=1&child=0')}}" type="button" class="btn btn-warning">Download</a>
+                                                @endif
+                                                @if($order->r_type == 'Umrah Package')
+                                                    <a target="_blank" href="{{url('print-b2b-umrah-package?slug='.$slug.'&adult='.$order->adult.'&child='.$order->child.'&infant='.$order->infant)}}" type="button" class="btn btn-warning">Download</a>
                                                 @endif
                                             </td>
                                             <td>

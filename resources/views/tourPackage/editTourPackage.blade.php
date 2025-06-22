@@ -95,6 +95,11 @@
                                                 <option value="13" <?php if($package->night == 13) echo 'selected'; ?>>13 Night</option>
                                                 <option value="14" <?php if($package->night == 14) echo 'selected'; ?>>14 Night</option>
                                                 <option value="15" <?php if($package->night == 15) echo 'selected'; ?>>15 Night</option>
+                                                <option value="16" <?php if($package->night == 16) echo 'selected'; ?>>16 Night</option>
+                                                <option value="17" <?php if($package->night == 17) echo 'selected'; ?>>17 Night</option>
+                                                <option value="18" <?php if($package->night == 18) echo 'selected'; ?>>18 Night</option>
+                                                <option value="19" <?php if($package->night == 19) echo 'selected'; ?>>19 Night</option>
+                                                <option value="20" <?php if($package->night == 20) echo 'selected'; ?>>20 Night</option>
                                             </select>
                                         </div>
                                     </div>
@@ -131,26 +136,26 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label>Guest Number</label>
-                                            <select class="form-control select2bs4" name="pax_number" id="pax_number" style="width: 100%;" required>
-                                                <option value="">Select From</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
-                                                <option value="4">Four</option>
-                                                <option value="5">Five</option>
-                                                <option value="6">Six</option>
-                                                <option value="7">Seven</option>
-                                                <option value="8">Eight</option>
-                                                <option value="9">Nine</option>
-                                                <option value="10">Ten</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 newPassenger" style="display: none;">
-                                    </div>
+{{--                                    <div class="col-sm-3">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label>Guest Number</label>--}}
+{{--                                            <select class="form-control select2bs4" name="pax_number" id="pax_number" style="width: 100%;" required>--}}
+{{--                                                <option value="">Select From</option>--}}
+{{--                                                <option value="1">One</option>--}}
+{{--                                                <option value="2">Two</option>--}}
+{{--                                                <option value="3">Three</option>--}}
+{{--                                                <option value="4">Four</option>--}}
+{{--                                                <option value="5">Five</option>--}}
+{{--                                                <option value="6">Six</option>--}}
+{{--                                                <option value="7">Seven</option>--}}
+{{--                                                <option value="8">Eight</option>--}}
+{{--                                                <option value="9">Nine</option>--}}
+{{--                                                <option value="10">Ten</option>--}}
+{{--                                            </select>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-sm-12 newPassenger" style="display: none;">--}}
+{{--                                    </div>--}}
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Agent Price</label>

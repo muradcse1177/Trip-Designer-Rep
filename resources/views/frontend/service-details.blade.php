@@ -10,7 +10,7 @@
             $a = 'b';
         ?>
         @if( $a == 'b')
-            <br><br>
+{{--            <br><br>--}}
         @endif
         <!-- End Navigation -->
         <div class="clearfix"></div>
@@ -198,7 +198,7 @@
                     <div class="modal-login-form py-4 px-md-3 px-0">
                         {{ Form::open(array('url' => 'order-request',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-12">
                                 <div class="form-floating mb-4">
                                     <input type="text" class="form-control" name="name" placeholder="Write Full Name" required>
                                     <label>Name*</label>
@@ -216,15 +216,27 @@
                                     <label>Email*</label>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-floating mb-4">
-                                    <input type="text" class="form-control"  name="person" placeholder="Write Person Number" required>
-                                    <label>Person*</label>
+                                    <input type="number" class="form-control"  name="adult" placeholder="Write Adult Number" min="1" value="1" required>
+                                    <label>Adult*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-floating mb-4">
+                                    <input type="number" class="form-control"  name="child" placeholder="Write Child Number" min="0" value="0"  required>
+                                    <label>Child*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-floating mb-4">
+                                    <input type="number" class="form-control"  name="infant" placeholder="Write Infant Number" min="0" value="0" required>
+                                    <label>Infant*</label>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-floating mb-4">
-                                    <textarea  class="form-control" rows="3" name="remarks" placeholder="Write Remarks..."></textarea>
+                                    <textarea  class="form-control" rows="2" name="remarks" placeholder="Write Remarks..."></textarea>
                                     <label>Remarks*</label>
                                 </div>
                             </div>

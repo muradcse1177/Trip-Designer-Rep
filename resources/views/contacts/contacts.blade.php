@@ -71,6 +71,56 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Purpose</label>
+                                                <select class="form-control select2bs4 group" name="purpose" id="purpose" style="width: 100%;" required>
+                                                    <option value="" selected>Select Purpose</option>
+                                                    <option value="Air Ticket">Air Ticket</option>
+                                                    <option value="Visa">Visa</option>
+                                                    <option value="Tour Package">Tour Packages</option>
+                                                    <option value="Hotel Booking">Hotel Booking</option>
+                                                    <option value="Hajj">Hajj & Umrah</option>
+                                                    <option value="Work Permit">Work Permit</option>
+                                                    <option value="Education">Education</option>
+                                                    <option value="Services">Services</option>
+                                                    <option value="Bank Solvency">Bank Solvency</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-warning float-right">Save</button>
+                                </div>
+                                {{ Form::close() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-danger">
+                            <div class="card-header">
+                                <h3 class="card-title">Add New Contacts Details</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <!-- /.card-tools -->
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body" style="display: none;">
+                                {{ Form::open(array('url' => 'createNewContactsDetails',  'method' => 'post' ,'class' =>'form-horizontal')) }}
+                                {{ csrf_field() }}
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Contact Details</label>
+                                                <textarea type="text" class="form-control" id="details" name="details" placeholder="Data is like Phone,Name,Purpose" required></textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-footer">
@@ -95,44 +145,50 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="example111" class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>S.L</th>
-                                            <th>Name </th>
-                                            <th>Date of Birth </th>
-                                            <th>Entry Date </th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                    @endphp
-                                    @foreach($passengers as $passenger)
-                                        <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$passenger->name}}</td>
-                                            <td>{{$passenger->dob}}</td>
-                                            <td>{{$passenger->en_date}}</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info">Action</button>
-                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu" style="">
-                                                        <a class="dropdown-item" href="{{url('editContactsPage?id='.$passenger->id)}}">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                <div class="table-responsive">
+                                    <table id="passTablea" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>S.L</th>
+                                                <th>Name </th>
+                                                <th>Date of Birth </th>
+                                                <th>Entry Date </th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                         @php
-                                            $i++;
+                                            $i=1;
                                         @endphp
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        @foreach($passengers as $passenger)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$passenger->name}}</td>
+                                                <td>{{$passenger->dob}}</td>
+                                                <td>{{$passenger->en_date}}</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-info">Action</button>
+                                                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <div class="dropdown-menu" role="menu" style="">
+                                                            <a class="dropdown-item" href="{{url('editContactsPage?id='.$passenger->id)}}">Edit</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                                <div class="table-responsive">
+                                    {{ $passengers->links() }}
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>

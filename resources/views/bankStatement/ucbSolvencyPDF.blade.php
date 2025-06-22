@@ -28,11 +28,11 @@ $ac_balance_w = convertNumberToWord($ac_balance);
     <p style="margin-bottom: 120px;">
         For United Commercial Bank PLC:
     </p>
-    <p>Authorised Signature <span style="margin-left: 300px;">Authorised Signature</span></p>
+    <p>Authorised Signature <span style="margin-left: 250px;">Authorised Signature</span></p>
 </div>
-<h2 style="color: red;">United Commercial Bank PLC</h2>
-<p style="margin-top: -20px"><b>Corporate Office:</b> Plot-CWS(A)-1 Road No-34</p>
-<p style="margin-top: -15px">Gulshan Avenue, Dhaka-1212, Bangladesh.</p>
+<h4 style="color: red;">United Commercial Bank PLC</h4>
+<p style="margin-top: -20px">Uttara Branch: V96X+RRP, Paradise Tower, Dhaka 1230, Bangladesh</p>
+<p style="margin-top: -15px">Phone: +8802-8920450 Email: utr@ucb.com.bd, SWIFT:UCBLBDDHUTR</p>
 </body>
 </html>
 

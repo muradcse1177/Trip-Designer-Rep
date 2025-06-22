@@ -1,291 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
+    <meta charset="UTF-8">
+    <title>Tour Package Invoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" media="all">
 
-    <link rel="stylesheet" href="{{url('/public/plugins/fontawesome-free/css/all.min.css')}}">
-    <link rel="stylesheet" href="{{url('/public/dist/css/adminlte.min.css')}}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .invoice-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+            margin: 30px auto;
+            max-width: 900px;
+        }
+
+        .section-title {
+            border-left: 5px solid #007bff;
+            padding-left: 10px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #007bff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .table th {
+            background-color: #e9ecef;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .totals td {
+            font-weight: 600;
+        }
+
+        .badge-section {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        ul {
+            padding-left: 18px;
+        }
+        @media print {
+            @page {
+                margin: 1in 0.5in .5in 0.5in; /* top, right, bottom, left */
+            }
+
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .invoice-box {
+                margin: 10 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+            .section-title {
+                color: #007bff !important;
+                border-left-color: #007bff !important;
+            }
+
+            .table th {
+                background-color: #e9ecef !important;
+            }
+
+            .badge {
+                background-color: #007bff !important; /* Bootstrap secondary */
+                color: #fff !important;
+                padding: 0.25em 0.4em;
+                font-size: 75%;
+                border-radius: 0.2rem;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            a[href]:after {
+                content: "";
+            }
+            i.fas {
+                font-family: "Font Awesome 5 Free" !important;
+                font-weight: 900 !important;
+                display: inline-block;
+            }
+
+            /* Optional: avoid hiding it due to print optimizations */
+            /** {*/
+            /*    -webkit-print-color-adjust: exact !important;*/
+            /*    print-color-adjust: exact !important;*/
+            /*}*/
+        }
+    </style>
 </head>
 <body>
-<div class="wrapper">
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div id="printArea" style="margin-top: 50px; margin-left: 50px; margin-right: 50px; margin-bottom: 50px;">
-                    <font size="3" face="Century Gothic" >
-                        <div class="col-12 d-flex justify-content-center">
-                            <h4><b>Tour Package Invoice</b></h4>
-                        </div>
-                        <table class="table">
-                            <tr>
-                                <td>
-                                    <img src="{{url($company->logo)}}" height="50" width="180"/>
-                                </td>
-                                <td align="right" style="width: 100%;">
-                                    <div>
-                                        <h5><b>{{$company->company_name}}</b></h5>
-                                        <p>Phone: {{$company->company_pnone}}</p>
-                                        <p style="margin-top: -10px">Email:{{$company->company_email}}</p>
-                                        <p style="margin-top: -10px">Address: {{$company->address}}</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="table">
-                            <tr>
-                                <td>
-                                    <div style="position: relative; text-align: center; color: black;">
-                                        <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                        <div style="position: absolute; bottom: 15px;"><b>Package Details</b></div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="table table-bordered">
-                            <tr>
-                                <td>
-                                    <b>Package Name</b>
-                                </td>
-                                <td>
-                                    {{$package->title}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Package Code</b>
-                                </td>
-                                <td>
-                                    {{$package->p_code}}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Package Duration</b>
-                                </td>
-                                <td>
-                                    {{$package->start_date .' '. 'to'.' '.$package->end_date}}
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="table ">
-                            <tr>
-                                <td>
-                                    <div style="position: relative; text-align: center; color: black;">
-                                        <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                        <div style="position: absolute; bottom: 15px;"><b>Guest Details</b></div>
-                                    </div>
 
-                                </td>
-                            </tr>
-                        </table>
-                        <?php
-                        $pax = json_decode($package->traveler);
-                        ?>
+<div class="invoice-box">
+    <table class="w-100 mb-4" style="table-layout: fixed;">
+        <tr>
+            <td style="width: 50%; vertical-align: top;">
+                @if($company->logo)
+                    <img src="{{ url($company->logo) }}" class="logo" alt="Logo">
+                @else
+                    <h4>{{ $company->company_name }}</h4>
+                @endif
+            </td>
+            <td style="width: 50%; text-align: right; vertical-align: top;">
+                <strong>{{ $company->company_name }}</strong><br>
+                Phone: {{ $company->company_pnone }}<br>
+                Email: {{ $company->company_email }}<br>
+                Address: {{ $company->address }}
+            </td>
+        </tr>
+    </table>
 
-                        <table class="table table-bordered">
-                            @for($i=0; $i<$package->g_details; $i++)
-                                    <?php
-                                    $passenger = DB::table('passengers')->where('id',$pax[$i])->first();
-                                    ?>
-                                <tr>
-                                    <th>Guest {{$i+1}}</th>
-                                    <td>{{$passenger->f_name.' '.$passenger->l_name}}</td>
-                                </tr>
-                            @endfor
-                        </table>
-                        <table class="table">
-                            <tr>
-                                <td>
-                                    <div style="position: relative; text-align: center; color: black;">
-                                        <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                        <div style="position: absolute; bottom: 15px;"><b>Payments Details</b></div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="table table-bordered">
-                            <tr>
-                                <td rowspan="6">
-                                    <div>
-                                        <p><b>Payment Type: </b>{{$package->payment_type}}</p>
-                                        <div><b>Payment Details:</b><br> {!! nl2br($package->pay_details) !!}</div>
-                                    </div>
-                                </td>
-                                <td align="right">Ticket Price</td>
-                                <td  align="right">{{$package->p_c_details.'/-'}}</td>
-                            </tr>
-                            <tr>
-                                <td align="right" >VAT</td>
-                                <td  align="right">{{$package->p_vat.'/-'}}</td>
-                            </tr>
-                            <tr>
-                                <td align="right">AIT</td>
-                                <td  align="right">{{$package->p_ait.'/-'}}</td>
-                            </tr>
-                            <tr>
-                                <td align="right"><b style="color: purple;">Grand Total</b></td>
-                                <td  align="right"><b style="color: purple;">{{$package->p_c_details + $package->p_vat + $package->p_ait.'/-'}}</b></td>
-                            </tr>
-                            <tr>
-                                <td align="right">Due Amount</td>
-                                <td  align="right">{{$package->due.'/-'}}</td>
-                            </tr>
-                            <tr>
-                                <td align="right"><b style="color: red;">Total Paid Amount</b></td>
-                                <td  align="right"><b style="color: red;">{{$package->p_c_details + $package->p_vat + $package->p_ait - $package->due.'/-'}}</b></td>
-                            </tr>
-                        </table>
-                        @if(@$package->highlights)
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        <div style="position: relative; text-align: center; color: black;">
-                                            <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                            <div style="position: absolute; bottom: 15px;"><b>Package Highlights</b></div>
-                                        </div>
+    <div class="text-center mb-3">
+        <h4><strong>Tour Package Invoice</strong></h4>
+        <span class="badge badge-secondary">Invoice Date: {{ date('d M Y') }}</span>
+    </div>
 
-                                    </td>
-                                </tr>
-                            </table>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        {!! nl2br(json_decode($package->highlights)) !!}
-                                    </td>
-                                </tr>
-                            </table>
+    <!-- Package Info -->
+    <div class="section-title">Package Details</div>
+    <table class="table table-bordered">
+        <tr><th>Package Name</th><td>{{ $package->title }}</td></tr>
+        <tr><th>Package Code</th><td>{{ $package->p_code }}</td></tr>
+        <tr><th>Duration</th><td>{{ $package->start_date }} to {{ $package->end_date }}</td></tr>
+    </table>
+
+    <!-- Guest Info -->
+    <div class="section-title">Guest Details</div>
+    @php $pax = json_decode($package->traveler); @endphp
+    <table class="table table-bordered">
+        <thead>
+        <tr><th>#</th><th>Full Name</th></tr>
+        </thead>
+        <tbody>
+        @for($i = 0; $i < $package->g_details; $i++)
+            @php $passenger = DB::table('passengers')->where('id', $pax[$i])->first(); @endphp
+            <tr><td>{{ $i + 1 }}</td><td>{{ $passenger->f_name . ' ' . $passenger->l_name }}</td></tr>
+        @endfor
+        </tbody>
+    </table>
+
+    <!-- Payment Info -->
+    <div class="section-title">Payment Summary</div>
+    <table class="table table-bordered">
+        <tr>
+            <td rowspan="6" style="width: 60%;">
+                <strong>Payment Type:</strong> {{ $package->payment_type }}<br><br>
+                <strong>Payment Info:</strong><br>{!! nl2br($package->pay_details) !!}
+            </td>
+            <td class="text-right">Price</td>
+            <td class="text-right">{{ $package->p_c_details }}/-</td>
+        </tr>
+        <tr><td class="text-right">VAT</td><td class="text-right">{{ $package->p_vat }}/-</td></tr>
+        <tr><td class="text-right">AIT</td><td class="text-right">{{ $package->p_ait }}/-</td></tr>
+        <tr><td class="text-right">Grand Total</td><td class="text-right text-primary"><strong>{{ $package->p_c_details + $package->p_vat + $package->p_ait }}/-</strong></td></tr>
+        <tr><td class="text-right">Due</td><td class="text-right">{{ $package->due }}/-</td></tr>
+        <tr><td class="text-right">Paid</td><td class="text-right text-success"><strong>{{ $package->p_c_details + $package->p_vat + $package->p_ait - $package->due }}/-</strong></td></tr>
+    </table>
+
+    @php
+        $sections = [
+            'highlights' => 'Hotel Name',
+            'day_title' => 'Day Wise Itinerary',
+            'p_inclusions' => 'Package Inclusions',
+            'p_exclusions' => 'Package Exclusions',
+            'p_tnt' => 'Package Terms and Conditions',
+            'p_policy' => 'Package Policy'
+        ];
+
+        $listKeys = ['p_inclusions', 'p_exclusions', 'p_tnt', 'p_policy'];
+    @endphp
+
+    @foreach ($sections as $key => $label)
+        @if(!empty($package->$key))
+            <div class="section-title">{{ $label }}</div>
+
+            @if($key === 'day_title')
+                @php
+                    $d_titles = json_decode($package->day_title);
+                    $d_ininaris = json_decode($package->dat_itinary);
+                @endphp
+                <table class="table table-bordered">
+                    @foreach($d_titles as $i => $title)
+                        <tr>
+                            <td><strong>Day {{ $i+1 }}: {{ $title }}</strong></td>
+                            <td>
+                                <ul style="padding-left: 20px;">
+                                    @foreach(explode("\n", $d_ininaris[$i]) as $line)
+                                        <li style="list-style: none;">
+                                            <i class="fas fa-check-circle text-success mr-1"></i> {{ $line }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+
+            @elseif(in_array($key, $listKeys))
+                @php
+                    $html = json_decode($package->$key);
+                    $text = strip_tags($html, '<div>');
+                    $lines = array_filter(array_map('trim', explode('</div>', $text)));
+                @endphp
+                <ul style="padding-left: 20px;">
+                    @foreach($lines as $line)
+                        @php $cleanLine = strip_tags($line); @endphp
+                        @if($cleanLine !== '')
+                            <li style="list-style: none;">
+                                <i class="fas fa-check-circle text-success mr-1"></i> {{ $cleanLine }}
+                            </li>
                         @endif
-                        <table class="table table-borderless">
-                            <tr>
-                                <td>
-                                    <div style="position: relative; text-align: center; color: black;">
-                                        <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                        <div style="position: absolute; bottom: 15px;"><b>Day Wise Itinerary</b></div>
-                                    </div>
+                    @endforeach
+                </ul>
 
-                                </td>
-                            </tr>
-                        </table>
-                        <?php
-                        $i =0;
-                        $d_titles = json_decode($package->day_title);
-                        $d_ininaris = json_decode($package->dat_itinary);
-                        ?>
-                        <table class="table table-bordered">
-                            @foreach($d_titles as $d_title)
-                                <tr>
-                                    <td>
-                                        Day {{$i +1}} {{$d_titles[$i]}}
-                                    </td>
-                                    <td>
-                                            <?php
-                                            $output = '<ul style="list-style-type: disc !important; adding-left:1em !important; margin-left:1em;">';
-                                            $listformat = explode("\n", $d_ininaris[$i]);
-                                            foreach ($listformat as $test => $line) {
-                                                $output .= "<li>".$line."</li>";
-                                            };
-                                            $output .='</ul>';
-                                            ?>
-                                        {!! $output !!}
-                                    </td>
-                                </tr>
-                                    <?php $i++; ?>
-                            @endforeach
-                        </table>
-                        @if(@$package->p_inclusions)
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        <div style="position: relative; text-align: center; color: black;">
-                                            <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                            <div style="position: absolute; bottom: 15px;"><b>Package Inclusions</b></div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </table>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        {!! nl2br(json_decode($package->p_inclusions)) !!}
-                                    </td>
-                                </tr>
-                            </table>
-                        @endif
-                        @if(@$package->p_exclusions)
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        <div style="position: relative; text-align: center; color: black;">
-                                            <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                            <div style="position: absolute; bottom: 15px;"><b>Package Exclusions</b></div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </table>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        {!! nl2br(json_decode($package->p_exclusions)) !!}
-                                    </td>
-                                </tr>
-                            </table>
-                        @endif
-                        @if(@$package->p_tnt)
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        <div style="position: relative; text-align: center; color: black;">
-                                            <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                            <div style="position: absolute; bottom: 15px;"><b>Package Terms and Conditions</b></div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </table>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        {!! nl2br(json_decode($package->p_tnt)) !!}
-                                    </td>
-                                </tr>
-                            </table>
-                        @endif
-                        @if(@$package->p_policy)
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        <div style="position: relative; text-align: center; color: black;">
-                                            <img src="{{url('public/ssss.png')}}" style="margin-left: -15px;" height="50" width="103%">
-                                            <div style="position: absolute; bottom: 15px;"><b>Package Policy</b></div>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </table>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        {!! nl2br(json_decode($package->p_policy)) !!}
-                                    </td>
-                                </tr>
-                            </table>
-                    @endif
-                </div>
-            </div>
-        </div>
-        <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+            @else
+                <p>{!! nl2br(json_decode($package->$key)) !!}</p>
+            @endif
+        @endif
+    @endforeach
 </div>
-<!-- ./wrapper -->
-<!-- Page specific script -->
 <script>
     window.addEventListener("load", window.print());
 </script>

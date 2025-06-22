@@ -18,6 +18,73 @@ if(@$c_info->agent_id) {
                     <div class="mobile_nav">
                         <ul>
                             @if(Session::get('customer'))
+                                <li class="btn-group me-2">
+
+                                        <?php
+                                        $user_id = Session::get('user_id');
+                                        $row = DB::table('users')->where('id',$user_id)->first();
+                                        if($row->logo){
+                                            $photo = $row->logo;
+                                        }
+                                        else{
+                                            $photo = 'public/user.png';
+                                        }
+
+                                        ?>
+                                    <div class="btn-group account-drop">
+                                        <button type="button" class="btn btn-order-by-filt" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                            @if(!empty($photo)))
+                                                <img src="{{ url($photo) }}" class="img-fluid" alt="User Photo">
+                                            @else
+                                            <div class="d-flex justify-content-center align-items-center bg-primary" style="width: 40px; height: 40px; border-radius: 5px;">
+                                                <i class="fa fa-user text-white"></i>
+                                            </div>
+                                            @endif
+                                        </button>
+                                        <div class="dropdown-menu pull-right animated flipInX">
+                                            <div class="drp_menu_headr">
+                                                <h4>{{@$row->company_name}}</h4>
+                                                <div class="drp_menu_headr-right">
+                                                    <a href="{{url('logout')}}" class="btn btn-md fw-medium btn-whites text-dark">Logout</a>
+                                                </div>
+                                            </div>
+                                            <div class="notification-grousp pull-right px-3 py-3">
+                                                <div class="">
+                                                    <ul>
+                                                        <li class="col-sm-12">
+                                                            <a href="{{ url('customer-profile') }}" >
+                                                                <i class="fa-regular fa-id-card me-2"></i> My Profile
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                    <ul>
+                                                        <li class="col-sm-12">
+                                                            <a href="{{ url('customer-profile') }}" >
+                                                                <i class="fa-solid fa-ticket me-2"></i> My Travelers
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                    <ul>
+                                                        <li class="col-sm-12">
+                                                            <a href="{{ url('customer-profile') }}" >
+                                                                <i class="fa-solid fa-wallet me-2"></i> Payment Details
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                    <ul>
+                                                        <li class="col-sm-12">
+                                                            <a href="{{ url('customer-profile') }}" >
+                                                                <i class="fa-solid fa-user-group me-2"></i> My Traveller Details
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
                             @else
                                 <li>
                                     <a href="{{url('all-login')}}" class="bg-light-primary text-primary rounded"><i class="fa-regular fa-circle-user fs-6"></i></a>
@@ -77,7 +144,28 @@ if(@$c_info->agent_id) {
                             </ul>
                         </li>
                         <li><a href="{{url('hajj-umrah')}}">Hajj & Umrah </a></li>
-                        <li><a href="{{url('about-us')}}">Education</a></li>
+                        <li><a href="{{url('about-us')}}">Study Abroad </a></li>
+                        <li>
+                            <a href="{{url('')}}">Academy</a>
+                            <ul class="nav-dropdown nav-submenu">
+                                <li><a href="{{url('courses')}}">Course</a>
+                                    <ul class="nav-dropdown nav-submenu">
+                                        <?php
+                                            $rows = DB::table('course_details')->get();
+                                        ?>
+                                        @foreach ($rows as $row)
+                                         <li><a href="{{url('course/'.$row->slug)}}">{{$row->title}}</a></li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                                <li><a href="{{url('e-books')}}">E-Book</a>
+                                    <ul class="nav-dropdown nav-submenu">
+                                        <li><a href="{{url('')}}">Visa Processing Ebook</a></li>
+                                        <li><a href="{{url('')}}">Air Ticket Ebook</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
                         <li>
                             <a href="{{url('services')}}">Services</a>
                             <ul class="nav-dropdown nav-submenu">
@@ -93,6 +181,7 @@ if(@$c_info->agent_id) {
                                     ?>
                             </ul>
                         </li>
+                        <li><a href="{{url('blogs')}}">Blogs</a></li>
                         <li><a href="{{url('about-us')}}">About</a></li>
                         <li><a href="{{url('contact-us')}}">Contact</a></li>
                     </ul>
@@ -113,7 +202,13 @@ if(@$c_info->agent_id) {
                                 <div class="btn-group account-drop">
                                     <button type="button" class="btn btn-order-by-filt" data-bs-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false">
-                                        <img src="{{url($photo)}}" class="img-fluid" alt="">
+                                        @if(!empty($photo)))
+                                            <img src="{{ url($photo) }}" class="img-fluid" alt="User Photo">
+                                        @else
+                                            <div class="d-flex justify-content-center align-items-center bg-primary" style="width: 40px; height: 40px; border-radius: 5px;">
+                                                <i class="fa fa-user text-white"></i>
+                                            </div>
+                                        @endif
                                     </button>
                                     <div class="dropdown-menu pull-right animated flipInX">
                                         <div class="drp_menu_headr">

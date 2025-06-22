@@ -190,89 +190,89 @@
                                 </div>
                                 {{ Form::close() }}
                                 <div class="table-responsive">
-                                <table id="passTablea" class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>S.L</th>
-                                            <th>Passengers </th>
-                                            <th>Status</th>
-                                            <th>P. Details</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                    @endphp
-                                    @foreach($passengers as $passenger)
-                                        <tr>
-                                            <td>{{$i}}</td>
-                                            <td>
-                                                <div>
-                                                   Name:  {{$passenger->title.' '.$passenger->f_name.' '.$passenger->l_name}}
-                                                </div>
-                                               <div>
-                                                  Gender: {{$passenger->gender}}
-                                               </div>
-                                                <div>
-                                                    DOB: {{$passenger->dob}}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                @if($passenger->status == 'Active')
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-success">Active</button>
-                                                        <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                            <span class="sr-only">Toggle Dropdown</span>
-                                                        </button>
-                                                        <div class="dropdown-menu" role="menu" style="">
-                                                            <a class="dropdown-item" href="{{url('isPassengerInActive?status=Active&id='.$passenger->id)}}">In Active</a>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                                @if($passenger->status == 'In Active')
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-danger">In Active</button>
-                                                        <button type="button" class="btn btn-danger dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                            <span class="sr-only">Toggle Dropdown</span>
-                                                        </button>
-                                                        <div class="dropdown-menu" role="menu" style="">
-                                                            <a class="dropdown-item" href="{{url('isPassengerActive?status=In Active&id='.$passenger->id)}}">Active</a>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    Phone: {{$passenger->phone}}
-                                                </div>
-                                                <div>
-                                                    Email: {{$passenger->email}}
-                                                </div>
-                                                <div>
-                                                    Passport Number: {{$passenger->p_number}}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info">Action</button>
-                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu" style="">
-                                                        <a class="dropdown-item" href="{{url('editPassengerPage?id='.$passenger->id)}}">Edit</a>
-                                                        <a class="dropdown-item delete" data-id="{{$passenger->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deletePassenger?id='.$passenger->id)}}">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <table id="passTablea" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>S.L</th>
+                                                <th>Passengers </th>
+                                                <th>Status</th>
+                                                <th>P. Details</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                         @php
-                                            $i++;
+                                            $i=1;
                                         @endphp
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                                    </div>
+                                        @foreach($passengers as $passenger)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>
+                                                    <div>
+                                                       Name:  {{$passenger->title.' '.$passenger->f_name.' '.$passenger->l_name}}
+                                                    </div>
+                                                   <div>
+                                                      Gender: {{$passenger->gender}}
+                                                   </div>
+                                                    <div>
+                                                        DOB: {{$passenger->dob}}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @if($passenger->status == 'Active')
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-success">Active</button>
+                                                            <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                                <span class="sr-only">Toggle Dropdown</span>
+                                                            </button>
+                                                            <div class="dropdown-menu" role="menu" style="">
+                                                                <a class="dropdown-item" href="{{url('isPassengerInActive?status=Active&id='.$passenger->id)}}">In Active</a>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                    @if($passenger->status == 'In Active')
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-danger">In Active</button>
+                                                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                                <span class="sr-only">Toggle Dropdown</span>
+                                                            </button>
+                                                            <div class="dropdown-menu" role="menu" style="">
+                                                                <a class="dropdown-item" href="{{url('isPassengerActive?status=In Active&id='.$passenger->id)}}">Active</a>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        Phone: {{$passenger->phone}}
+                                                    </div>
+                                                    <div>
+                                                        Email: {{$passenger->email}}
+                                                    </div>
+                                                    <div>
+                                                        Passport Number: {{$passenger->p_number}}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-info">Action</button>
+                                                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <div class="dropdown-menu" role="menu" style="">
+                                                            <a class="dropdown-item" href="{{url('editPassengerPage?id='.$passenger->id)}}">Edit</a>
+                                                            <a class="dropdown-item delete" data-id="{{$passenger->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deletePassenger?id='.$passenger->id)}}">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                                     <br>
                                 <div class="table-responsive">
                                     {{ $passengers->links() }}

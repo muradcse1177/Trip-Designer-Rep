@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class umrahController extends Controller
@@ -272,6 +273,244 @@ class umrahController extends Controller
             else{
                 return back()->with('errorMessage', 'Please fill up the form!!');
             }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public  function bookUmrahPackagePageB2b(Request $request){
+        if($request->adult >= 2 && $request->child >= 0 && $request->infant >= 0){
+            $rows4 = DB::table('passengers')
+                ->where('deleted',0)
+                ->where('upload_by',Session::get('agent_id'))
+                ->orderBy('id','desc')
+                ->get();
+            $rows1 = DB::table('b2c_hajj_umrah')
+                ->where('agent_id',Session::get('agent_id'))
+                ->where('slug',$request->slug)
+                ->first();
+            if($rows1)
+                return view('hajj-umrah.bookUmrahPackagePageB2b',['package' => $rows1,'passengers' => $rows4,'adult' => $request->adult,'child' =>  $request->child,'infant' =>  $request->infant]);
+            else
+                return back()->with('errorMessage', 'Bad Request!!');
+        }
+        else{
+            return back()->with('errorMessage', 'Adult must greater than 2 PAX!!');
+        }
+    }
+
+
+    public  function bookUmrahPackageB2b(Request $request){
+        try {
+            if ($request) {
+                $package = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
+                $total = $package->p_p_adult * $request->adult + $package->p_p_child * $request->child + $package->p_p_infant * $request->infant;
+                $agent = DB::table('users')->where('id', Session::get('agent_id'))->first();
+                $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
+                if($total > $agent->agency_amount){
+                    return back()->with('errorMessage', 'Please recharge your account to book this package!!');
+                }
+                if($agent->agency_amount > $total){
+                    $result = DB::table('users')
+                        ->where('id', Session::get('agent_id'))
+                        ->update([
+                            'agency_amount' => $agent->agency_amount - $total,
+                        ]);
+                    if($result){
+                        $invoice = DB::table('umrah_invoice')->insert([
+                            'agent_id' => Session::get('agent_id'),
+                            'p_countries' => $package->type,
+                            'title' => $package->p_name,
+                            'p_code' => $package->p_code,
+                            'night' => $package->night,
+                            'vendor' => 'Trip Designer',
+                            'start_date' => $request->start_date,
+                            'end_date' => $request->end_date,
+                            'highlights' => $package->highlights,
+                            'traveler' => json_encode($request->name),
+                            'day_title' => $package->title,
+                            'dat_itinary' => $package->itinary,
+                            'g_details' => $request->adult + $request->child + $request->infant,
+                            'p_a_price' => $total,
+                            'p_c_details' => $total,
+                            'p_vat' => 0,
+                            'p_ait' => 0,
+                            'p_inclusions' => $package->inclusion,
+                            'p_exclusions' => $package->exclusion,
+                            'p_tnt' => $package->tnt,
+                            'payment_type' => 'Bank Transfer',
+                            'due' => 0,
+                            'pay_details' => 'Balanced from wallet - '.$total .'BDT',
+                        ]);
+                        if ($invoice) {
+                            $result1 = DB::table('accounts')->insert([
+                                'agent_id' => Session::get('agent_id'),
+                                'invoice_id' => $num,
+                                'date' => date('Y-m-d'),
+                                'transaction_type' => 'Debit',
+                                'head' => 'Umrah Package',
+                                'source' => 'Umrah Package',
+                                'purpose' => 'Umrah Package' . '---' . $package->p_name,
+                                'buying_price' => $total,
+                                'selling_price' => $total,
+                            ]);
+                            if ($result1) {
+                                $domain =$this->domainCheck();
+                                if($domain['agent_id']) {
+                                    //dd($request);
+                                    $result = DB::table('order_request')->insert([
+                                        'agent_id' => $domain['agent_id'],
+                                        'r_ref' => $num,
+                                        'name' => $agent->company_name,
+                                        'email' => $agent->company_email,
+                                        'phone' => $agent->company_pnone,
+                                        'person' => 'Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant,
+                                        'view' => 'https://tripdesigner.net/hajj-umrah-b2b/'.$package->slug,
+                                        'date' => date('Y-m-d'),
+                                        'r_type' => "Umrah Package",
+                                        'status' => 'Ordered',
+                                        'order_type' => 'B2B',
+                                        'adult' => $request->adult,
+                                        'child' => $request->child,
+                                        'infant' => $request->infant,
+                                        'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant),
+                                    ]);
+                                    $to = 'tripdesigner.xyz@gmail.com';
+                                    $email_cus = [$agent->company_email];
+                                    $email_admin = [$to];
+                                    $data = [
+                                        'tracking' => $num,
+                                        'name' => $agent->company_name,
+                                        'email' => $agent->company_email,
+                                        'phone' => $agent->company_pnone,
+                                        'person' => 'Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant,
+                                        'r_type' => "Umrah Package",
+                                        'status' => 'Ordered',
+                                        'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant),
+                                    ];
+                                    if ($result) {
+                                        Mail::send('email.customer-order-request', $data, function ($message) use ($email_cus) {
+                                            $message->subject("Trip Designer: Order Request Confirmation");
+                                            $message->from('sales@tripdesigner.net', 'Umrah Package Order');
+                                            $message->to($email_cus);
+                                        });
+                                        Mail::send('email.admin-order-request', $data, function ($message) use ($email_admin,$data) {
+                                            $message->subject("Order Request Confirmation Type - ".$data['r_type']);
+                                            $message->from('sales@tripdesigner.net', 'Umrah Package Order');
+                                            $message->to($email_admin);
+                                        });
+                                        return redirect()->to('newUmrahPackage')->with('successMessage', 'Umrah Package Ordered successfully!!');
+
+                                    } else {
+                                        return back()->with('errorMessage', 'Please try again!!');
+                                    }
+                                }
+                                else{
+                                    return view('frontend.404',['msg' => 'Your Domain is Not Enlisted in Our Database!!']);
+                                }
+
+                            } else {
+                                return back()->with('errorMessage', 'Please try again!!');
+                            }
+                        } else {
+                            return back()->with('errorMessage', 'Please try again!!');
+                        }
+                    }
+                }else{
+                    return back()->with('errorMessage', 'Please recharge your account to book this tour package!!');
+                }
+
+            } else {
+                return back()->with('errorMessage', 'Please fill up the form!!');
+            }
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function printUmrahPackageInvoice(Request $request){
+        try{
+            $rows1 = DB::table('users')
+                ->where('id',Session::get('agent_id'))
+                ->first();
+            $rows2 = DB::table('umrah_invoice')
+                ->where('id',$request->id)
+                ->first();
+            return view('hajj-umrah.printUmrahPackageInvoice',['company' => $rows1,'package' => $rows2,]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
+    public function printB2bUmrahPackage (Request $request){
+        try{
+            $rows1 = DB::table('users')
+                ->where('id',Session::get('agent_id'))
+                ->first();
+            $rows2 = DB::table('b2c_hajj_umrah')
+                ->where('slug',$request->slug)
+                ->first();
+            return view('hajj-umrah.printB2bUmrahPackage',['company' => $rows1,'package' => $rows2,'adult' => $request->adult,'child' => $request->child,'infant' => $request->infant,]);
+        }
+        catch(\Illuminate\Database\QueryException $ex){
+            return back()->with('errorMessage', $ex->getMessage());  
+        }
+    }
+    public function downloadB2bUmrahPackage(Request $request){
+        try{
+            $num = substr(str_shuffle(str_repeat($x='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(8/strlen($x)) )),1,8);
+            $package = DB::table('b2c_hajj_umrah')->where('agent_id',Session::get('agent_id'))->where('slug',$request->slug)->first();
+            $agent = DB::table('users')->where('id', Session::get('agent_id'))->first();
+            $result = DB::table('order_request')->insert([
+                'agent_id' => Session::get('agent_id'),
+                'r_ref' => $num,
+                'name' => $agent->company_name,
+                'email' => $agent->company_email,
+                'phone' => $agent->phone_code.$agent->company_pnone,
+                'person' => 'Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant,
+                'view' => 'https://tripdesigner.net/hajj-umrah-b2b/'.$package->slug,
+                'date' => date('Y-m-d'),
+                'r_type' => 'Umrah Package',
+                'status' => 'Requested',
+                'order_type' => 'B2B',
+                'adult' => $request->adult,
+                'child' => $request->child,
+                'infant' => $request->infant,
+                'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant),
+            ]);
+            $to = 'tripdesigner.xyz@gmail.com';
+            $email_cus = [$agent->company_email];
+            $email_admin = [$to];
+            $data = [
+                'tracking' => $num,
+                'name' => $agent->company_name,
+                'email' => $agent->company_email,
+                'phone' => $agent->phone_code.$agent->company_pnone,
+                'person' => 'Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant,
+                'r_type' => 'Umrah Package',
+                'status' => 'Requested',
+                'remarks' =>json_encode('Adult:'.$request->adult .'Child:'. $request->child.'Infant:'. $request->infant),
+            ];
+            if ($result) {
+                Mail::send('email.customer-order-request', $data, function ($message) use ($email_cus) {
+                    $message->subject("Trip Designer: Umrah Package Order Request");
+                    $message->from('sales@tripdesigner.net', 'Umrah Package Order');
+                    $message->to($email_cus);
+                });
+                Mail::send('email.admin-order-request', $data, function ($message) use ($email_admin,$data) {
+                    $message->subject("Order Request Confirmation Type - ".$data['r_type']);
+                    $message->from('sales@tripdesigner.net', 'Umrah Package Order');
+                    $message->to($email_admin);
+                });
+                return redirect()->to('orderReceiver')->with('successMessage', 'Umrah Package ordered request sent successfully!!');
+
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
+            }
+
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());

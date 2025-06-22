@@ -45,7 +45,7 @@ class visaController extends Controller
                 ->where('deleted',0)
                 ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('updated_at','desc')
-                ->get();
+                ->paginate(10);
             return view('visa.newVisaProcess',['vendors' => $rows,'employees' => $rows1,'passengers' => $rows2,'payment_types' => $rows3,'countries' => $rows4,'visas' => $rows5]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -261,7 +261,73 @@ class visaController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function filterVisa(Request $request)
+    {
+        $agentId = Session::get('agent_id');
 
+        // Base query for visa_invoice
+        $query = DB::table('visa_invoice')
+            ->where('deleted', 0)
+            ->where('agent_id', $agentId)
+            ->orderBy('updated_at', 'desc');
+
+        // Filter: Country Name
+        if ($request->filled('c_name')) {
+            $query->where('visa_country', $request->c_name);
+        }
+
+        // Filter: From Date
+        if ($request->filled('from_date')) {
+            $query->whereDate('date', '>=', $request->from_date);
+        }
+
+        // Filter: To Date
+        if ($request->filled('to_date')) {
+            $query->whereDate('date', '<=', $request->to_date);
+        }
+
+        // Filter: Visa Status (not payment status)
+        if ($request->filled('visa_status')) {
+            $query->where('status', $request->visa_status);
+        }
+
+        // Filter: Payment Status
+        if ($request->payment_status === 'Paid') {
+            $query->where('v_due', '=', 0);
+        } elseif ($request->payment_status === 'Due') {
+            $query->where('v_due', '>', 0);
+        }
+
+        // Paginated results
+        $visas = $query->orderBy('date', 'desc')->paginate(10)->appends($request->all());;
+
+        // Related data for dropdowns or views
+        $vendors = DB::table('vendors')
+            ->where('agent_id', $agentId)
+            ->where('deleted', 0)
+            ->get();
+
+        $employees = DB::table('employees')
+            ->where('agent_id', $agentId)
+            ->where('deleted', 0)
+            ->get();
+
+        $passengers = DB::table('passengers')
+            ->where('upload_by', $agentId)
+            ->where('deleted', 0)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $payment_types = DB::table('payment_type')->get();
+
+        $countries = DB::table('country')->get();
+
+        // Return view with data
+        return view('visa.newVisaProcess', compact(
+            'vendors', 'employees', 'passengers',
+            'payment_types', 'countries', 'visas'
+        ));
+    }
     public  function searchVisaB2b(Request $request){
         $domain =$this->domainCheck();
         $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();

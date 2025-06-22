@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('mainLayout.header')
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition layout-navbar-fixed layout-footer-fixed sidebar-mini layout-fixed">
     <div class="wrapper">
 
         <!-- Preloader -->

@@ -80,138 +80,323 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="example11" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Bank Name</th>
-                                        <th>Amount</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                        $sum=0;
-                                    @endphp
-                                    @foreach($accounts as $account)
+                                <div class="table-responsive">
+                                    <h5 class="bg-warning text-white p-3 rounded shadow-sm text-center">Bank Account</h5>
+                                    <table id="" class="table table-bordered table-hover">
+                                        <thead>
                                         <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$account->name}}</td>
-                                            <td>{{$account->amount}}</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info">Action</button>
-                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu" style="">
-                                                        <a class="dropdown-item" href="{{url('editBankAccount?id='.$account->id)}}">Edit</a>
-                                                        <a class="dropdown-item delete" data-id="{{$account->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteBankAccount?id='.$account->id)}}">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                            <th>S.L</th>
+                                            <th>Bank Name</th>
+                                            <th>Amount</th>
+                                            <th>Action</th>
                                         </tr>
+                                        </thead>
+                                        <tbody>
                                         @php
-                                            $i++;
-                                            $sum = $sum + $account->amount;
+                                            $i=1;
+                                            $sum=0;
                                         @endphp
-                                    @endforeach
-                                    <tfoot>
+                                        @foreach($accounts as $account)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$account->name}}</td>
+                                                <td>{{$account->amount}}</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-info">Action</button>
+                                                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <div class="dropdown-menu" role="menu" style="">
+                                                            <a class="dropdown-item" href="{{url('editBankAccount?id='.$account->id)}}">Edit</a>
+                                                            <a class="dropdown-item delete" data-id="{{$account->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteBankAccount?id='.$account->id)}}">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                                $sum = $sum + $account->amount;
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                        <tfoot>
                                         <tr>
                                             <th></th>
                                             <th>Total Amount</th>
                                             <th align="right">{{$sum}}/-</th>
                                             <th></th>
                                         </tr>
-                                    </tfoot>
-                                    </tbody>
-                                </table><br>
-                                <table id="example111" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Booking Date</th>
-                                        <th>Ticket Details</th>
-                                        <th>Passengers</th>
-                                        <th>Price Details</th>
-                                        <th>Due</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                        $j=1;
-                                        $sum_due = 0;
-                                        $sum_a_price = 0;
-                                        $sum_c_price = 0;
-                                    @endphp
-                                    @foreach($tickets as $ticket)
+                                        </tfoot>
+                                    </table><br>
+                                    <h5 class="bg-warning text-white p-3 rounded shadow-sm text-center">Air Ticket</h5>
+                                    <table id="" class="table table-bordered table-hover">
+                                        <thead>
                                         <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$ticket->issue_date}}</td>
-                                            <td>
-                                                <div>Reservation PNR: {{$ticket->reservation_pnr}} </div>
-                                                <div>Airlines PNR: {{$ticket->airline_pnr}} </div>
-                                            </td>
-                                                <?php
-                                                $p = json_decode($ticket->pax_name);
-                                                ?>
-                                            <td>
-                                                @foreach($p as $pas)
-                                                        <?php
-                                                        $name = DB::table('passengers')
-                                                            ->where('id',$pas)
-                                                            ->where('upload_by',Session::get('user_id'))
-                                                            ->first();
-                                                        ?>
-                                                    <div>{{$j.'.'.@$name->f_name.' '.@$name->l_name}}</div>
-                                                    @php
-                                                        $j++;
-                                                    @endphp
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                <div>A.Price: {{$ticket->	a_price}} /-</div>
-                                                <div>C.Price:  {{$ticket->	c_price + $ticket->	vat + $ticket->	ait}} /-</div>
-                                            </td>
-                                            <td>
-                                                @if((int)$ticket->due_amount > 0)
-                                                    <div style="color: red;"><b>{{$ticket->due_amount}}/-</b></div>
-                                                @else
-                                                    {{$ticket->	due_amount.'/-'}}
-                                                @endif
-                                            </td>
+                                            <th>S.L</th>
+                                            <th>Booking Date</th>
+                                            <th>Ticket Details</th>
+                                            <th>Passengers</th>
+                                            <th>Price Details</th>
+                                            <th>Due</th>
                                         </tr>
+                                        </thead>
+                                        <tbody>
                                         @php
-                                            $i++;
-                                             $j = 1;
-                                             $sum_due = $sum_due + $ticket->due_amount;
-                                             $sum_a_price = $sum_a_price + $ticket->a_price;
-                                             $sum_c_price = $sum_c_price + $ticket->c_price + $ticket->vat + $ticket->ait;
+                                            $i=1;
+                                            $j=1;
+                                            $sum_due = 0;
+                                            $sum_a_price = 0;
+                                            $sum_c_price = 0;
                                         @endphp
-                                    @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th align="center"></th>
-                                        <th align="left"></th>
-                                        <th align="left"></th>
-                                        <th align="left">
-                                            <div>A.Price: {{$sum_a_price}} /-</div>
-                                            <div>C.Price:  {{$sum_c_price}} /-</div>
-                                        </th>
-                                        <th align="left">
-                                            <div style="color: red;"><b>{{$sum_due}} /-</b></div>
-                                        </th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
+                                        @foreach($tickets as $ticket)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$ticket->issue_date}}</td>
+                                                <td>
+                                                    <div>Reservation PNR: {{$ticket->reservation_pnr}} </div>
+                                                    <div>Airlines PNR: {{$ticket->airline_pnr}} </div>
+                                                </td>
+                                                    <?php
+                                                    $p = json_decode($ticket->pax_name);
+                                                    ?>
+                                                <td>
+                                                    @foreach($p as $pas)
+                                                            <?php
+                                                            $name = DB::table('passengers')
+                                                                ->where('id',$pas)
+                                                                ->where('upload_by',Session::get('agent_id'))
+                                                                ->first();
+                                                            ?>
+                                                        <div>{{$j.'.'.@$name->f_name.' '.@$name->l_name}}</div>
+                                                        @php
+                                                            $j++;
+                                                        @endphp
+                                                    @endforeach
+                                                        <div>Phone:{{@$name->phone}}</div>
+                                                </td>
+                                                <td>
+                                                    <div>A.Price: {{$ticket->	a_price}} /-</div>
+                                                    <div>C.Price:  {{$ticket->	c_price + $ticket->	vat + $ticket->	ait}} /-</div>
+                                                </td>
+                                                <td>
+                                                    @if((int)$ticket->due_amount > 0)
+                                                        <div style="color: red;"><b>{{$ticket->due_amount}}/-</b></div>
+                                                    @else
+                                                        {{$ticket->	due_amount.'/-'}}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                                 $j = 1;
+                                                 $sum_due = $sum_due + $ticket->due_amount;
+                                                 $sum_a_price = $sum_a_price + $ticket->a_price;
+                                                 $sum_c_price = $sum_c_price + $ticket->c_price + $ticket->vat + $ticket->ait;
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th align="center"></th>
+                                            <th align="left"></th>
+                                            <th align="left"></th>
+                                            <th align="left">
+                                                <div>A.Price: {{$sum_a_price}} /-</div>
+                                                <div>C.Price:  {{$sum_c_price}} /-</div>
+                                            </th>
+                                            <th align="left">
+                                                <div style="color: red;"><b>{{$sum_due}} /-</b></div>
+                                            </th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                    <br>
+                                    <h5 class="bg-warning text-white p-3 rounded shadow-sm text-center">Visa</h5>
+                                    <table id="" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>S.L</th>
+                                            <th>Date</th>
+                                            <th>Country</th>
+                                            <th>Passengers</th>
+                                            <th>Status</th>
+                                            <th>Price</th>
+                                            <th>Due</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @php
+                                            $i=1;
+                                            $j = 1;
+                                            $v_sum_due=0;
+                                            $sum_a_price=0;
+                                            $sum_c_price=0;
+                                        @endphp
+                                        @foreach($visas as $visa)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$visa->date}}</td>
+                                                <td>
+                                                    <div>Country:{{$visa->visa_country}}</div>
+                                                    <div>Vendor:{{$visa->vendor}}</div>
+                                                    {{$visa->v_details}}
+                                                </td>
+                                                    <?php
+                                                    $p = json_decode($visa->p_details);
+                                                    ?>
+
+                                                <td>
+                                                    @foreach($p as $pas)
+                                                            <?php
+                                                            $name = DB::table('passengers')
+                                                                ->where('id',$pas)
+                                                                ->where('upload_by',Session::get('agent_id'))
+                                                                ->first();
+                                                            ?>
+                                                        <div>{{$j.'.'.$name->f_name.' '.$name->l_name}}</div>
+                                                        @php
+                                                            $j++;
+                                                        @endphp
+                                                    @endforeach
+                                                        <div>Phone:{{@$name->phone}}</div>
+                                                </td>
+                                                <td>{{$visa->status}}</td>
+                                                <td>
+                                                    A.Price:{{$visa->v_a_price}}/-<br>
+                                                    C.Price:{{$visa->v_c_price + $visa->v_vat + $visa->v_ait}}/-
+                                                </td>
+                                                <td>
+                                                    @if((int)$visa->v_due > 0)
+                                                        <p style="color: red;"><b>{{$visa->v_due.'/-'}}</b></p>
+                                                    @else
+                                                        {{$visa->	v_due}}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                                $j = 1;
+                                                $v_sum_due = $v_sum_due + $visa->v_due;
+                                                $sum_a_price = $sum_a_price + $visa->v_a_price;
+                                                $sum_c_price = $sum_c_price + $visa->v_c_price + $visa->v_vat + $visa->v_ait;
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th align="center"></th>
+                                                <th align="left"></th>
+                                                <th align="left"></th>
+                                                <th align="left"></th>
+                                                <th align="left">
+                                                    <div>A.Price: {{$sum_a_price}} /-</div>
+                                                    <div>C.Price:  {{$sum_c_price}} /-</div>
+                                                </th>
+                                                <th align="left">
+                                                    <div style="color: red;"><b>{{$v_sum_due}} /-</b></div>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <br>
+                                    <h5 class="bg-warning text-white p-3 rounded shadow-sm text-center">Tour Package</h5>
+                                    <table id="" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>S.L</th>
+                                            <th>Booking Date</th>
+                                            <th>Country</th>
+                                            <th>Package</th>
+                                            <th>Guest</th>
+                                            <th>Price</th>
+                                            <th>Due</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @php
+                                            $i=1;
+                                            $j=1;
+                                            $p_sum_due=0;
+                                            $sum_a_price=0;
+                                            $sum_c_price=0;
+                                        @endphp
+                                        @foreach($packages as $package)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$package->date}}</td>
+                                                <td>{{$package->p_countries}}</td>
+                                                <td>
+                                                    Name:{{$package->title}} <br>
+                                                    Code:{{$package->p_code}}<br>
+                                                    Vendor: {{$package->vendor}}
+                                                </td>
+                                                    <?php
+                                                    $p = json_decode($package->traveler);
+                                                    ?>
+                                                <td>
+                                                    @foreach($p as $pas)
+                                                            <?php
+                                                            $name = DB::table('passengers')
+                                                                ->where('id',$pas)
+                                                                ->where('upload_by',Session::get('agent_id'))
+                                                                ->first();
+                                                            $phone = @$name->phone;
+                                                            ?>
+                                                        <div>{{$j.'.'.@$name->f_name.' '.@$name->l_name}}</div>
+                                                        @php
+                                                            $j++;
+                                                        @endphp
+                                                    @endforeach
+                                                    <div>Phone:{{@$phone}}</div>
+                                                </td>
+                                                <td>
+                                                    A.Price:{{$package->p_a_price}}<br>
+                                                    C.Price:{{$package->p_c_details + $package->p_vat +$package->p_ait}}
+                                                </td>
+                                                <td>
+                                                    @if((int)$package->due > 0)
+                                                        <p style="color: red;"><b>{{$package->due.'/-'}}</b></p>
+                                                    @else
+                                                        {{$package->due}}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                                $j = 1;
+                                                $p_sum_due = $p_sum_due + $package->due;
+                                                $sum_a_price = $sum_a_price + $package->p_a_price;
+                                                $sum_c_price = $sum_c_price + $package->p_c_details + $package->p_vat + $package->p_ait;
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th align="center"></th>
+                                            <th align="left"></th>
+                                            <th align="left"></th>
+                                            <th align="left"></th>
+                                            <th align="left">
+                                                <div>A.Price: {{$sum_a_price}} /-</div>
+                                                <div>C.Price:  {{$sum_c_price}} /-</div>
+                                            </th>
+                                            <th align="left">
+                                                <div style="color: red;"><b>{{$p_sum_due}} /-</b></div>
+                                            </th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
-                            <!-- /.card-body -->
                             <div class="card-header">
-                                <h3 class="card-title"><b >Total Amount in Hand :   {{$sum + $sum_due}}/- </b></h3>
+                                <h3 class="card-title">
+                                    <b style="color: #06069a;">Total Due Amount :   {{$sum_due+ $v_sum_due+ $p_sum_due}}/- </b><br>
+                                    <b>Total Amount in Hand :   {{$sum + $sum_due+ $v_sum_due+ $p_sum_due}}/- </b>
+                                </h3>
                             </div>
                         </div>
                         <!-- /.card -->

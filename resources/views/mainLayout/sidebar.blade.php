@@ -15,6 +15,7 @@
     <div class="sidebar">
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
+                <br>
                 <li class="nav-item">
                     <a href="{{url('/main-dashboard')}}" class="nav-link @yield('mainDashboard')">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -259,6 +260,18 @@
                                     <p>Role Management</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{url('leaves')}}" class="nav-link  @yield('leaves')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Leave Management</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{url('attendance')}}" class="nav-link  @yield('attendance')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Attendance</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item  @yield('userMenu')">
@@ -384,6 +397,29 @@
                                 <a href="{{url('airports')}}" class="nav-link  @yield('airports')">
                                     <i class="far fa-arrow-alt-circle-right nav-icon"></i>
                                     <p>Airport Settings</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item @yield('academyMenu')">
+                        <a href="#" class="nav-link @yield('academy')">
+                            <i class="nav-icon fas fa-graduation-cap"></i>
+                            <p>
+                                Academy Management
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{url('course-management')}}" class="nav-link @yield('course')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Course Management </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{url('ebook-management')}}" class="nav-link @yield('ebook')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>E-Book Management</p>
                                 </a>
                             </li>
                         </ul>
@@ -721,6 +757,18 @@
                                             <a href="{{url('employees')}}" class="nav-link  @yield('employees')">
                                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>
                                                 <p>Employee Management</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{url('leaves')}}" class="nav-link  @yield('leaves')">
+                                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                                <p>Leave Management</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{url('attendance')}}" class="nav-link  @yield('attendance')">
+                                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                                <p>Attendance</p>
                                             </a>
                                         </li>
                                     </ul>

@@ -23,7 +23,6 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12">
                         <div class="card border-0 p-3 mb-4">
-
                             <div class="crd-heaader d-md-flex align-items-center justify-content-between">
                                 <div class="crd-heaader-first">
                                     <div class="d-block">
@@ -204,7 +203,7 @@
                                         </div>
                                         <div class="single-card px-3 py-3">
                                             <button class="btn btn-sm btn-primary full-width fw-medium text-uppercase mb-2"
-                                                    data-bs-toggle="modal" data-bs-target="#tour-request" type="button">proceed to book online</button>
+                                                    data-bs-toggle="modal" data-bs-target="#tour-booking-online" type="button">proceed to book online</button>
                                             <button class="btn btn-sm btn-light-primary full-width fw-medium text-uppercase"
                                                     data-bs-toggle="modal" data-bs-target="#tour-request" type="button">Send Inquiry</button>
                                         </div>
@@ -230,7 +229,7 @@
                     </div>
                     <div class="col-4">
                         <div class="text-end grpx-btn">
-                            <a href="#" class="btn btn-light-primary btn-md fw-medium">More<i
+                            <a href="{{url('tour-package')}}" class="btn btn-light-primary btn-md fw-medium">More<i
                                     class="fa-solid fa-arrow-trend-up ms-2"></i></a>
                         </div>
                     </div>
@@ -334,7 +333,7 @@
                     <div class="modal-login-form py-4 px-md-3 px-0">
                         {{ Form::open(array('url' => 'order-request',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-12">
                                 <div class="form-floating mb-4">
                                     <input type="text" class="form-control" name="name" placeholder="Write Full Name" required>
                                     <label>Name*</label>
@@ -352,15 +351,27 @@
                                     <label>Email*</label>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-floating mb-4">
-                                    <input type="text" class="form-control"  name="person" placeholder="Write Person Number" required>
-                                    <label>Person*</label>
+                                    <input type="number" class="form-control"  name="adult" placeholder="Write Adult Number" min="2" value="2" required>
+                                    <label>Adult*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-floating mb-4">
+                                    <input type="number" class="form-control"  name="child" placeholder="Write Child Number" min="0" value="0"  required>
+                                    <label>Child*</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-floating mb-4">
+                                    <input type="number" class="form-control"  name="infant" placeholder="Write Infant Number" min="0" value="0" required>
+                                    <label>Infant*</label>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-floating mb-4">
-                                    <textarea  class="form-control" rows="3" name="remarks" placeholder="Write Remarks..."></textarea>
+                                    <textarea  class="form-control" rows="2" name="remarks" placeholder="Write Remarks..."></textarea>
                                     <label>Remarks*</label>
                                 </div>
                             </div>
@@ -369,6 +380,54 @@
                             <input type="hidden" name="view" value="{{url()->full()}}">
                             <input type="hidden" name="r_type" value="Tour Package">
                             <button type="submit" class="btn btn-primary full-width font--bold btn-lg">Send Query</button>
+                        </div>
+                        {{ Form::close() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="tour-booking-online" tabindex="-1" role="dialog" aria-labelledby="loginmodal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered login-pop-form" role="document">
+            <div class="modal-content" id="loginmodal">
+                <div class="modal-header">
+                    <h4 class="modal-title fs-6">Request for Your Booking and Pay Online</h4>
+                    <a href="#" class="text-muted fs-4" data-bs-dismiss="modal" aria-label="Close"><i
+                            class="fa-solid fa-square-xmark"></i></a>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-login-form py-4 px-md-3 px-0">
+                        {{ Form::open(array('url' => 'tour-client-details',  'method' => 'post' ,'class' =>'form-horizontal')) }}
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Checkin Date</label>
+                                    <input type="date" name="checkin" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Checkout Date</label>
+                                    <input type="date" name="checkout" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Adult*</label>
+                                    <input type="number" class="form-control"  name="adult" placeholder="Write Adult Number" min="2" value="2" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Child*</label>
+                                    <input type="number" class="form-control"  name="child" placeholder="Write Child Number" min="0" value="0"  required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="view" value="{{url()->full()}}">
+                            <input type="hidden" name="r_type" value="Tour Package">
+                            <button type="submit" class="btn btn-primary full-width font--bold btn-lg">Procced for Online Payment</button>
                         </div>
                         {{ Form::close() }}
                     </div>

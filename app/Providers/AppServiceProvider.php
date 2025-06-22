@@ -39,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('domain', $fixed_domain);
             $view->with('c_info', $c_info);
             $company = DB::table('users')->where('id',Session::get('user_id'))->first();
+            //dd($company);
             $agent = DB::table('users')->where('id',Session::get('agent_id'))->first();
             if(@$company->status == 'In Active'){
                 return redirect()->to('all-login')->with('errorMessage', 'Your Id is Inactive!! Please contact to admin.');
@@ -52,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
             }
             $view->with('company_info', $company);
             $view->with('agent_info', $agent);
+
         });
         Paginator::useBootstrap();
     }

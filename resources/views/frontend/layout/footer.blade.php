@@ -52,7 +52,7 @@
     <div>
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-4">
+                <div class="col-lg-2 col-md-3">
                     <div class="footer-widget">
                         <div class="d-flex align-items-start flex-column mb-3">
                             <div class="d-inline-block"><img src="{{url('/'.@$c_info->logo)}}" class="img-fluid" width="160"
@@ -63,43 +63,53 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4">
+                <div class="col-lg-2 col-md-3">
                     <div class="footer-widget">
                         <h4 class="widget-title">Important Link</h4>
                         <ul class="footer-menu">
                             <li><a href="{{url('/')}}">Home</a></li>
                             <li><a href="{{url('visa')}}">Visa</a></li>
                             <li><a href="{{url('tour-package')}}">Tour Package</a></li>
+                            <li><a href="{{url('')}}">Educations</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <div class="footer-widget">
+                        <h4 class="widget-title">Important Link</h4>
+                        <ul class="footer-menu">
+                            <li><a href="{{url('hajj-umrah')}}">Hajj Umrah</a></li>
+                            <li><a href="{{url('services')}}">Services</a></li>
+                            <li><a href="{{url('work-permit')}}">Work Permit</a></li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="col-lg-2 col-md-4">
+                <div class="col-lg-2 col-md-3">
                     <div class="footer-widget">
                         <h4 class="widget-title">Our Resources</h4>
                         <ul class="footer-menu">
                             <li><a href="{{url('about-us')}}">About Us</a></li>
                             <li><a href="{{url('contact-us')}}">Contact Us</a></li>
-                            <li><a href="{{url('privacy-policy')}}">Privacy Policy</a></li>
+                            <li><a href="{{url('blogs')}}">Blogs</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-2 col-md-3">
                     <div class="footer-widget">
                         <h4 class="widget-title">The Company</h4>
                         <ul class="footer-menu">
                             <li><a href="{{url('terms-conditions')}}">Terms & Conditions</a></li>
                             <li><a href="{{url('refund-policy')}}">Refund Policy</a></li>
                             <li><a href="{{url('cookie-policy')}}">Cookie Policy</a></li>
+                            <li><a href="{{url('privacy-policy')}}">Privacy Policy</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-2 col-md-3">
                     <div class="footer-widget">
-                        <h4 class="widget-title">Payment Methods</h4>
-                        <div class="pmt-wrap">
-                            <img src="{{url('/public/ssl-gateway.png')}}" class="img-fluid" alt="">
-                        </div>
+                        <h4 class="widget-title">Social Links</h4>
                         <div class="foot-socials" style="margin-top: -10px;">
                             <ul>
                                 <li style="border: solid 1px #04107C;"><a href="{{@$c_info->f_link}}" target="_blank"><i class="fa-brands fa-facebook"></i></a></li>
@@ -109,6 +119,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-12 ssl" style="margin-top: -90px;">
+                    <img style="height: 120px; width: 100%;" src="{{url('/public/ssl_gat.png')}}" class="img-fluid" alt="">
+                </div>
             </div>
         </div>
     </div>
@@ -116,19 +129,21 @@
     <div class="footer-bottom border-top" style="background: white;">
         <div class="container">
             <div class="row align-items-center justify-content-between">
-
-                <div class="col-xl-6 col-lg-6 col-md-6">
+                <div class="col-xl-4 col-lg-4 col-md-4">
                     <p class="mb-0" style="color: #04107C;">All rights reserved by {{@$c_info->name}} © 2021 -<?php echo date('Y')?></p>
                 </div>
-
-                <div class="col-xl-6 col-lg-6 col-md-6" >
+                <div class="col-xl-4 col-lg-4 col-md-4">
+                    <center>
+                        <p class="mb-0" style="color: #ef2874;"> Trade Licence No:  TRAD/DNCC/051155/2023 </p>
+                    </center>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4" >
                     <ul class="p-0 d-flex justify-content-start justify-content-md-end text-start text-md-end m-0" >
                         <li><a href="{{url('terms-conditions')}}" style="color: #04107C;">Terms of services</a></li>
                         <li class="ms-3"><a href="{{url('refund-policy')}}" style="color: #04107C;">Privacy Policies</a></li>
                         <li class="ms-3"><a href="{{url('cookie-policy')}}" style="color: #04107C;">Cookies</a></li>
                     </ul>
                 </div>
-
             </div>
         </div>
     </div>
@@ -175,6 +190,18 @@
         });
     })(jQuery);
 
+    $(document).ready(function () {
+        function showDivOnMobile() {
+            if ($(window).width() >= 768) {
+                $('.ssl').show();
+            } else {
+                $('.ssl').hide(); // optional: hide on desktop
+            }
+        }
+
+        showDivOnMobile(); // on load
+        $(window).resize(showDivOnMobile); // on resize
+    });
 </script>
 
 </body>

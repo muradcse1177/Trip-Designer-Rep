@@ -43,10 +43,31 @@
                                 {{ Form::open(array('url' => 'sendSMS',  'method' => 'post' ,'class' =>'form-horizontal')) }}
                                 {{ csrf_field() }}
                                 <div class="card-body row">
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label>Select SMS Group</label>
+                                        <div class="form-group">
+                                            <select class="form-control select2bs4 group" name="group_name" id="group_name" style="width: 100%;">
+                                                <option value="" selected>Select SMS Group</option>
+                                                <option value="all">All Number in Software</option>
+                                                <option value="contacts">All Contacts</option>
+                                                <option value="tickets">All Air Ticket</option>
+                                                <option value="hotel">All Hotel</option>
+                                                <option value="visa">All Visa</option>
+                                                <option value="tour">All Tour</option>
+                                                <option value="hajj">All Hajj & Umrah</option>
+                                                <option value="manpower">All Work Permit</option>
+                                                <option value="agent">All Agent</option>
+                                                <option value="employee">All Employee</option>
+                                                <option value="b2c">All B2C Customer</option>
+                                                <option value="passengers">All Passengers</option>
+                                                <option value="order_req">All Order Request</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 single">
                                         <div class="form-group">
                                             <label>Phone Number (Enter number with comma seperated)</label>
-                                            <input type="text" class="form-control" id="number" name="number" placeholder="Enter Phone Number (01715185966,01835963589,01915....)" required>
+                                            <input type="text" class="form-control singlee" id="number" name="number" placeholder="Enter Phone Number (01715185966,01835963589,01915....)" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
@@ -111,5 +132,15 @@
                 $('#charNum').text(len);
             }
         };
+        $(function() {
+            $('.group').change(function(){
+                if($("option[value='']").is(":checked"))
+                    $('.single').show();
+                else
+                    $('.singlee').removeAttr('required');
+                    $('.single').hide();
+
+            });
+        });
     </script>
 @endsection

@@ -10,7 +10,7 @@
             $a = 'b';
         ?>
         @if( $a == 'b')
-            <br><br>
+{{--            <br><br>--}}
         @endif
         <!-- End Navigation -->
         <div class="clearfix"></div>
@@ -125,37 +125,7 @@
         </section>
         <!-- ============================ Our facts End ================================== -->
         <!-- ================================ Article Section Start ======================================= -->
-        <section>
-            <div class="container">
 
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-xl-8 col-lg-9 col-md-11 col-sm-12">
-                        <div class="secHeading-wrap text-center mb-5">
-                            <h2>Trending & Popular Articles</h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row justify-content-center g-4">
-                    @foreach($blogs as $blog)
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
-                            <div class="blogGrid-wrap d-flex flex-column h-100">
-                                <div class="blogGrid-pics">
-                                    <a href="{{url('/blog/'.$blog->slug)}}" class="d-block"><img src="{{url('/'.$blog->b_c_photo)}}" class="img-fluid rounded" alt="Blog image"></a>
-                                </div>
-                                <div class="blogGrid-caps pt-3">
-                                    <div class="d-flex align-items-center mb-1"><span
-                                            class="label text-success bg-light-success">{{$blog->b_category}}</span></div>
-                                    <h4 class="fw-bold fs-6 lh-base"><a href="{{url('/blog/'.$blog->slug)}}" class="text-dark">{{$blog->b_title}}</a></h4>
-                                    <p class="mb-3">{!! substr(json_decode($blog->details),'0',150) !!}</p>
-                                    <a class="text-primary fw-medium" href="{{url('/blog/'.$blog->slug)}}">Read More<i class="fa-solid fa-arrow-trend-up ms-2"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
         <!-- ================================ Article Section Start ======================================= -->
     </div>
 @endsection

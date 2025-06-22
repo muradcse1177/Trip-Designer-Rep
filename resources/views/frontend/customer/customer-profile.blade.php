@@ -12,9 +12,6 @@
                         <li><a href="my-booking.html"><i class="fa-solid fa-ticket me-2"></i>My Booking</a></li>
                         <li><a href="travelers.html"><i class="fa-solid fa-user-group me-2"></i>Travelers</a></li>
                         <li><a href="payment-detail.html"><i class="fa-solid fa-wallet me-2"></i>Payment Details</a></li>
-                        <li><a href="my-wishlists.html"><i class="fa-solid fa-shield-heart me-2"></i>My Wishlist</a></li>
-                        <li><a href="settings.html"><i class="fa-solid fa-sliders me-2"></i>Settings</a></li>
-                        <li><a href="delete-account.html"><i class="fa-solid fa-trash-can me-2"></i>Delete Profile</a></li>
                         <li><a href="login.html"><i class="fa-solid fa-power-off me-2"></i>Sign Out</a></li>
                     </ul>
                 </div>
@@ -27,41 +24,12 @@
     <!-- ============================ Booking Page ================================== -->
     <section class="pt-5 gray-simple position-relative">
         <div class="container">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-xl-12 col-lg-12 col-md-12 mb-4">
-                    <button class="btn btn-dark fw-medium full-width d-block d-lg-none" data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvasDashboard" aria-controls="offcanvasDashboard"><i
-                            class="fa-solid fa-gauge me-2"></i>Dashboard
-                        Navigation</button>
-                    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
-                         id="offcanvasDashboard" aria-labelledby="offcanvasScrollingLabel">
-                        <div class="offcanvas-header gray-simple">
-                            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                        </div>
-                        <div class="offcanvas-body p-0">
-                            <ul class="user-Dashboard-longmenu">
-                                <li class="active"><a href="my-profile.html"><i class="fa-regular fa-id-card me-2"></i>My Profile</a>
-                                </li>
-                                <li><a href="my-booking.html"><i class="fa-solid fa-ticket me-2"></i>My Booking</a>
-                                </li>
-                                <li><a href="travelers.html"><i class="fa-solid fa-user-group me-2"></i>Travelers</a></li>
-                                <li><a href="payment-detail.html"><i class="fa-solid fa-wallet me-2"></i>Payment Details</a></li>
-                                <li><a href="my-wishlists.html"><i class="fa-solid fa-shield-heart me-2"></i>My Wishlist</a></li>
-                                <li><a href="settings.html"><i class="fa-solid fa-sliders me-2"></i>Settings</a></li>
-                                <li><a href="delete-account.html"><i class="fa-solid fa-trash-can me-2"></i>Delete Profile</a></li>
-                                <li><a href="login.html"><i class="fa-solid fa-power-off me-2"></i>Sign Out</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <?php
             if($user->logo){
                 $photo = $user->logo;
             }
             else{
-                $photo = 'public/profile.png';
+                $photo = 'public/user.png';
             }
             ?>
             <div class="row align-items-start justify-content-between gx-xl-4">
@@ -71,7 +39,14 @@
                             <div class="py-5 px-3">
                                 <div class="crd-thumbimg text-center">
                                     <div class="p-2 d-flex align-items-center justify-content-center brd">
-                                        <img src="{{url($photo)}}" class="img-fluid circle" width="120" alt=""></div>
+                                        @if(!empty($photo)))
+                                            <img src="{{ url($photo) }}" class="img-fluid circle" width="120" alt="User Photo">
+                                        @else
+                                            <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 120px; height: 120px;">
+                                                <i class="fa fa-user fa-2x text-secondary"></i>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="crd-capser text-center">
                                     <h5 class="mb-0 text-light fw-semibold">{{@$user->company_name}}</h5>
@@ -156,8 +131,14 @@
                                     <div class="d-flex align-items-center">
                                         <label class="position-relative me-4" for="uploadfile-1" title="Replace this pic">
                                             <!-- Avatar place holder -->
+                                            @php
+                                                $defaultPhoto = 'public/user.png';
+                                                $finalPhoto = (!empty($photo)) ? $photo : $defaultPhoto;
+                                            @endphp
+
                                             <span class="avatar avatar-xl">
-                                                <img id="uploadfile-1-preview" class="avatar-img rounded-circle border border-white border-3 shadow" src="{{url($photo)}}" alt="">
+                                                <img id="uploadfile-1-preview" class="avatar-img rounded-circle border border-white border-3 shadow"
+                                                     src="{{ url($finalPhoto) }}" alt="User Photo">
                                             </span>
                                         </label>
                                         <!-- Upload button -->

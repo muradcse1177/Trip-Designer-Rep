@@ -71,6 +71,23 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Purpose</label>
+                                                <select class="form-control select2bs4 group" name="purpose" id="purpose" style="width: 100%;" required>
+                                                    <option value="" selected>Select Purpose</option>
+                                                    <option value="Air Ticket" <?php if($contact->purpose == 'Air Ticket') echo 'selected';?>>Air Ticket</option>
+                                                    <option value="Visa" <?php if($contact->purpose == 'Visa') echo 'selected';?>>Visa</option>
+                                                    <option value="Tour Package" <?php if($contact->purpose == 'Tour Package') echo 'selected';?>>Tour Packages</option>
+                                                    <option value="Hotel Booking" <?php if($contact->purpose == 'Hotel Booking') echo 'selected';?>>Hotel Booking</option>
+                                                    <option value="Hajj" <?php if($contact->purpose == 'Hajj') echo 'selected';?>>Hajj & Umrah</option>
+                                                    <option value="Work Permit" <?php if($contact->purpose == 'Work Permit') echo 'selected';?>>Work Permit</option>
+                                                    <option value="Education" <?php if($contact->purpose == 'Education') echo 'selected';?>>Education</option>
+                                                    <option value="Services" <?php if($contact->purpose == 'Services') echo 'selected';?>>Services</option>
+                                                    <option value="Bank Solvency" <?php if($contact->purpose == 'Bank Solvency') echo 'selected';?>>Bank Solvency</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-footer">

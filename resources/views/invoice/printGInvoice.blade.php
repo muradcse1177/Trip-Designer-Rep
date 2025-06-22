@@ -1,188 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <title>Invoice - Trip Designer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Trip designer | Invoice Print</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            background: #f5f7fa;
+            font-family: 'Inter', sans-serif;
+            color: #2c3e50;
+            padding: 0;
+        }
+        .invoice {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .invoice::before {
+            content: "";
+            height: 6px;
+            width: 100%;
+            background: #1abc9c;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img {
+            height: 60px;
+        }
+        .invoice-title {
+            text-align: right;
+        }
+        .invoice-title h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        .card {
+            width: 30%;
+            background: #ecf0f1;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            color: #34495e;
+        }
+        table {
+            width: 100%;
+            margin-top: 40px;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        table th, table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        table thead {
+            background-color: #1abc9c;
+            color: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        table tbody tr:hover {
+            background-color: #f1fdfb;
+        }
+        .summary {
+            margin-top: 40px;
+            text-align: right;
+            font-size: 15px;
+        }
+        .summary div {
+            margin: 5px 0;
+        }
+        .paid { color: green; }
+        .due { color: red; }
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+        }
+        .sign {
+            text-align: center;
+            width: 40%;
+            border-top: 1px dashed #aaa;
+            padding-top: 10px;
+            font-weight: 600;
+        }
+        .footer-note {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 13px;
+            color: #555;
+            font-style: italic;
+        }
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{url('public/plugins/fontawesome-free/css/all.min.css')}}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{url('public/dist/css/adminlte.min.css')}}">
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .invoice {
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .invoice::before {
+                background: #1abc9c !important;
+            }
+            .card {
+                background: #ecf0f1 !important;
+            }
+            thead {
+                background: #1abc9c !important;
+                color: white !important;
+            }
+            .due {
+                color: red !important;
+            }
+            .paid {
+                color: green !important;
+            }
+            .sign {
+                border-top: 1px dashed #000 !important;
+                color: #000 !important;
+            }
+            .footer-note {
+                color: #444 !important;
+            }
+            .summary {
+                display: flex;
+                justify-content: space-between;
+                gap: 40px;
+                margin-top: 40px;
+            }
+            .summary h3 {
+                color: #1abc9c;
+                margin-bottom: 10px;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 6px;
+            }
+            .payment-details p,
+            .totals p {
+                margin: 6px 0;
+            }
+            @page {
+                size: auto;
+                margin: 0.5in;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="wrapper">
-    <!-- Main content -->
-    <section class="invoice">
-        <!-- title row -->
-        <div class="row">
-            <div class="col-12">
-                <h2 class="page-header">
-                    <img src="{{$domain.'/'.@$agent_info->logo}}" width="160" height="60">
-                    <small class="float-right">{{$invoice->date}}</small>
-                </h2>
-            </div>
-            <!-- /.col -->
+<div class="invoice">
+    <div class="header">
+        <div class="logo">
+            <img src="{{$domain.'/'.@$agent_info->logo}}" alt="Company Logo">
         </div>
-        <!-- info row -->
-        <div class="row invoice-info" >
-            <div class="col-sm-4 invoice-col">
-                From
-                <address>
-                    <strong>{{$agent_info->company_name}}</strong><br>
-                    Phone: {{$company_info->phone_code.$company_info->company_pnone}}<br>
-                    Email: {{$company_info->company_email}}<br>
-                    Address: {{@$company_info->address}}<br>
-                </address>
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-                To
-                <address>
-                    <strong>{{$invoice->name}}</strong><br>
-                    Phone: {{$invoice->phone}}<br>
-                    Email: {{$invoice->email}}<br>
-                    Address: {{$invoice->address}}<br>
-                </address>
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-                <b>Invoice {{$invoice->invoice_id}}</b><br>
+        <div class="invoice-title">
+            <h1>INVOICE</h1>
+            <p>Date: {{$invoice->date}}</p>
+            <p>Invoice #: {{$invoice->invoice_id}}</p>
+        </div>
+    </div>
 
-                <b>Date</b> {{$invoice->date}}<br>
-                <b>Payment Due:</b> {{$invoice->due_amount}}<br>
-                <b>Account:</b> {{$invoice->acc_number}}
-            </div>
-            <!-- /.col -->
+    <div class="section" style="display: flex; justify-content: space-between; gap: 20px; margin-top: 40px;">
+        <div class="card" style="flex: 1; background: #f0f3f5; padding: 20px; border-radius: 10px; font-size: 14px;">
+            <h3 style="margin-top: 0; color: #34495e; font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 6px;">From</h3>
+            {{$agent_info->company_name}}<br>
+            Phone: {{$company_info->phone_code.$company_info->company_pnone}}<br>
+            Email: {{$company_info->company_email}}<br>
+            Address: {{@$company_info->address}}
         </div>
-        <!-- /.row -->
 
-        <!-- Table row -->
-        <div class="row">
-            <div class="col-12 table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>S.L</th>
-                        <th>Purpose</th>
-                        <th>Passengers</th>
-                        <th>Reference</th>
-                        <th>Amount</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        $purposes = json_decode($invoice->purpose);
-                        $pax_numbers = json_decode($invoice->pax_number);
-                        $amounts = json_decode($invoice->amount);
-                        $references = json_decode($invoice->reference);
-                        $i=0;
-                        $sum =0;
-                    ?>
-                    @foreach($purposes as $p)
-                        <tr>
-                            <td>{{$i+1}}</td>
-                            <td>{{$purposes[$i]}}</td>
-                            <td>{{$pax_numbers[$i]}}</td>
-                            <td>{{$references[$i]}}</td>
-                            <td>{{$amounts[$i].' '.$c_info->symbol}}</td>
-                            <?php
-                                $sum = $sum + $amounts[$i];
-                                $i++;
-                            ?>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <!-- /.col -->
+        <div class="card" style="flex: 1; background: #f0f3f5; padding: 20px; border-radius: 10px; font-size: 14px;">
+            <h3 style="margin-top: 0; color: #34495e; font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 6px;">To</h3>
+            {{$invoice->name}}<br>
+            Phone: {{$invoice->phone}}<br>
+            Email: {{$invoice->email}}<br>
+            Address: {{$invoice->address}}
         </div>
-        <!-- /.row -->
+    </div>
 
-        <div class="row">
-            <!-- accepted payments column -->
-            <div class="col-6">
-                <p class="lead">Payment Methods:</p>
-                <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;"> Payment Methods: {{@$invoice->p_method}}</p>
-                <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;"> Account Number:{{@$invoice->acc_number}}</p>
-            </div>
-            <!-- /.col -->
-            <div class="col-6">
-                <div class="table-responsive  float-right">
-                    <table class="table">
-                        <tr>
-                            <th style="width:50%; text-align: right;">Subtotal:</th>
-                            <td style="text-align: right;">{{$sum.' '.$c_info->symbol}}</td>
-                        </tr>
-                        <tr>
-                            <th style="text-align: right;">Tax</th>
-                            <td style="text-align: right;">{{'0.00 '. $c_info->symbol}}</td>
-                        </tr>
-                        <tr>
-                            <th style="text-align: right;">Due Amount:</th>
-                            <td style="text-align: right;">{{$invoice->due_amount.' '.$c_info->symbol}}</td>
-                        </tr>
-                        @if(($invoice->due_amount>0))
-                            <tr>
-                                <th style="text-align: right;">Amount Need to be Paid:</th>
-                                <td style="text-align: right; color: red;"><b>{{$invoice->due_amount.' '.$c_info->symbol}}</b></td>
-                            </tr>
-                        @else
-                            <tr>
-                                <th style="text-align: right;"> Total Paid Amount:</th>
-                                <td style="text-align: right; color: red;"><b>{{$sum.' '.$c_info->symbol}}</b></td>
-                            </tr>
-                        @endif
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Purpose</th>
+            <th>Passengers</th>
+            <th>Reference</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $purposes = json_decode($invoice->purpose);
+        $pax_numbers = json_decode($invoice->pax_number);
+        $amounts = json_decode($invoice->amount);
+        $references = json_decode($invoice->reference);
+        $i = 0;
+        $sum = 0;
+        ?>
+        @foreach($purposes as $p)
+            <tr>
+                <td>{{ $i+1 }}</td>
+                <td>{{ $purposes[$i] }}</td>
+                <td>{{ $pax_numbers[$i] }}</td>
+                <td>{{ $references[$i] }}</td>
+                <td>{{ $amounts[$i].' '.$c_info->symbol }}</td>
+                    <?php $sum += $amounts[$i]; $i++; ?>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
 
-                    </table>
-                </div>
-            </div>
-            <!-- /.col -->
+    <div class="summary" style="display: flex; justify-content: space-between; gap: 40px; margin-top: 40px;">
+        <!-- Left part: Payment Info -->
+        <div class="payment-details" style="flex: 1; font-size: 14px;">
+            <h3 style="color: #1abc9c; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 6px;">Payment Info</h3>
+            <p><strong>Method:</strong> {{ @$invoice->p_method }}</p>
+            <p><strong>Account:</strong> {{ @$invoice->acc_number }}</p>
+            <p><strong>Due:</strong> <span style="color: red; font-weight: bold;">{{ $invoice->due_amount.' '.$c_info->symbol }}</span></p>
         </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div class="row">
-            <!-- accepted payments column -->
-            <div class="col-6">
-                <div class="float-left">
-                    <p class="lead">---------------------------</p>
-                    <p class="lead">Customer Signature</p>
-                </div>
 
-            </div>
-            <!-- /.col -->
-            <div class="col-6">
-                <div class="float-right">
-                    <p class="lead">----------------------------</p>
-                    <p class="lead">Authorised Signature</p>
-                </div>
-            </div>
-            <!-- /.col -->
+        <!-- Right part: Summary breakdown -->
+        <div class="totals" style="flex: 1; font-size: 14px; text-align: right;">
+            <h3 style="color: #1abc9c; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 6px;">Summary</h3>
+            <p><strong>Subtotal:</strong> {{ $sum.' '.$c_info->symbol }}</p>
+            <p><strong>Tax:</strong> 0.00 {{ $c_info->symbol }}</p>
+            @if($invoice->due_amount > 0)
+                <p><strong class="paid" style="color: green;">Paid:</strong> {{ $sum - $invoice->due_amount.' '.$c_info->symbol }}</p>
+            @else
+                <p><strong class="paid" style="color: green;">Paid:</strong> {{ $sum.' '.$c_info->symbol }}</p>
+            @endif
+            <p><strong class="due" style="color: red;">Due:</strong> {{ $invoice->due_amount.' '.$c_info->symbol }}</p>
         </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div class="row" style="text-align: center;">
-            <div class="col-12">
-                <p class="lead"> This is software generated invoice and authorised by <b>Trip Designer</b>. No need to extra signature.</p>
-            </div>
-            <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    </section>
-    <!-- /.content -->
+    </div>
+
+    <div class="signature-section">
+        <div class="sign">Customer Signature</div>
+        <div class="sign">Authorized Signature</div>
+    </div>
+
+    <div class="footer-note">
+        This is a system-generated invoice approved by <strong>Trip Designer</strong>. No additional signature is required.
+    </div>
 </div>
-<!-- ./wrapper -->
-<!-- Page specific script -->
+
 <script>
-    window.addEventListener("load", window.print());
+    window.addEventListener("load", () => window.print());
 </script>
 </body>
 </html>

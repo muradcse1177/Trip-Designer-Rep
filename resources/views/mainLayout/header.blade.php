@@ -45,12 +45,20 @@
     <style>
         body {
             font-family: 'jost';
+            .main-sidebar {
+                background-color: #060e57 !important;
+            }
+            .brand-link {
+                background-color: #060e57 !important; /* Replace with your desired color */
+                color: white !important;             /* Optional: change text color */
+            }
         }
         @media (pointer:none), (pointer:coarse) {
             body {
                 font-family: 'jost';
             }
         }
+
     </style>
     @yield('css')
 </head>

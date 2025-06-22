@@ -11,7 +11,7 @@ class accountsController extends Controller
     public function transactions(Request $request){
         try{
             $rows1 = DB::table('accounts')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             return view('accounts.transactions',['transactions' => $rows1]);
@@ -23,12 +23,12 @@ class accountsController extends Controller
     public function officeExpenses(Request $request){
         try{
             $rows1 = DB::table('accounts')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('source','Office Accounts')
                 ->orderBy('id','desc')
                 ->get();
             $rows2 = DB::table('accounts_head')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             return view('accounts.officeExpenses',['transactions' => $rows1,'heads' => $rows2]);
@@ -40,11 +40,11 @@ class accountsController extends Controller
     public function filterOfficeExpense(Request $request){
         try{
             $rows2 = DB::table('accounts_head')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows1 = DB::table('accounts')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('source','Office Accounts')
                 ->where(function ($query) use($request) {
                     if($request->acc_type  != '' )
@@ -85,7 +85,7 @@ class accountsController extends Controller
                 'invoice_id' => $invoice,
                 'date' => $request->date,
                 'head' => $request->head,
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'transaction_type' => $request->type,
                 'source' => 'Office Accounts',
                 'purpose' => $request->purpose,
@@ -106,16 +106,29 @@ class accountsController extends Controller
     public function bankAccounts(Request $request){
         try{
             $rows1 = DB::table('bank_accounts')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
                 ->get();
             $rows2 = DB::table('air_ticket_invoice')
                 ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('due_amount','>',0)
                 ->orderBy('id','desc')
                 ->get();
-            return view('accounts.bankAccounts',['accounts' => $rows1,'tickets' => $rows2]);
+            $rows3 = DB::table('visa_invoice')
+                ->where('deleted',0)
+                ->where('agent_id',Session::get('agent_id'))
+                ->where('v_due','>',0)
+                ->orderBy('id','desc')
+                ->get();
+            $rows4 = DB::table('package_details')
+                ->where('deleted',0)
+                ->where('agent_id',Session::get('agent_id'))
+                ->where('due','>',0)
+                ->orderBy('id','desc')
+                ->get();
+
+            return view('accounts.bankAccounts',['accounts' => $rows1,'tickets' => $rows2, 'visas' => $rows3, 'packages' => $rows4]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
@@ -139,7 +152,7 @@ class accountsController extends Controller
 
             $result = DB::table('bank_accounts')->insert([
                 'name' => $request->name,
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'amount' => $request->amount,
             ]);
             if ($result) {
@@ -161,7 +174,7 @@ class accountsController extends Controller
 
             $result = DB::table('bank_account_super')->insert([
                 'name' => $request->name,
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'branch' => $request->branch,
                 'acc_name' => $request->acc_name,
                 'acc_number' => $request->acc_number,
@@ -182,7 +195,7 @@ class accountsController extends Controller
     public function editBankAccount(Request $request){
         try{
             $rows1 = DB::table('bank_accounts')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('id',$request->id)
                 ->first();
             return view('accounts.editBankAccountPage',['account' => $rows1]);
@@ -194,7 +207,7 @@ class accountsController extends Controller
     public function editBankAccountSuperPage(Request $request){
         try{
             $rows1 = DB::table('bank_account_super')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where('id',$request->id)
                 ->first();
             return view('accounts.editBankAccountSuper',['account' => $rows1]);
@@ -206,7 +219,7 @@ class accountsController extends Controller
     public function updateBankAccountsSuper(Request $request){
         try {
             if ($request) {
-                $rows = DB::table('bank_account_super')->where('agent_id', Session::get('user_id'))->where('id', $request->id)->first();
+                $rows = DB::table('bank_account_super')->where('agent_id', Session::get('agent_id'))->where('id', $request->id)->first();
                 if ($request->logo) {
                     $fileName = time() . '.' . $request->logo->extension();
                     $request->logo->move(public_path('images/upload/company/'), $fileName);
@@ -216,10 +229,10 @@ class accountsController extends Controller
                 }
                 $result = DB::table('bank_account_super')
                     ->where('id', $rows->id)
-                    ->where('agent_id', Session::get('user_id'))
+                    ->where('agent_id', Session::get('agent_id'))
                     ->update([
                         'name' => $request->name,
-                        'agent_id' => Session::get('user_id'),
+                        'agent_id' => Session::get('agent_id'),
                         'branch' => $request->branch,
                         'acc_name' => $request->acc_name,
                         'acc_number' => $request->acc_number,
@@ -242,7 +255,7 @@ class accountsController extends Controller
         try{
             $result =DB::table('bank_accounts')
                 ->where('id', $request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'amount' => $request->amount,
                 ]);
@@ -260,7 +273,7 @@ class accountsController extends Controller
         try{
             $result =DB::table('bank_accounts')
                 ->where('id', $request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->delete();
             if ($result) {
                 return redirect()->to('bankAccounts')->with('successMessage', 'Data update successfully!!');
@@ -276,7 +289,7 @@ class accountsController extends Controller
         try{
             $result =DB::table('bank_account_super')
                 ->where('id', $request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->delete();
             if ($result) {
                 return redirect()->to('bank-accounts')->with('successMessage', 'Bank account deleted successfully!!');
@@ -292,7 +305,7 @@ class accountsController extends Controller
         try{
             $rows1 = DB::table('accounts')
                 ->where('status','Approved')
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->where(function ($query) use($request) {
                     if($request->from_issue_date  != '')
                         $query->where('date', '>=', $request->from_issue_date);
@@ -376,7 +389,7 @@ class accountsController extends Controller
         try{
             $domain = app('App\Http\Controllers\homeController')->domainCheck();
             $rows1 = DB::table('bank_account_super')->where('agent_id',$domain['agent_id'])->orderBy('id','asc')->get();
-            $rows2 = DB::table('payment_history')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            $rows2 = DB::table('payment_history')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
             return view('accounts.payment-request',['banks' => $rows1,'accounts' => $rows2]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -388,7 +401,7 @@ class accountsController extends Controller
             $invoice = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,8);
             $result = DB::table('payment_history')->insert([
                 'dep_ref_number' => $invoice,
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'deposit_time' =>date('Y-m-d h:i:s'),
                 'p_type' => $request->p_type,
                 'type' => 'Manual',
@@ -467,7 +480,7 @@ class accountsController extends Controller
     }
     public function accountsHead (Request $request){
         try{
-            $rows1 = DB::table('accounts_head')->where('agent_id',Session::get('user_id'))->orderBy('id','desc')->get();
+            $rows1 = DB::table('accounts_head')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
             return view('accounts.accountsHead',['heads' => $rows1]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -476,13 +489,13 @@ class accountsController extends Controller
     }
     public function addAccountsHead (Request $request){
         try{
-            $row = DB::table('accounts_head')->where('agent_id', Session::get('user_id')) ->where('head', $request->name)->get();
+            $row = DB::table('accounts_head')->where('agent_id', Session::get('agent_id')) ->where('head', $request->name)->get();
             if($row->count()>0){
                 return back()->with('errorMessage', 'Head Name Already Exits!! Please try again!!');
             }
             $result = DB::table('accounts_head')
             ->insert([
-                'agent_id' => Session::get('user_id'),
+                'agent_id' => Session::get('agent_id'),
                 'head' => $request->name,
             ]);
             if ($result) {
@@ -512,7 +525,7 @@ class accountsController extends Controller
         try{
             $result =DB::table('accounts_head')
                 ->where('id', $request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->update([
                     'head' => $request->name,
                 ]);
@@ -531,7 +544,7 @@ class accountsController extends Controller
         try{
             $result =DB::table('accounts_head')
                 ->where('id', $request->id)
-                ->where('agent_id',Session::get('user_id'))
+                ->where('agent_id',Session::get('agent_id'))
                 ->delete();
             if ($result) {
                 return redirect()->to('accountsHead')->with('successMessage', 'Data Delete successfully!!');

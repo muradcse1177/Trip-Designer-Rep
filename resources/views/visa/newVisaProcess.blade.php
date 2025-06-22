@@ -214,88 +214,200 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="example11" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Date</th>
-                                        <th>Country</th>
-                                        <th>Details</th>
-                                        <th>Passengers</th>
-                                        <th>Status</th>
-                                        <th>Price</th>
-                                        <th>Due</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                        $j = 1;
-                                    @endphp
-                                    @foreach($visas as $visa)
-                                        <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$visa->date}}</td>
-                                            <td>
-                                                <div>Country:{{$visa->visa_country}}</div>
-                                                <div>Vendor:{{$visa->vendor}}</div>
-                                            </td>
-                                            <td>{{$visa->v_details}}</td>
-                                            <?php
-                                            $p = json_decode($visa->p_details);
-                                            ?>
+                                {{ Form::open(['url' => 'filter-visa', 'method' => 'get', 'class' => 'form-horizontal']) }}
+                                <div class="form-row">
+                                    {{-- Country Name --}}
+                                    <div class="form-group col-md-4">
+                                        <label for="c_name">Country Name</label>
+                                        <select class="form-control select2bs4" name="c_name" id="c_name" style="width: 100%;">
+                                            <option value="">Select Country Name</option>
+                                            @foreach($countries as $country)
+                                                <option value="{{ $country->name }}" {{ request('c_name') == $country->name ? 'selected' : '' }}>
+                                                    {{ $country->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                                            <td>
-                                                @foreach($p as $pas)
-                                                    <?php
-                                                        $name = DB::table('passengers')
-                                                        ->where('id',$pas)
-                                                        ->where('upload_by',Session::get('agent_id'))
-                                                        ->first();
-                                                    ?>
-                                                    <div>{{$j.'.'.$name->f_name.' '.$name->l_name}}</div>
-                                                    @php
-                                                        $j++;
-                                                    @endphp
-                                                @endforeach
-                                            </td>
-                                            <td>{{$visa->status}}</td>
-                                            <td>
-                                                A.Price{{$visa->v_a_price}}
-                                                C.Price:{{$visa->v_c_price + $visa->v_vat + $visa->v_ait}}
-                                            </td>
-                                            <td>
-                                                @if((int)$visa->v_due > 0)
-                                                    <button type="button" class="btn btn-danger">{{$visa->v_due}}</button>
-                                                @else
-                                                    {{$visa->	v_due}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info">Action</button>
-                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                    </button>
-                                                    <div class="dropdown-menu" role="menu" style="">
-                                                        <a class="dropdown-item" href="{{url('viewVisa?id='.$visa->id)}}">View</a>
-                                                        <a class="dropdown-item" href="{{url('editVisaPage?id='.$visa->id)}}">Edit</a>
-                                                        <a class="dropdown-item" href="{{url('editVisaPaymentStatus?id='.$visa->id)}}">Edit Payment Status</a>
-                                                        <a class="dropdown-item delete" data-id="{{$visa->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteVisa?id='.$visa->id)}}">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                    {{-- From Date --}}
+                                    <div class="form-group col-md-4">
+                                        <label for="from_date">From Date</label>
+                                        <input type="date" class="form-control" id="from_date" name="from_date" value="{{ request('from_date') }}">
+                                    </div>
+
+                                    {{-- To Date --}}
+                                    <div class="form-group col-md-4">
+                                        <label for="to_date">To Date</label>
+                                        <input type="date" class="form-control" id="to_date" name="to_date" value="{{ request('to_date') }}">
+                                    </div>
+
+                                    {{-- Visa Status --}}
+                                    <div class="form-group col-md-4">
+                                        <label for="visa_status">Visa Status</label>
+                                        <select class="form-control" id="visa_status" name="visa_status">
+                                            <option value="">-- All --</option>
+                                            @foreach(['Received', 'On Process', 'Submitted', 'Approved', 'Cancelled', 'Docs Required', 'Delivered'] as $status)
+                                                <option value="{{ $status }}" {{ request('visa_status') == $status ? 'selected' : '' }}>
+                                                    {{ $status }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    {{-- Payment Status --}}
+                                    <div class="form-group col-md-4">
+                                        <label for="payment_status">Payment Status</label>
+                                        <select class="form-control" id="payment_status" name="payment_status">
+                                            <option value="">-- All --</option>
+                                            <option value="Paid" {{ request('payment_status') == 'Paid' ? 'selected' : '' }}>Paid</option>
+                                            <option value="Due" {{ request('payment_status') == 'Due' ? 'selected' : '' }}>Due</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {{-- Submit --}}
+                                <div class="form-row justify-content-end">
+                                    <div class="form-group col-md-3">
+                                        <button type="submit" class="btn btn-success btn-block">
+                                            <i class="fas fa-filter"></i> Filter
+                                        </button>
+                                    </div>
+                                </div>
+                                {{ Form::close() }}
+                                <hr>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>S.L</th>
+                                            <th>Date</th>
+                                            <th>Country</th>
+
+                                            <th>Passengers</th>
+                                            <th>Status</th>
+                                            <th>Price</th>
+                                            <th>Due</th>
+                                            <th>Action</th>
                                         </tr>
+                                        </thead>
+                                        <tbody>
                                         @php
-                                            $i++;
+                                            $i=1;
                                             $j = 1;
+
+                                            $sum_due = 0;
+                                            $sum_a_price = 0;
+                                            $sum_c_price = 0;
                                         @endphp
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        @foreach($visas as $visa)
+                                            <tr>
+                                                <td>{{$i}}</td>
+                                                <td>{{$visa->date}}</td>
+                                                <td>
+                                                    <div>Country:{{$visa->visa_country}}</div>
+                                                    <div>Vendor:{{$visa->vendor}}</div>
+                                                    <div>Purpose:{{$visa->v_details}}</div>
+                                                </td>
+                                                <?php
+                                                $p = json_decode($visa->p_details);
+                                                ?>
+                                                <td>
+                                                    @foreach($p as $pas)
+                                                        <?php
+                                                            $name = DB::table('passengers')
+                                                            ->where('id',$pas)
+                                                            ->where('upload_by',Session::get('agent_id'))
+                                                            ->first();
+                                                        ?>
+                                                        <div>{{$j.'.'.$name->f_name.' '.$name->l_name}}</div>
+                                                        @php
+                                                            $j++;
+                                                        @endphp
+                                                    @endforeach
+                                                    <div>Phone:{{@$name->phone}}</div>
+                                                </td>
+                                                <td>
+                                                    @if($visa->status == 'Received')
+                                                    <button type="button" class="btn btn-secondary">{{$visa->status}}</button>
+                                                    @endif
+                                                    @if($visa->status == 'On Process')
+                                                    <button type="button" class="btn btn-info">{{$visa->status}}</button>
+                                                    @endif
+                                                    @if($visa->status == 'Submitted')
+                                                    <button type="button" class="btn btn-warning">{{$visa->status}}</button>
+                                                    @endif
+                                                    @if($visa->status == 'Approved')
+                                                    <button type="button" class="btn btn-dark">{{$visa->status}}</button>
+                                                    @endif
+                                                    @if($visa->status == 'Cancelled')
+                                                    <button type="button" class="btn btn-danger">{{$visa->status}}</button>
+                                                    @endif
+                                                    @if($visa->status == 'Docs Required')
+                                                    <button type="button" class="btn btn-danger">{{$visa->status}}</button>
+                                                    @endif
+                                                    @if($visa->status == 'Delivered')
+                                                    <button type="button" class="btn btn-success">{{$visa->status}}</button>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    A.Price{{$visa->v_a_price}}
+                                                    C.Price:{{$visa->v_c_price + $visa->v_vat + $visa->v_ait}}
+                                                </td>
+                                                <td>
+                                                    @if((int)$visa->v_due > 0)
+                                                        <button type="button" class="btn btn-danger">{{$visa->v_due}}</button>
+                                                    @else
+                                                        {{$visa->	v_due}}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-info">Action</button>
+                                                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <div class="dropdown-menu" role="menu" style="">
+                                                            <a class="dropdown-item" href="{{url('viewVisa?id='.$visa->id)}}">View</a>
+                                                            <a class="dropdown-item" href="{{url('editVisaPage?id='.$visa->id)}}">Edit</a>
+                                                            <a class="dropdown-item" href="{{url('editVisaPaymentStatus?id='.$visa->id)}}">Edit Payment Status</a>
+                                                            <a class="dropdown-item delete" data-id="{{$visa->id}}" data-toggle="modal" data-target="#modal-danger" href="{{url('deleteVisa?id='.$visa->id)}}">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                                $j = 1;
+                                            @endphp
+                                            @php
+                                                $sum_due += $visa->v_due;
+                                                $sum_a_price += $visa->v_a_price;
+                                                $sum_c_price += ($visa->v_c_price + $visa->v_vat + $visa->v_ait);
+                                            @endphp
+                                        @endforeach
+                                        </tbody>
+                                        @if(Session::get('user_role') == 2 || Session::get('user_role') == 1)
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="5" class="text-right">Total</th>
+                                                <td>
+                                                    <p>A.Price: {{ $sum_a_price }}/-</p>
+                                                    <p>C.Price: {{ $sum_c_price }}/-</p>
+                                                </td>
+                                                <th>
+                                                    <span class="text-danger font-weight-bold">{{ $sum_due }}/-</span>
+                                                    <span class="text-success font-weight-bold">{{ $sum_c_price - $sum_a_price }}/-</span>
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                            </tfoot>
+                                        @endif
+                                    </table>
+                                    <br>
+                                    {{ $visas->links() }}
+                                </div>
                             </div>
-                            <!-- /.card-body -->
+
                         </div>
                         <!-- /.card -->
                     </div>

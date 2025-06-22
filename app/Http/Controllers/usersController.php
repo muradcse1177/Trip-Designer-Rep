@@ -159,7 +159,7 @@ class usersController extends Controller
             $rows1 = DB::table('contacts')
                 ->where('agent_id',Session::get('agent_id'))
                 ->orderBy('id','desc')
-                ->get();
+                ->paginate(10);
             return view('contacts.contacts',['passengers' => $rows1]);
         }
         catch(\Illuminate\Database\QueryException $ex){
@@ -173,6 +173,7 @@ class usersController extends Controller
                     ->where('agent_id',Session::get('agent_id'))
                     ->where('phone',$request->phone)
                     ->get();
+                //dd($request);
                 if($row->count()>= 1){
                     return back()->with('errorMessage', 'Contacts already exits!!');
                 }
@@ -183,6 +184,7 @@ class usersController extends Controller
                         'phone' => $request->phone,
                         'email' => $request->email,
                         'dob' => $request->dob,
+                        'purpose' => $request->purpose,
                     ]);
                     if ($result) {
                         return redirect()->to('contacts')->with('successMessage', 'New contacts added successfully!!');
@@ -626,5 +628,34 @@ class usersController extends Controller
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
         }
+    }
+    public function createNewContactsDetails(Request $request)
+    {
+        $rows = explode("\n", trim($request->details));
+        foreach ($rows as $line) {
+            $parts = str_getcsv($line);
+
+            if (count($parts) < 3) {
+                continue; // Skip incomplete rows
+            }
+
+            [$phone, $name, $purpose] = $parts;
+
+            // Skip if phone or purpose is missing
+            if (empty($phone) || empty($purpose)) {
+                continue;
+            }
+            // Check if phone already exists in the contacts table
+            $exists = DB::table('contacts')->where('phone', $phone)->exists();
+            if (!$exists) {
+                DB::table('contacts')->insert([
+                    'agent_id'   => Session::get('agent_id'),
+                    'phone'   => $phone,
+                    'name'    => $name ?: null,
+                    'purpose' => $purpose,
+                ]);
+            }
+        }
+        return redirect()->to('contacts')->with('successMessage', 'Contacts inserted successfully!!');
     }
 }

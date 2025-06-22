@@ -49,6 +49,7 @@ class statemntController extends Controller
     }
     public function generatePDFStatement (Request $request){
         try{
+            DB::table('statement')->delete();
             $data = [
                 'name' => $request->name,
                 'j_name' => $request->j_name,
@@ -70,7 +71,7 @@ class statemntController extends Controller
             $t_number = $request->t_number;
             for($t=0; $t<$t_number; $t++){
                 $cause = array('Debit','Credit');
-                $d_cause = array('Cash Withdraw','Purchase','Purchase with card','Balance Transfer');
+                $d_cause = array('ATM Withdraw','Purchase','Purchase with card','Balance Transfer');
                 $c_cause = array('Cash Deposit','Balance Transfer');
                 $random_keys_cause = $cause[array_rand($cause, 1)];
                 $random_keys_d_cause = $d_cause[array_rand($d_cause, 1)];
@@ -84,7 +85,14 @@ class statemntController extends Controller
                     $digit_rand12 = $this->rand_12();
                     $json64 = json_encode( array($digit_rand3,$digit_rand64,$digit_rand8,$digit_rand12));
                     $cause = $random_keys_d_cause;
-                    $debit_amount= number_format((float)$this->rand_5(), 2, '.', '');
+                    if($random_keys_d_cause == 'ATM Withdraw'){
+                        $atm_amount = array('5000','10000','15000','20000');
+                        $f_atm_amount = $atm_amount[array_rand($atm_amount, 1)];
+                        $debit_amount= number_format((float)$f_atm_amount, 2, '.', '');
+                    }
+                    else{
+                        $debit_amount= number_format((float)$this->rand_5(), 2, '.', '');
+                    }
                     $credit_amount = number_format((float)0, 2, '.', '');
                 }
                 if($random_keys_cause == 'Credit'){

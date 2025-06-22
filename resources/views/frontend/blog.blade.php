@@ -10,14 +10,14 @@
             $a = 'b';
         ?>
         @if( $a == 'b')
-            <br><br>
+{{--            <br><br>--}}
         @endif
         <!-- End Navigation -->
         <div class="clearfix"></div>
         <!-- ============================ Articles Thumb Section ================================== -->
         <section class="p-0">
             <div class="thumb-wrap">
-                <img src="{{url('public/b2c/assets/img/banner-7.jpg')}}" class="img-fluid full-width ht-500 object-fit" alt="" height="20%">
+                <img src="{{url('public/b2c/assets/img/banner-7.jpg')}}" class="img-fluid full-width object-fit" alt="" style="height: 300px;">
             </div>
         </section>
         <!-- ============================ Articles Thumb Section ================================== -->
@@ -105,5 +105,6 @@
 @endsection
 @section('js')
     <script>
+        $('p img').css('width', '100%');
     </script>
 @endsection

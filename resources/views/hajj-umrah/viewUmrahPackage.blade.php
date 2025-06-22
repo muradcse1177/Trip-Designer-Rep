@@ -213,7 +213,7 @@
                                                         <td>
                                                                 <?php
                                                                 $output = '<ul style="list-style-type: disc !important; adding-left:1em !important; margin-left:1em;">';
-                                                                $listformat = explode("\n", $d_titles[$i]);
+                                                                $listformat = explode("\n", $d_ininaris[$i]);
                                                                 foreach ($listformat as $test => $line) {
                                                                     $output .= "<li>".$line."</li>";
                                                                 };
@@ -240,7 +240,7 @@
                                                 <table class="table table-borderless">
                                                     <tr>
                                                         <td>
-                                                            {!! nl2br($package->p_inclusions) !!}
+                                                            {!! nl2br(json_decode($package->p_inclusions)) !!}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -260,7 +260,7 @@
                                                 <table class="table table-borderless">
                                                     <tr>
                                                         <td>
-                                                            {!! nl2br($package->p_exclusions) !!}
+                                                            {!! nl2br(json_decode($package->p_exclusions)) !!}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -280,7 +280,7 @@
                                                 <table class="table table-borderless">
                                                     <tr>
                                                         <td>
-                                                            {!! nl2br($package->p_tnt) !!}
+                                                            {!! nl2br(json_decode($package->p_tnt)) !!}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -300,7 +300,7 @@
                                                 <table class="table table-borderless">
                                                     <tr>
                                                         <td>
-                                                            {!! nl2br($package->p_policy) !!}
+                                                            {!! nl2br(json_decode($package->p_policy)) !!}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -308,7 +308,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button class="btn btn-warning float-right printMe">Print Invoice</button>
+                                    <a href="{{url('printUmrahPackageInvoice?id='.$package->id)}}" target="_blank" class="btn btn-warning float-right printMe">Print Invoice</a>
                                 </div>
                             </div>
                             <!-- /.card-body -->

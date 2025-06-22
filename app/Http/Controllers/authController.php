@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Schema;
 
 class authController extends Controller
 {
@@ -118,17 +119,17 @@ class authController extends Controller
     public  function mainDashboard(Request $request){
         $domain =$this->domainCheck();
         $rows1 = DB::table('b2c_tour_package_country')->where('agent_id',$domain['agent_id'])->get();
-        $rows2 = DB::table('b2c_tour_package')->where('agent_id',$domain['agent_id'])->orderBy('p_p_adult','asc')->inRandomOrder()->get()->take(21);
+        $rows2 = DB::table('b2c_tour_package')->where('agent_id',$domain['agent_id'])->orderBy('p_p_adult','asc')->inRandomOrder()->get()->take(6);
 
-        $rows3 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->orderBy('a_price','asc')->inRandomOrder()->get()->take(21);
+        $rows3 = DB::table('b2c_visa')->where('agent_id',$domain['agent_id'])->orderBy('a_price','asc')->inRandomOrder()->get()->take(6);
         $rows4 = DB::table('b2c_visa_country')->where('agent_id',$domain['agent_id'])->get();
 
         $rows5 = DB::table('b2c_manpower_country')->where('agent_id',$domain['agent_id'])->get();
-        $rows6 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(21);
+        $rows6 = DB::table('b2c_manpower')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(6);
 
-        $rows7 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->orderBy('p_p_adult','asc')->inRandomOrder()->get()->take(21);
+        $rows7 = DB::table('b2c_hajj_umrah')->where('agent_id',$domain['agent_id'])->orderBy('p_p_adult','asc')->inRandomOrder()->get()->take(6);
 
-        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(12);
+        $rows8 = DB::table('b2c_service')->where('agent_id',$domain['agent_id'])->inRandomOrder()->get()->take(6);
         return view('main-dashboard',
             [
                 't_country' => $rows1,'t_package' => $rows2,
@@ -138,77 +139,114 @@ class authController extends Controller
 
             ]);
     }
-    public  function dashboard(Request $request){
-        if(Session::get('user_id')){
-            $cus_count = DB::table('passengers')->where('upload_by',Session::get('user_id'))->distinct()->get()->count();
-            $first_day_this_month = date('Y-m-01'); // hard-coded '01' for first day
-            $last_day_this_month  = date('Y-m-t');
-            $monthly_sale_air_ticket = DB::table('air_ticket_invoice')
-                ->select(
-                    DB::raw('SUM(c_price) as cost ')
-                )
-                ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
-                ->where('issue_date', '>=', $first_day_this_month)
-                ->where('issue_date', '<=' , $last_day_this_month)
-                ->first();
-            $yes_d =  date('y-m-d',strtotime("-1 days"));
-            $daily_sale_air_ticket = DB::table('air_ticket_invoice')
-                ->select(
-                    DB::raw('SUM(c_price) as cost ')
-                )
-                ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
-                ->where('issue_date', '=', $yes_d)
-                ->first();
-            $monthly_sale_visa = DB::table('visa_invoice')
-                ->select(
-                    DB::raw('SUM(v_c_price) as cost ')
-                )
-                ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
-                ->where('date', '>=', $first_day_this_month)
-                ->where('date', '<=' , $last_day_this_month)
-                ->first();
-            $daily_sale_visa = DB::table('visa_invoice')
-                ->select(
-                    DB::raw('SUM(v_c_price) as cost ')
-                )
-                ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
-                ->where('date', '=', $yes_d)
-                ->first();
-            $monthly_sale_tour = DB::table('package_details')
-                ->select(
-                    DB::raw('SUM(p_c_details) as cost ')
-                )
-                ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
-                ->where('date', '>=', $first_day_this_month)
-                ->where('date', '<=' , $last_day_this_month)
-                ->first();
-            $daily_sale_tour = DB::table('package_details')
-                ->select(
-                    DB::raw('SUM(p_c_details) as cost ')
-                )
-                ->where('deleted',0)
-                ->where('agent_id',Session::get('user_id'))
-                ->where('date', '=', $yes_d)
-                ->first();
-            //dd($daily_sale_air_ticket);
-            return view('dashboard', [
-                'users' => $cus_count,
-                'monthly_sale_air_ticket' => $monthly_sale_air_ticket->cost ?? 0,
-                'daily_sale_air_ticket' => $daily_sale_air_ticket->cost ?? 0,
-                'monthly_sale_visa' => $monthly_sale_visa->cost ?? 0,
-                'daily_sale_visa' => $daily_sale_visa->cost ?? 0,
-                'monthly_sale_tour' => $monthly_sale_tour->cost ?? 0,
-                'daily_sale_tour' => $daily_sale_tour->cost ?? 0,
-                ]);
-        }
-        else{
+    public function dashboard(Request $request)
+    {
+        if (!Session::get('user_id')) {
             return redirect()->to('all-login');
         }
+
+        $agentId = Session::get('agent_id');
+        $today = date('Y-m-d');
+
+        // Filter dates
+        $startDate = $request->input('start_date') ?? date('Y-m-01');
+        $endDate = $request->input('end_date') ?? date('Y-m-t');
+
+        // Count unique passengers
+        $customerCount = DB::table('passengers')
+            ->where('upload_by', $agentId)
+            ->distinct()
+            ->count();
+
+        // Config for each service type
+        $invoices = [
+            'air_ticket' => [
+                'table' => 'air_ticket_invoice',
+                'date_field' => 'issue_date',
+                'cost_field' => 'c_price',
+                'agent_field' => 'a_price',
+                'due_field' => 'due_amount'
+            ],
+            'visa' => [
+                'table' => 'visa_invoice',
+                'date_field' => 'date',
+                'cost_field' => 'v_c_price',
+                'agent_field' => 'v_a_price',
+                'due_field' => 'v_due'
+            ],
+            'tour' => [
+                'table' => 'package_details',
+                'date_field' => 'date',
+                'cost_field' => 'p_c_details',
+                'agent_field' => 'p_a_price',
+                'due_field' => 'due'
+            ],
+            'hotel' => [
+                'table' => 'hotel_invoice',
+                'date_field' => 'b_date',
+                'cost_field' => 'c_price',
+                'agent_field' => 'a_price',
+                'due_field' => 'due_amount'
+            ],
+            'hajj' => [
+                'table' => 'umrah_invoice',
+                'date_field' => 'date',
+                'cost_field' => 'p_c_details',
+                'agent_field' => 'p_a_price',
+                'due_field' => 'due'
+            ],
+        ];
+
+        $data = [
+            'users' => $customerCount,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'total_due' => 0
+        ];
+
+        foreach ($invoices as $key => $config) {
+            // Monthly sale and cost
+            $data["monthly_sale_{$key}"] = $this->getInvoiceSum(
+                $config['table'], $config['cost_field'], $config['date_field'], $startDate, $endDate, $agentId
+            );
+            $data["monthly_a_sale_{$key}"] = $this->getInvoiceSum(
+                $config['table'], $config['agent_field'], $config['date_field'], $startDate, $endDate, $agentId
+            );
+
+            // Daily sale and cost
+            $data["daily_sale_{$key}"] = $this->getInvoiceSum(
+                $config['table'], $config['cost_field'], $config['date_field'], $today, $today, $agentId
+            );
+            $data["daily_a_sale_{$key}"] = $this->getInvoiceSum(
+                $config['table'], $config['agent_field'], $config['date_field'], $today, $today, $agentId
+            );
+
+            // Due amount
+            $data["due_{$key}"] = $this->getInvoiceSum(
+                $config['table'], $config['due_field'], $config['date_field'], $startDate, $endDate, $agentId
+            );
+            $data['total_due'] += $data["due_{$key}"];
+        }
+
+        return view('dashboard', $data);
+    }
+
+    /**
+     * Fetches the sum of a specific column from a given table for a date range and agent.
+     */
+    private function getInvoiceSum($table, $field, $dateField, $startDate, $endDate, $agentId)
+    {
+        $query = DB::table($table)
+            ->where('agent_id', $agentId)
+            ->whereBetween($dateField, [$startDate, $endDate]);
+
+        if (Schema::hasColumn($table, 'deleted')) {
+            $query->where('deleted', 0);
+        }
+
+        $result = $query->select(DB::raw("SUM($field) as total"))->first();
+
+        return $result->total ?? 0;
     }
     public function createNewCustomer(Request $request){
         try{
@@ -293,6 +331,10 @@ class authController extends Controller
         try{
             //$this->logout();
             if(Session::get('user_id')){
+                $rows = DB::table('users')->where('id',Session::get('user_id'))->first();
+                if($rows->address == null){
+                    return redirect()->to('companyInfo');
+                }
                 if(Session::get('superAdmin')){
                     return redirect()->to('main-dashboard');
                 }
@@ -303,7 +345,7 @@ class authController extends Controller
                     return redirect()->to('/');
                 }
                 if(Session::get('employee')){
-                    return redirect()->to('main-dashboard');
+                    return redirect()->to('attendance');
                 }
             }
             else{
@@ -332,6 +374,10 @@ class authController extends Controller
                         if($role == 2){
                             Session::put('admin', $rows->id);
                             Session::put('agent_id', $rows->id);
+                            $rows = DB::table('users')->where('id',$rows->id)->first();
+                            if($rows->address == null){
+                                return redirect()->to('companyInfo');
+                            }
                             return redirect()->to('main-dashboard');
                         }
                         if($role == 3){
@@ -345,7 +391,7 @@ class authController extends Controller
                             $emp = DB::table('employees')->where('email', $email)->first();
                             Session::put('agent_id', $emp->agent_id);
                             Session::put('employee', $rows->id);
-                            return redirect()->to('main-dashboard');
+                            return redirect()->to('attendance');
                         }
                     }
                     else{
