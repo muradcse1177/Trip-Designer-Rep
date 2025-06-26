@@ -107,7 +107,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="modal-flex-last">
-                                                            <a href="JavaScript:Void(0);" class="text-primary fw-medium">Forget Password?</a>
+                                                            <a href="{{url('forgot-password')}}" class="text-primary fw-medium">Forget Password?</a>
                                                         </div>
                                                     </div>
                                                 {{ Form::close() }}

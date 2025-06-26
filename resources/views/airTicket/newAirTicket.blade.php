@@ -273,7 +273,7 @@
                     <div class="col-md-12">
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title">Air Ticket Management</h3>
+                                <h3 class="card-title">Air Ticket Filter</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                         <i class="fas fa-minus"></i>
@@ -344,121 +344,189 @@
                                     </div><hr>
                                 </div><br>
                                 {{ Form::close() }}
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-purple shadow-lg">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-ticket-alt mr-2"></i>
+                                    Air Ticket Management
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                                        <i class="fas fa-expand"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="passTablea" class="table table-bordered table-hover table-striped">
+                                    <table id="passTablea" class="table table-hover table-bordered table-striped">
                                         <thead class="thead-dark">
                                         <tr>
-                                            <th>S.L</th>
-                                            <th>Booking Date</th>
-                                            <th>Ticket Details</th>
-                                            <th>Passengers</th>
-                                            <th>Status</th>
-                                            <th>Price Details</th>
-                                            <th>Due</th>
-                                            @if(Session::get('user_role') == 2 || Session::get('user_role') == 1)
-                                                <th>Profit</th>
+                                            <th style="width: 1%;">#</th>
+                                            <th>Booking Info</th>
+                                            <th>Passenger Details</th>
+                                            <th class="text-center">Status</th>
+                                            <th>Financials</th>
+                                            @if(Session::get('user_role') < 3)
+                                                <th class="text-center">Profit</th>
                                             @endif
-                                            <th>Action</th>
+                                            <th class="text-center" style="width: 8%;">Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @php
-                                            $i = 1;
+                                            // Initializing counters and sums outside the loop
+                                            $i = $tickets->firstItem(); // For correct numbering with pagination
                                             $sum_due = 0;
                                             $sum_a_price = 0;
                                             $sum_c_price = 0;
                                         @endphp
-                                        @foreach($tickets as $ticket)
+                                        @forelse($tickets as $ticket)
+                                            @php
+                                                // Calculations for clarity
+                                                $client_price = $ticket->c_price + $ticket->vat + $ticket->ait;
+                                                $profit = $client_price - $ticket->a_price;
+
+                                                // Accumulate totals
+                                                $sum_due += $ticket->due_amount;
+                                                $sum_a_price += $ticket->a_price;
+                                                $sum_c_price += $client_price;
+                                            @endphp
                                             <tr>
-                                                <td>{{ $i++ }}</td>
-                                                <td>{{ $ticket->issue_date }}</td>
+                                                <td class="text-center font-weight-bold">{{ $i++ }}</td>
                                                 <td>
-                                                    <div>R.PNR: {{ $ticket->reservation_pnr }}</div>
-                                                    <div>A.PNR: {{ $ticket->airline_pnr }}</div>
-                                                    <div>Vendor: {{ $ticket->vendor }}</div>
+                                                    <div class="mb-2">
+                                                        <i class="far fa-calendar-alt text-muted mr-1"></i>
+                                                        <strong>Date:</strong> {{ \Carbon\Carbon::parse($ticket->issue_date)->format('d M, Y') }}
+                                                    </div>
+                                                    <div class="mb-1">
+                                                        <i class="fas fa-plane-departure text-muted mr-1"></i>
+                                                        <strong>Airline PNR:</strong> <span class="text-primary font-weight-bold text-monospace">{{ $ticket->airline_pnr }}</span>
+                                                    </div>
+                                                    <div class="mb-1">
+                                                        <i class="fas fa-barcode text-muted mr-1"></i>
+                                                        <strong>Reservation PNR:</strong> <span class="text-monospace">{{ $ticket->reservation_pnr }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <i class="fas fa-store text-muted mr-1"></i>
+                                                        <strong>Vendor:</strong> <span class="badge badge-light p-1">{{ $ticket->vendor }}</span>
+                                                    </div>
                                                 </td>
                                                 <td>
+                                                    {{--
+                                                        PERFORMANCE NOTE: This is an "N+1 Query Problem". You are running a DB query for each passenger inside a loop.
+                                                        It's highly recommended to use Eloquent Relationships and Eager Loading in your controller.
+                                                        Example in Controller: $tickets = Ticket::with('passengers')->paginate(10);
+                                                        Then in the view, you can just loop through $ticket->passengers.
+                                                    --}}
                                                     @php
-                                                        $j = 1;
                                                         $paxList = json_decode($ticket->pax_name);
-                                                        $phone = '';
+                                                        $phone = ''; // Default phone
+                                                        $passengers = DB::table('passengers')->whereIn('id', $paxList)->where('upload_by', Session::get('agent_id'))->get();
+                                                        if ($passengers->isNotEmpty()) {
+                                                            $phone = $passengers->first()->phone;
+                                                        }
                                                     @endphp
-                                                    @foreach($paxList as $pas)
-                                                        @php
-                                                            $name = DB::table('passengers')
-                                                                ->where('id', $pas)
-                                                                ->where('upload_by', Session::get('agent_id'))
-                                                                ->first();
-                                                            $phone = @$name->phone;
-                                                        @endphp
-                                                        <div>{{ $j++ . '. ' . @$name->f_name . ' ' . @$name->l_name }}</div>
-                                                    @endforeach
-                                                    <div><strong>Phone:</strong> {{ @$phone }}</div>
-                                                </td>
-                                                <td>
-                                                <span class="badge
-                                                    @if($ticket->status == 'Issued') badge-success
-                                                    @elseif($ticket->status == 'Refunded') badge-info
-                                                    @elseif($ticket->status == 'Cancelled') badge-danger
-                                                    @elseif($ticket->status == 'Reissued') badge-warning
-                                                    @else badge-secondary
-                                                    @endif">
-                                                    {{ $ticket->status }}
-                                                </span>
-                                                </td>
-                                                <td>
-                                                    <div>A.Price: {{ $ticket->a_price }}/-</div>
-                                                    <div>C.Price: {{ $ticket->c_price + $ticket->vat + $ticket->ait }}/-</div>
-                                                </td>
-                                                <td>
-                                                    @if((int) $ticket->due_amount > 0)
-                                                        <span class="text-danger font-weight-bold">{{ $ticket->due_amount }}/-</span>
-                                                    @else
-                                                        {{ $ticket->due_amount }}/-
+                                                    <ul class="list-unstyled mb-2">
+                                                        @foreach($passengers as $pax)
+                                                            <li><i class="fas fa-user text-muted mr-2"></i>{{ $pax->f_name . ' ' . $pax->l_name }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                    @if($phone)
+                                                        <div><i class="fas fa-phone-alt text-muted mr-2"></i><strong>{{ $phone }}</strong></div>
                                                     @endif
                                                 </td>
-                                                @if(Session::get('user_role') == 2 || Session::get('user_role') == 1)
-                                                    <td>
-                                                        {{ $ticket->c_price + $ticket->vat + $ticket->ait - $ticket->a_price }}/-
+                                                <td class="text-center align-middle">
+                                    <span class="badge badge-lg
+                                        @if($ticket->status == 'Issued') badge-success @m_else
+                                        @elseif($ticket->status == 'Refunded') badge-info @m_else
+                                        @elseif($ticket->status == 'Cancelled') badge-danger @m_else
+                                        @elseif($ticket->status == 'Reissued') badge-warning @m_else
+                                        badge-secondary @endif">
+                                        <i class="fas
+                                            @if($ticket->status == 'Issued') fa-check-circle @m_else
+                                            @elseif($ticket->status == 'Refunded') fa-undo-alt @m_else
+                                            @elseif($ticket->status == 'Cancelled') fa-times-circle @m_else
+                                            @elseif($ticket->status == 'Reissued') fa-exchange-alt @m_else
+                                            fa-question-circle @endif
+                                            mr-1"></i>
+                                        {{ $ticket->status }}
+                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div><strong>Agent Price:</strong> <span class="float-right">{{ number_format($ticket->a_price) }}/-</span></div>
+                                                    <div><strong>Client Price:</strong> <span class="float-right">{{ number_format($client_price) }}/-</span></div>
+                                                    <hr class="my-1">
+                                                    @if((int) $ticket->due_amount > 0)
+                                                        <div class="text-danger font-weight-bold">Due: <span class="float-right">{{ number_format($ticket->due_amount) }}/-</span></div>
+                                                    @else
+                                                        <div class="text-success font-weight-bold">Paid: <span class="float-right">0/-</span></div>
+                                                    @endif
+                                                </td>
+                                                @if(Session::get('user_role') < 3)
+                                                    <td class="text-center align-middle">
+                                                        <h5 class="mb-0 font-weight-bold {{ $profit >= 0 ? 'text-success' : 'text-danger' }}">
+                                                            {{ number_format($profit) }}/-
+                                                        </h5>
                                                     </td>
                                                 @endif
-                                                <td>
+                                                <td class="text-center align-middle">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-info btn-sm">Action</button>
-                                                        <button type="button" class="btn btn-info btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+                                                            <i class="fas fa-cog"></i> <span class="caret"></span>
                                                         </button>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="{{ url('viewTicket?id=' . $ticket->id) }}">View</a>
-                                                            <a class="dropdown-item" href="{{ url('editTicketPage?id=' . $ticket->id) }}">Edit</a>
-                                                            <a class="dropdown-item delete" data-id="{{ $ticket->id }}" data-toggle="modal" data-target="#modal-danger" href="{{ url('deleteTicket?id=' . $ticket->id) }}">Delete</a>
-                                                            <a class="dropdown-item" href="{{ url('editPaymentStatus?id=' . $ticket->id) }}">Edit Payment Status</a>
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <a class="dropdown-item" href="{{ url('viewTicket?id=' . $ticket->id) }}">
+                                                                <i class="fas fa-eye text-info mr-2"></i>View Details
+                                                            </a>
+                                                            <a class="dropdown-item" href="{{ url('editTicketPage?id=' . $ticket->id) }}">
+                                                                <i class="fas fa-edit text-warning mr-2"></i>Edit Ticket
+                                                            </a>
+                                                            <a class="dropdown-item" href="{{ url('editPaymentStatus?id=' . $ticket->id) }}">
+                                                                <i class="fas fa-money-check-alt text-success mr-2"></i>Update Payment
+                                                            </a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item delete" href="#" data-id="{{ $ticket->id }}" data-toggle="modal" data-target="#modal-danger">
+                                                                <i class="fas fa-trash-alt text-danger mr-2"></i>Delete Ticket
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-
-                                            @php
-                                                $sum_due += $ticket->due_amount;
-                                                $sum_a_price += $ticket->a_price;
-                                                $sum_c_price += ($ticket->c_price + $ticket->vat + $ticket->ait);
-                                            @endphp
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td colspan="{{ Session::get('user_role') < 3 ? '7' : '6' }}" class="text-center py-4">
+                                                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                                                    <p>No tickets found.</p>
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                         </tbody>
 
-                                        @if(Session::get('user_role') == 2 || Session::get('user_role') == 1)
-                                            <tfoot>
+                                        {{-- Only show footer if there are tickets and user is admin/superadmin --}}
+                                        @if($tickets->isNotEmpty() && Session::get('user_role') < 3)
+                                            <tfoot class="bg-light">
                                             <tr>
-                                                <th colspan="5" class="text-right">Total</th>
-                                                <td>
-                                                    <p>A.Price: {{ $sum_a_price }}/-</p>
-                                                    <p>C.Price: {{ $sum_c_price }}/-</p>
-                                                </td>
+                                                <th colspan="4" class="text-right"><h5>Grand Totals:</h5></th>
                                                 <th>
-                                                    <span class="text-danger font-weight-bold">{{ $sum_due }}/-</span>
+                                                    <div><small>Agent Price:</small> <span class="float-right font-weight-bold">{{ number_format($sum_a_price) }}/-</span></div>
+                                                    <div><small>Client Price:</small> <span class="float-right font-weight-bold">{{ number_format($sum_c_price) }}/-</span></div>
+                                                    <hr class="my-1">
+                                                    <div class="text-danger font-weight-bold">Total Due: <span class="float-right">{{ number_format($sum_due) }}/-</span></div>
                                                 </th>
-                                                <th>
-                                                    <span class="text-success font-weight-bold">{{ $sum_c_price - $sum_a_price }}/-</span>
+                                                <th class="text-center align-middle">
+                                                    <h5 class="text-success font-weight-bold">{{ number_format($sum_c_price - $sum_a_price) }}/-</h5>
                                                 </th>
                                                 <th></th>
                                             </tr>
@@ -466,42 +534,52 @@
                                         @endif
                                     </table>
                                 </div>
-
-                                <br>
-                                <div class="table-responsive">
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer clearfix">
+                                <div class="float-right">
+                                    {{-- Render pagination links --}}
                                     {{ $tickets->links() }}
                                 </div>
                             </div>
-                            <!-- /.card-body -->
+                            <!-- /.card-footer -->
                         </div>
                         <!-- /.card -->
                     </div>
                 </div>
+
+                {{-- Ensure you have this modal defined somewhere on your page for the delete button --}}
+                <div class="modal fade" id="modal-danger">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-danger">
+                            <div class="modal-body">
+                                <p style="text-align: center; font-size: 25px;">Are You Sure!!</p>
+                            </div>
+                            {{ Form::open(array('url' => 'deleteAirTicket',  'method' => 'post')) }}
+                            {{ csrf_field() }}
+                            <div class="modal-footer justify-content-between">
+                                <input type="hidden" name="id" class="id">
+                                <button type="submit" class="btn btn-outline-light">Delete</button>
+                            </div>
+                            {{ Form::close() }}
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
             </div>
             <!-- /.container-fluid -->
-            <div class="modal fade" id="modal-danger">
-                <div class="modal-dialog">
-                    <div class="modal-content bg-danger">
-                        <div class="modal-body">
-                            <p style="text-align: center; font-size: 25px;">Are You Sure!!</p>
-                        </div>
-                        {{ Form::open(array('url' => 'deleteAirTicket',  'method' => 'post')) }}
-                        {{ csrf_field() }}
-                        <div class="modal-footer justify-content-between">
-                            <input type="hidden" name="id" class="id">
-                            <button type="submit" class="btn btn-outline-light">Delete</button>
-                        </div>
-                        {{ Form::close() }}
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
         </section>
+        <script id="passenger-options" type="text/template">
+            @foreach($passengerss as $passenger)
+                <option value="{{ $passenger->id }}">{{ $passenger->f_name }} {{ $passenger->l_name }}</option>
+            @endforeach
+        </script>
     </div>
 @endsection
 @section('js')
     <script>
+
         $('.select2').select2()
         $('.select2bs4').select2({
             theme: 'bootstrap4',
@@ -528,30 +606,48 @@
             format: 'YYYY-MM-DD HH:mm',
             icons: { time: 'far fa-clock' }
         });
-        $('#pax_number').on('change', function() {
-            var pax_value = this.value;
-            $('.feedback').remove();
-            var html= '<div class="row feedback">';
-            for(var i=0; i<pax_value; i++){
-                var pax_name = 'pax_name'+i;
-                html += '<div class="col-md-4"> <div class="form-group"> <label>Passengers</label> <select class="form-control select2bs4" name="pax_name[]" id="'+pax_name+'" style="width: 100%;" required> <option value="">Select Passenger Name</option>';
-                <?php
-                foreach($passengers as $passenger)
-                {
-                ?>
-                html += '<option value="<?php echo $passenger->id; ?>"><?php echo $passenger->f_name." ".$passenger->l_name; ?></option>';
-                <?php
-                }
-                ?>
-                html += '</select></div></div>';
-                html += '<div class="col-sm-4"> <div class="form-group"> <label>Ticket Number</label> <input type="text" class="form-control" id="t_number" name="t_number[]" placeholder="Enter Ticket Number" required> </div> </div>'
-                html += '<div class="col-sm-4"> <div class="form-group"> <label>Luggage</label> <input type="text" class="form-control" id="luggage" name="luggage[]" placeholder="Enter Luggage" required> </div> </div>'
-            }
-            html += '</div>';
+        $(document).ready(function () {
+            $('#pax_number').on('change', function () {
+                var pax_value = this.value;
+                $('.feedback').remove();
+                var options = $('#passenger-options').html(); // ✅ Get pre-rendered <option> list
+                //alert(options);
+                var html = '<div class="row feedback">';
 
-            $('.newPassenger').append(html);
-            $('.select2bs4').select2({
-                theme: 'bootstrap4',
+                for (var i = 0; i < pax_value; i++) {
+                    var pax_name = 'pax_name' + i;
+
+                    html += '<div class="col-md-4">' +
+                        '<div class="form-group">' +
+                        '<label>Passengers</label>' +
+                        '<select class="form-control select2bs4" name="pax_name[]" id="' + pax_name + '" style="width: 100%;" required>' +
+                        '<option value="">Select Passenger Name</option>' + options +
+                        '</select>' +
+                        '</div>' +
+                        '</div>';
+
+                    html += '<div class="col-sm-4">' +
+                        '<div class="form-group">' +
+                        '<label>Ticket Number</label>' +
+                        '<input type="text" class="form-control" name="t_number[]" placeholder="Enter Ticket Number" required>' +
+                        '</div>' +
+                        '</div>';
+
+                    html += '<div class="col-sm-4">' +
+                        '<div class="form-group">' +
+                        '<label>Luggage</label>' +
+                        '<input type="text" class="form-control" name="luggage[]" placeholder="Enter Luggage" required>' +
+                        '</div>' +
+                        '</div>';
+                }
+
+                html += '</div>';
+
+                $('.newPassenger').append(html);
+
+                $('.select2bs4').select2({
+                    theme: 'bootstrap4'
+                });
             });
         });
 

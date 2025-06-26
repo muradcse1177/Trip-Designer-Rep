@@ -498,7 +498,7 @@ class senderController extends Controller
     }
     public function smsLog(Request $request){
         try{
-            $rows = DB::table('sms_log')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();
+            $rows = DB::table('sms_log')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->paginate(25);
             return view('sender.smsLog', ['sms' => $rows]);
         }
         catch(\Illuminate\Database\QueryException $ex){

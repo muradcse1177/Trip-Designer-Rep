@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-
+use App\Library\SslCommerz\SslCommerzNotification;
 class homeController extends Controller
 {
     public function domainCheck(){
@@ -923,7 +924,5 @@ class homeController extends Controller
         }
         return $dom;
     }
-
-
 }
 

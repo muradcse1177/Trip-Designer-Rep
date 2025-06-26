@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\courseController;
+use App\Http\Controllers\customerController;
+use App\Http\Controllers\homeController;
 use App\Http\Controllers\hrController;
+use App\Http\Controllers\paymentController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -11,7 +14,7 @@ use Illuminate\Support\Facades\Session;
 Route::get('/register', function () {
     return view('userAuth.register');
 });
-
+Route::get('visitor-logs', [\App\Http\Controllers\VisitorLogController::class, 'index']);
 
 Route::get('flightScrap', 'App\Http\Controllers\homeController@flightScrap');
 
@@ -30,9 +33,7 @@ Route::post('otp-verification', 'App\Http\Controllers\authController@otpVerifica
 Route::post('password-recover', 'App\Http\Controllers\authController@passwordRecover');
 
 Route::post('createNewUser', 'App\Http\Controllers\authController@createNewUser');
-Route::get('customer-profile', 'App\Http\Controllers\usersController@customerProfile');
-Route::post('update-customer-profile', 'App\Http\Controllers\usersController@updateCustomerProfile');
-Route::post('update-password', 'App\Http\Controllers\usersController@updatePassword');
+
 
 Route::get('getAirportDetails', 'App\Http\Controllers\homeController@getAirportDetails');
 Route::get('getAirportDetails1', 'App\Http\Controllers\homeController@getAirportDetails1');
@@ -58,6 +59,9 @@ Route::get('search-hajj-umrah-package', 'App\Http\Controllers\homeController@sea
 Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug');
 Route::get('blogs', 'App\Http\Controllers\homeController@blogs');
 Route::get('course/{slug}', 'App\Http\Controllers\homeController@searchCourseBySlug');
+Route::get('course-enroll', 'App\Http\Controllers\homeController@courseEnroll');
+Route::post('/course/enroll/{id}', [paymentController::class, 'enroll'])->name('course.enroll');
+
 Route::get('order-request', 'App\Http\Controllers\homeController@orderRequest');
 Route::post('tour-client-details', 'App\Http\Controllers\homeController@tourClientDetails');
 Route::get('success-order-request', 'App\Http\Controllers\homeController@successOrderRequest');
@@ -79,22 +83,33 @@ Route::get('report-dashboard', 'App\Http\Controllers\authController@dashboard');
 Route::get('main-dashboard', 'App\Http\Controllers\authController@mainDashboard');
 
 
+//SSL Course Payment
+Route::match(['get', 'post'], '/success', [paymentController::class, 'success']);
+Route::match(['get', 'post'], '/fail', [paymentController::class, 'fail']);
+Route::match(['get', 'post'], '/cancel', [paymentController::class, 'cancel']);
+
 
 //SSL Commerz Payment Gateway----------------------------------------------------------
-Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
-Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
-
-Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
-Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax']);
-
-Route::post('/success', [SslCommerzPaymentController::class, 'success']);
-Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
-Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
-
-Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
+//Route::post('/success', [SslCommerzPaymentController::class, 'success']);
+//Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
+//Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+//Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 
 //SSL Commerz Payment B2C
 Route::post('pay-online-b2b', [SslCommerzPaymentController::class, 'payOnlineb2b']);
+
+
+//Customer Private Url
+Route::middleware(['customer'])->group(function () {
+    Route::get('my-booking', [customerController::class, 'myBooking']);
+    Route::get('customer-profile', [customerController::class, 'customerProfile']);
+    Route::post('update-customer-profile', [customerController::class, 'updateCustomerProfile']);
+    Route::get('update-password', [customerController::class, 'updatePassword']);
+    Route::get('/invoice/{tran_id}', [customerController::class, 'downloadInvoice'])->name('invoice.download');
+    Route::get('booking/view/{tran_id}', [CustomerController::class, 'viewBooking'])->name('booking.view');
+    Route::get('download-course-details/{tran_id}', [customerController::class, 'downloadCourseDetails']);
+});
+Route::get('payment-success-message', [paymentController::class, 'paymentSuccessPage']);
 
 //----------------------------------------------------------
 Route::middleware(['role'])->group(function () {

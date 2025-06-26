@@ -8,7 +8,7 @@ if(@$c_info->agent_id) {
     <!-- ============================================================== -->
     <!-- Start Navigation -->
 
-    <div class="header header-transparent theme" style="background: white;">
+    <div class="header header-light theme" style="background: white;">
         <div class="container">
             <nav id="navigation" class="navigation navigation-landscape">
                 <div class="nav-header">
@@ -35,9 +35,9 @@ if(@$c_info->agent_id) {
                                         <button type="button" class="btn btn-order-by-filt" data-bs-toggle="dropdown" aria-haspopup="true"
                                                 aria-expanded="false">
                                             @if(!empty($photo)))
-                                                <img src="{{ url($photo) }}" class="img-fluid" alt="User Photo">
+                                                <img src="{{ url($photo) }}" class="img-fluid">
                                             @else
-                                            <div class="d-flex justify-content-center align-items-center bg-primary" style="width: 40px; height: 40px; border-radius: 5px;">
+                                            <div class="d-flex justify-content-center align-items-center bg-primary" style="width: 100%; height: 40px; border-radius: 2px;">
                                                 <i class="fa fa-user text-white"></i>
                                             </div>
                                             @endif
@@ -60,14 +60,21 @@ if(@$c_info->agent_id) {
                                                     </ul>
                                                     <ul>
                                                         <li class="col-sm-12">
-                                                            <a href="{{ url('customer-profile') }}" >
-                                                                <i class="fa-solid fa-ticket me-2"></i> My Travelers
+                                                            <a href="{{ url('my-booking') }}" >
+                                                                <i class="fa-solid fa-ticket me-2"></i> My Bookings
                                                             </a>
                                                         </li>
                                                     </ul>
                                                     <ul>
                                                         <li class="col-sm-12">
-                                                            <a href="{{ url('customer-profile') }}" >
+                                                            <a href="" >
+                                                                <i class="fa-solid fa-user-group me-2"></i> My Travellers
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                    <ul>
+                                                        <li class="col-sm-12">
+                                                            <a href="{{ url('my-booking') }}" >
                                                                 <i class="fa-solid fa-wallet me-2"></i> Payment Details
                                                             </a>
                                                         </li>
@@ -75,7 +82,7 @@ if(@$c_info->agent_id) {
                                                     <ul>
                                                         <li class="col-sm-12">
                                                             <a href="{{ url('customer-profile') }}" >
-                                                                <i class="fa-solid fa-user-group me-2"></i> My Traveller Details
+                                                                <i class="fa-solid fa-power-off me-2"></i> Sign Out
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -219,11 +226,10 @@ if(@$c_info->agent_id) {
                                         </div>
                                         <ul>
                                             <li><a href="{{url('customer-profile')}}"><i class="fa-regular fa-id-card me-2"></i>My Profile</a></li>
-                                            <li><a href="my-booking.html"><i class="fa-solid fa-ticket me-2"></i>My Booking</a></li>
-                                            <li><a href="travelers.html"><i class="fa-solid fa-user-group me-2"></i>My Travelers</a></li>
-                                            <li><a href="payment-detail.html"><i class="fa-solid fa-wallet me-2"></i>Payment Details</a></li>
-                                            <li><a href="my-wishlists.html"><i class="fa-solid fa-shield-heart me-2"></i>My Wishlist</a></li>
-                                            <li><a href="login.html"><i class="fa-solid fa-power-off me-2"></i>Sign Out</a></li>
+                                            <li><a href="{{url('my-booking')}}"><i class="fa-solid fa-ticket me-2"></i>My Booking</a></li>
+                                            <li><a href=""><i class="fa-solid fa-user-group me-2"></i>My Travelers</a></li>
+                                            <li><a href="{{url('my-booking')}}"><i class="fa-solid fa-wallet me-2"></i>Payment Details</a></li>
+                                            <li><a href="{{url('logout')}}"><i class="fa-solid fa-power-off me-2"></i>Sign Out</a></li>
                                         </ul>
                                     </div>
                                 </div>

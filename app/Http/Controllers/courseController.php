@@ -309,8 +309,6 @@ class courseController extends Controller
             @unlink(public_path(str_replace('public/', '', json_decode($course->c_p_photo))));
         }
 
-        dd('ok');
-
         DB::table('course_details')->where('id', $id)->delete();
 
         return redirect()->back()->with('successMessage', 'Course deleted successfully.');

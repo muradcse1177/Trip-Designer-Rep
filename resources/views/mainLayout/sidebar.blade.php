@@ -26,12 +26,30 @@
                     $r_details  = json_decode(@$role->details);
                 ?>
                 @if($company_info->role == 2)
-                    <li class="nav-item">
-                        <a href="{{url('/report-dashboard')}}" class="nav-link @yield('reportDashboard')">
-                            <i class="nav-icon fas fa-chart-line"></i>
-                            <p>Report Dashboard</p>
+                    <li class="nav-item @yield('reportMenu')">
+                        <a href="#" class="nav-link @yield('report')">
+                            <i class="nav-icon fas fa-chart-pie"></i>
+                            <p>
+                                Report
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{url('/report-dashboard')}}" class="nav-link @yield('reportDashboard')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Report Dashboard</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{url('visitor-logs')}}" class="nav-link @yield('visitor')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Visitors Log</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+
                     <li class="nav-item">
                         <a href="{{url('/g_invoice')}}" class="nav-link @yield('g_invoice')">
                             <i class="nav-icon fas fa-file-invoice"></i>

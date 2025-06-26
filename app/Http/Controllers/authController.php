@@ -50,9 +50,25 @@ class authController extends Controller
             return view('frontend.userAuth.all-login-page');
         }
     }
-    public  function allLogin(Request $request){
+    public function allLogin(Request $request)
+    {
+        // ✅ Check if user session exists
+        if (Session::has('user_id') && Session::has('user_role')) {
+            switch (Session::get('user_role')) {
+                case 1:
+                case 2:
+                    return redirect()->to('main-dashboard'); // Super Admin / Admin
+                case 3:
+                    return redirect()->to('/'); // Customer
+                case 5:
+                    return redirect()->to('attendance'); // Employee
+                default:
+                    return redirect()->to('/');
+            }
+        }
+        // ❌ No session? Show login form
         $countries = DB::table('countries')->get();
-        return view('frontend.userAuth.all-login-page',['countries'=> $countries]);
+        return view('frontend.userAuth.all-login-page', ['countries' => $countries]);
     }
     public  function forgotPassword(Request $request){
         return view('frontend.userAuth.forgot-password');
@@ -228,7 +244,7 @@ class authController extends Controller
             $data['total_due'] += $data["due_{$key}"];
         }
 
-        return view('dashboard', $data);
+        return view('report.dashboard', $data);
     }
 
     /**
@@ -327,85 +343,172 @@ class authController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function verifyUsers(Request $request){
-        try{
-            //$this->logout();
-            if(Session::get('user_id')){
-                $rows = DB::table('users')->where('id',Session::get('user_id'))->first();
-                if($rows->address == null){
+//    public function verifyUsers(Request $request){
+//        try{
+//            //$this->logout();
+//            if(Session::get('user_id')){
+//                $rows = DB::table('users')->where('id',Session::get('user_id'))->first();
+//                if($rows->address == null){
+//                    return redirect()->to('companyInfo');
+//                }
+//                if(Session::get('superAdmin')){
+//                    return redirect()->to('main-dashboard');
+//                }
+//                if(Session::get('admin')){
+//                    return redirect()->to('main-dashboard');
+//                }
+//                if(Session::get('customer')){
+//                    return redirect()->to('/');
+//                }
+//                if(Session::get('employee')){
+//                    return redirect()->to('attendance');
+//                }
+//            }
+//            else{
+//                $email = $request->email;
+//                $password = $request->password;
+//                $rows = DB::table('users')
+//                    ->where('company_email', $email)
+//                    ->get()->count();
+//                if ($rows > 0) {
+//                    $rows = DB::table('users')
+//                        ->where('company_email', $email)
+//                        ->first();
+//                    if($rows->status == 'In Active'){
+//                        return back()->with('errorMessage', 'Your Id is Inactive!! Please contact to admin.');
+//                    }
+//                    if (Hash::check($password, $rows->password)) {
+//                        $role = $rows->role;
+//                        Session::put('user_info', $rows);
+//                        Session::put('user_id', $rows->id);
+//                        Session::put('user_role', $role);
+//                        Cookie::queue('user', $rows->id, time()+31556926 ,'/');
+//                        if($role == 1){
+//                            Session::put('superAdmin', $rows->id);
+//                            return redirect()->to('main-dashboard');
+//                        }
+//                        if($role == 2){
+//                            Session::put('admin', $rows->id);
+//                            Session::put('agent_id', $rows->id);
+//                            $rows = DB::table('users')->where('id',$rows->id)->first();
+//                            if($rows->address == null){
+//                                return redirect()->to('companyInfo');
+//                            }
+//                            return redirect()->to('main-dashboard');
+//                        }
+//                        if($role == 3){
+//                            Session::put('customer', $rows->id);
+//                            if(Session::get('reference_url')){
+//                                return redirect()->to(Session::get('reference_url'));
+//                            }
+//                            return redirect()->to('/');
+//                        }
+//                        if($role == 5){
+//                            $emp = DB::table('employees')->where('email', $email)->first();
+//                            Session::put('agent_id', $emp->agent_id);
+//                            Session::put('employee', $rows->id);
+//                            return redirect()->to('attendance');
+//                        }
+//                    }
+//                    else{
+//                        return back()->with('errorMessage', 'Password is wrong!!');
+//                    }
+//                } else {
+//                    return back()->with('errorMessage', 'Users not exits!!');
+//                }
+//            }
+//        }
+//        catch(\Illuminate\Database\QueryException $ex){
+//            return back()->with('errorMessage', $ex->getMessage());
+//        }
+//    }
+    public function verifyUsers(Request $request)
+    {
+        try {
+            // If user is already logged in
+            if (Session::get('user_id')) {
+                $user = DB::table('users')->where('id', Session::get('user_id'))->first();
+
+                if ($user && is_null($user->address)) {
                     return redirect()->to('companyInfo');
                 }
-                if(Session::get('superAdmin')){
-                    return redirect()->to('main-dashboard');
+
+                switch (Session::get('user_role')) {
+                    case 1: return redirect()->to('main-dashboard'); // Super Admin
+                    case 2: return redirect()->to('main-dashboard'); // Admin
+                    case 3: return redirect()->to('/');              // Customer
+                    case 5: return redirect()->to('attendance');     // Employee
                 }
-                if(Session::get('admin')){
+
+                return redirect()->route('home');
+            }
+
+            // Login attempt
+            $email = $request->email;
+            $password = $request->password;
+
+            $user = DB::table('users')->where('company_email', $email)->first();
+
+            if (!$user) {
+                return back()->with('errorMessage', 'User does not exist!');
+            }
+
+            if ($user->status === 'In Active') {
+                return back()->with('errorMessage', 'Your ID is inactive. Please contact admin.');
+            }
+
+            if (!Hash::check($password, $user->password)) {
+                return back()->with('errorMessage', 'Incorrect password!');
+            }
+
+            // ✅ Login Success: Store session data
+            Session::put('user_id', $user->id);
+            Session::put('user_role', $user->role);
+            Session::put('user_info', collect((array) $user)->except('password')); // Avoid storing password
+            Cookie::queue('user', $user->id, time() + 31556926, '/'); // Optional
+
+            switch ($user->role) {
+                case 1: // Super Admin
+                    Session::put('superAdmin', $user->id);
                     return redirect()->to('main-dashboard');
-                }
-                if(Session::get('customer')){
+
+                case 2: // Admin
+                    Session::put('admin', $user->id);
+                    Session::put('agent_id', $user->id);
+
+                    if (is_null($user->address)) {
+                        return redirect()->to('companyInfo');
+                    }
+                    return redirect()->to('main-dashboard');
+
+                case 3: // Customer
+                    Session::put('customer', $user->id);
+
+                    if (Session::has('reference_url')) {
+                        $redirect = Session::pull('reference_url'); // Clear after use
+                        return redirect()->to($redirect);
+                    }
                     return redirect()->to('/');
-                }
-                if(Session::get('employee')){
-                    return redirect()->to('attendance');
-                }
+
+                case 5: // Employee
+                    $emp = DB::table('employees')->where('email', $email)->first();
+                    if ($emp) {
+                        Session::put('agent_id', $emp->agent_id);
+                        Session::put('employee', $user->id);
+                        return redirect()->to('attendance');
+                    } else {
+                        return back()->with('errorMessage', 'Employee record not found.');
+                    }
+
+                default:
+                    return back()->with('errorMessage', 'Unauthorized role.');
             }
-            else{
-                $email = $request->email;
-                $password = $request->password;
-                $rows = DB::table('users')
-                    ->where('company_email', $email)
-                    ->get()->count();
-                if ($rows > 0) {
-                    $rows = DB::table('users')
-                        ->where('company_email', $email)
-                        ->first();
-                    if($rows->status == 'In Active'){
-                        return back()->with('errorMessage', 'Your Id is Inactive!! Please contact to admin.');
-                    }
-                    if (Hash::check($password, $rows->password)) {
-                        $role = $rows->role;
-                        Session::put('user_info', $rows);
-                        Session::put('user_id', $rows->id);
-                        Session::put('user_role', $role);
-                        Cookie::queue('user', $rows->id, time()+31556926 ,'/');
-                        if($role == 1){
-                            Session::put('superAdmin', $rows->id);
-                            return redirect()->to('main-dashboard');
-                        }
-                        if($role == 2){
-                            Session::put('admin', $rows->id);
-                            Session::put('agent_id', $rows->id);
-                            $rows = DB::table('users')->where('id',$rows->id)->first();
-                            if($rows->address == null){
-                                return redirect()->to('companyInfo');
-                            }
-                            return redirect()->to('main-dashboard');
-                        }
-                        if($role == 3){
-                            Session::put('customer', $rows->id);
-                            if(Session::get('reference_url')){
-                                return redirect()->to(Session::get('reference_url'));
-                            }
-                            return redirect()->to('/');
-                        }
-                        if($role == 5){
-                            $emp = DB::table('employees')->where('email', $email)->first();
-                            Session::put('agent_id', $emp->agent_id);
-                            Session::put('employee', $rows->id);
-                            return redirect()->to('attendance');
-                        }
-                    }
-                    else{
-                        return back()->with('errorMessage', 'Password is wrong!!');
-                    }
-                } else {
-                    return back()->with('errorMessage', 'Users not exits!!');
-                }
-            }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
-            return back()->with('errorMessage', $ex->getMessage());
+        } catch (\Exception $e) {
+            \Log::error('Login Error: '.$e->getMessage());
+            return back()->with('errorMessage', 'Login failed. Please try again.');
         }
     }
+
     public  function logout(){
         Session::flush();
         Cookie::queue(Cookie::forget('user'));

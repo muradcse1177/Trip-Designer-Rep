@@ -34,7 +34,7 @@ class airTicketController extends Controller
                 ->where('deleted', 0)
                 ->get();
 
-            $passengers = DB::table('passengers')
+            $passengerss = DB::table('passengers')
                 ->where('upload_by', $agentId)
                 ->where('deleted', 0)
                 ->orderByDesc('id')
@@ -55,7 +55,7 @@ class airTicketController extends Controller
             return view('airTicket.newAirTicket', compact(
                 'vendors',
                 'employees',
-                'passengers',
+                'passengerss',
                 'airports',
                 'airlines',
                 'tickets',
@@ -619,7 +619,7 @@ class airTicketController extends Controller
             return view('airTicket.newAirTicket', [
                 'vendors' => $vendors,
                 'employees' => $employees,
-                'passengers' => $passengers,
+                'passengerss' => $passengers,
                 'airports' => $airports,
                 'airlines' => $airlines,
                 'tickets' => $tickets,

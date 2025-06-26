@@ -41,33 +41,37 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="example111" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Number</th>
-                                        <th>SMS</th>
-                                        <th>Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i=1;
-                                    @endphp
-                                    @foreach($sms as $s)
+                                <div class="table-responsive">
+                                    <table id="" class="table table-bordered table-hover w-100">
+                                        <thead>
                                         <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$s->number}}</td>
-                                            <td>{{$s->sms}}</td>
-                                            <td><button type="button" class="btn btn-success">{{$s->status}}</button></td>
+                                            <th>S.L</th>
+                                            <th class="w-25 text-wrap">Number</th>
+                                            <th>SMS</th>
+                                            <th>Status</th>
                                         </tr>
-                                        @php
-                                            $i++;
-                                        @endphp
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($sms as $index => $s)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td class="w-25 text-wrap">
+                                                    {!! str_replace([',', ' '], '<br>', $s->number) !!}
+                                                </td>
+                                                <td>{{ $s->sms }}</td>
+                                                <td>
+                                                    <span class="badge bg-success">{{ $s->status }}</span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table-responsive">
+                                    {{ $sms->links() }}
+                                </div>
                             </div>
+
                             <!-- /.card-body -->
                         </div>
                         <!-- /.card -->

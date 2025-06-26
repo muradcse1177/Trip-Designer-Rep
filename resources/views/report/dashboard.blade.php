@@ -1,6 +1,8 @@
 @extends('mainLayout.layout')
 @section('title','Trip Designer || Dashboard')
 @section('reportDashboard','active')
+@section('report','active')
+@section('reportMenu','menu-open')
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
