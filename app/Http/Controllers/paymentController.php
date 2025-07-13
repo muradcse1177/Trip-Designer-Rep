@@ -20,9 +20,10 @@ class paymentController extends Controller
     {
         // Step 1: Validate Input
         $request->validate([
-            'name'  => 'required|string|max:100',
-            'phone' => ['required', 'regex:/^(?:\+8801|8801|01)[3-9]\d{8}$/'],
-            'email' => 'required|email|max:50',
+            'name'             => 'required|string|max:100',
+            'phone'            => ['required', 'regex:/^(?:\+8801|8801|01)[3-9]\d{8}$/'],
+            'email'            => 'required|email|max:50',
+            'payment_gateway'  => 'required|in:bkash,sslcommerz',
         ]);
 
         $email = $request->email;
@@ -52,7 +53,7 @@ class paymentController extends Controller
             $agentId = $domain->agent_id ?? null;
 
             // Send SMS
-            $number = $user->phone_code . $user->company_pnone;
+            $number = '88' . $request->phone;
             $msg = "Welcome to our course platform. Your account has been created. Please log in. Email: {$user->company_email} | Password: {$defaultPassword}";
 
             DB::table('sms_log')->insert([
@@ -65,7 +66,7 @@ class paymentController extends Controller
 
             $this->sms_send($number, $msg);
 
-            // Send Email
+            // Send Welcome Email
             Mail::to($user->company_email)->send(new CustomerCourseSignup($user, $defaultPassword));
         } else {
             $userId = $user->id;
@@ -75,18 +76,17 @@ class paymentController extends Controller
         $course = DB::table('course_details')->where('id', $id)->first();
         if (!$course) abort(404, 'Course not found.');
 
-        // Step 4: Create Payment Order
-        $amount = $course->d_c_price > 0 ? $course->d_c_price : $course->c_price;
+        // Step 4: Prepare Transaction Info
+        $amount  = $course->d_c_price > 0 ? $course->d_c_price : $course->c_price;
+        //$amount  = 10; // For testing, override
         $tran_id = uniqid('TRD_');
 
-        // (Optional override for testing)
-        $amount = 10;
-
+        // Step 5: Insert Order into payment_orders
         DB::table('payment_orders')->insert([
             'user_id'           => $userId,
             'name'              => $request->name,
             'email'             => $email,
-            'phone'             => '+88' . $request->phone,
+            'phone'             => '88' . $request->phone,
             'amount'            => $amount,
             'status'            => 'Pending',
             'address'           => 'Dhaka',
@@ -99,35 +99,55 @@ class paymentController extends Controller
             'customer_type'     => 'B2C',
             'ip_address'        => $request->ip(),
             'time'              => now(),
+            'gateway'           => $request->payment_gateway,
         ]);
 
-        // Step 5: Redirect to SSLCommerz
-        $successUrl = url("success?order_id={$tran_id}"); // ✅ Include transaction ID in success redirect
+        // Step 6: Route to Selected Gateway
+        if ($request->payment_gateway === 'sslcommerz') {
+            $post_data = [
+                'total_amount'     => $amount,
+                'currency'         => 'BDT',
+                'tran_id'          => $tran_id,
+                'cus_name'         => $request->name,
+                'cus_email'        => $email,
+                'cus_add1'         => 'Dhaka',
+                'cus_phone'        => '88' . $request->phone,
+                'product_category' => $course->type,
+                'success_url'      => url("success?order_id={$tran_id}"),
+                'fail_url'         => url("fail?tran_id={$tran_id}"),
+                'cancel_url'       => url("cancel?tran_id={$tran_id}"),
+                'value_a'          => $id,
+                'value_b'          => $userId,
+            ];
 
-        $post_data = [
-            'total_amount'     => $amount,
-            'currency'         => 'BDT',
-            'tran_id'          => $tran_id,
-            'cus_name'         => $request->name,
-            'cus_email'        => $email,
-            'cus_add1'         => 'Dhaka',
-            'cus_phone'        => '+88' . $request->phone,
-            'product_category' => $course->type,
-            'success_url'      => $successUrl,
-            'fail_url'         => url('fail?tran_id=' . $tran_id),
-            'cancel_url'       => url('cancel?tran_id=' . $tran_id),
-            'value_a'          => $id,
-            'value_b'          => $userId,
-        ];
+            \Log::info('Redirecting to SSLCommerz:', $post_data);
 
-        \Log::info('Redirecting to SSLCommerz:', $post_data);
+            $sslc = new SslCommerzNotification();
+            return $sslc->makePayment($post_data, 'hosted');
+        }
 
-        // ✅ Do not rely on session alone across redirect
-        // Session::put('user_temp_id', $userId); ← remove this if you're using `order_id` in success URL
+        if ($request->payment_gateway === 'bkash') {
+            // Store data for bKash use
+            session([
+                'bkash_payment' => [
+                    'tran_id'     => $tran_id,
+                    'enroll_id'   => $id,
+                    'amount'      => $amount,
+                    'user_id'     => $userId,
+                    'name'        => $request->name,
+                    'email'       => $email,
+                    'phone'       => $request->phone,
+                ]
+            ]);
+            return view('frontend.bkash.auto_redirect', [
+                'bkashData' => session('bkash_payment')
+            ]);
+//            return redirect()->route('bkash.create');
+        }
 
-        $sslc = new SslCommerzNotification();
-        return $sslc->makePayment($post_data, 'hosted');
+        return back()->with('errorMessage', 'Invalid payment method selected.');
     }
+
 
     public function success(Request $request)
     {
@@ -182,7 +202,7 @@ class paymentController extends Controller
         return redirect()->to('/');
     }
 
-    private function coursePaymentRedirect($order)
+    public  function coursePaymentRedirect($order)
     {
         $user = DB::table('users')->where('id', $order->user_id)->first();
 
@@ -209,7 +229,6 @@ class paymentController extends Controller
         $successMessage = 'Transaction successfully completed!';
 
         $order = DB::table('payment_orders')->where('id', $orderId)->first();
-
         if (!$order || $order->status !== 'Complete') {
             return view('frontend.404')->with('msg', 'No valid order found.');
         }

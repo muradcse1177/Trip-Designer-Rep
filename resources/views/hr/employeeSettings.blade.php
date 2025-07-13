@@ -94,6 +94,26 @@
                                             <input type="text" class="form-control" id="address" name="address" placeholder="Enter Employee Address">
                                         </div>
                                     </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Joining Date</label>
+                                            <input type="date" class="form-control" name="join_date" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Salary Amount</label>
+                                            <input type="number" class="form-control" name="salary" placeholder="Enter Salary Amount" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label>Next Salary Increment</label>
+                                            <input type="date" class="form-control" name="next_salary_increase" required>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-warning float-right">Save</button>
@@ -127,6 +147,9 @@
                                         <th>Phone</th>
                                         <th>Email</th>
                                         <th>Address</th>
+                                        <th>Join Date</th>
+                                        <th>Salary</th>
+                                        <th>Next Increment</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -141,6 +164,9 @@
                                             <td>{{$employee->phone}}</td>
                                             <td>{{$employee->email}}</td>
                                             <td>{{$employee->address}}</td>
+                                            <td>{{ $employee->join_date }}</td>
+                                            <td>{{ $employee->salary }}</td>
+                                            <td>{{ $employee->next_salary_increase }}</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-info">Action</button>

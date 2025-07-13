@@ -104,52 +104,153 @@ if(@$c_info->agent_id) {
                 <div class="nav-menus-wrapper" style="transition-property: none;">
                     <ul class="nav-menu">
                         <li><a href="{{url('/')}}">Home<span class="submenu-indicator"></span></a></li>
-                        <li><a href="{{url('/visa')}}">Visa<span class="submenu-indicator"></span></a>
+                        <li>
+                            <a href="{{ url('/visa') }}">
+                                Visa <span class="submenu-indicator"></span>
+                            </a>
+
                             <ul class="nav-dropdown nav-submenu">
-                                <?php
-                                    $rows2 = DB::table('b2c_visa_country')->where('agent_id',@$c_info->agent_id)->get();
-                                    foreach ($rows2 as  $row){
-                                ?>
                                 <li>
-                                    <a href="{{url('search-visa?country='.$row->name)}}">{{$row->name}}</a>
+                                    <div class="row px-3 py-3" style="min-width: 360px;">
+                                            <?php
+                                            $rows2 = DB::table('b2c_visa_country')
+                                                ->where('agent_id', @$c_info->agent_id)
+                                                ->orderBy('name')
+                                                ->get();
+
+                                            $total = count($rows2);
+                                            $half = ceil($total / 2);
+                                            $chunks = $rows2->chunk($half);
+
+                                        foreach ($chunks as $column) {
+                                            ?>
+                                        <div class="col-6 px-2">
+                                            <ul class="list-unstyled mb-0">
+                                                @foreach ($column as $row)
+                                                    <li class="mb-1">
+                                                        <a href="{{ url('search-visa?country=' . $row->name) }}"
+                                                           style="
+                                           display: block;
+                                           padding: 8px 12px;
+                                           border-radius: 6px;
+                                           color: #212529;
+                                           text-decoration: none;
+                                           font-weight: 500;
+                                           transition: all 0.2s ease-in-out;
+                                       "
+                                                           onmouseover="this.style.backgroundColor='#f3f4f6'"
+                                                           onmouseout="this.style.backgroundColor='transparent'">
+                                                            <i class="fa-solid fa-angle-right me-2 text-primary"></i>
+                                                            {{ $row->name }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
                                 </li>
-                                <?php
-                                    }
-                                ?>
                             </ul>
                         </li>
                         <li>
-                            <a href="{{url('tour-package')}}">Tour Package<span class="submenu-indicator"></span></a>
+                            <a href="{{ url('tour-package') }}">
+                                Tour Package <span class="submenu-indicator"></span>
+                            </a>
+
                             <ul class="nav-dropdown nav-submenu">
-                                <?php
-                                    $today =  date('Y-m-d', strtotime('+3 days'));
-                                    $date = date('Y-m-d', strtotime('+8 days'));
-                                    $rows2 = DB::table('b2c_tour_package_country')->where('agent_id',@$c_info->agent_id)->get();
-                                    foreach ($rows2 as  $row){
-                                        ?>
-                                    <li>
-                                        <a href="{{url('search-tour-package?country='.$row->name.'&checkinout='.$today.'+to+'.$date)}}">{{$row->name}}</a>
-                                    </li>
-                                        <?php
-                                    }
-                                ?>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="{{url('work-permit')}}">Work Permit</a>
-                            <ul class="nav-dropdown nav-submenu">
-                                <?php
-                                $rows2 = DB::table('b2c_manpower_country')->where('agent_id',@$c_info->agent_id)->get();
-                                foreach ($rows2 as  $row){
-                                ?>
                                 <li>
-                                    <a href="{{url('search-manpower?country='.$row->name)}}">{{$row->name}}</a>
+                                    <div class="row px-3 py-3" style="min-width: 360px;">
+                                            <?php
+                                            $today = date('Y-m-d', strtotime('+3 days'));
+                                            $date = date('Y-m-d', strtotime('+8 days'));
+
+                                            $rows2 = DB::table('b2c_tour_package_country')
+                                                ->where('agent_id', @$c_info->agent_id)
+                                                ->orderBy('name')
+                                                ->get();
+
+                                            $half = ceil(count($rows2) / 2);
+                                            $chunks = $rows2->chunk($half);
+
+                                        foreach ($chunks as $column) {
+                                            ?>
+                                        <div class="col-6 px-2">
+                                            <ul class="list-unstyled mb-0">
+                                                @foreach ($column as $row)
+                                                    <li class="mb-1">
+                                                        <a href="{{ url('search-tour-package?country=' . $row->name . '&checkinout=' . $today . '+to+' . $date) }}"
+                                                           style="
+                                           display: block;
+                                           padding: 8px 12px;
+                                           border-radius: 6px;
+                                           color: #212529;
+                                           text-decoration: none;
+                                           font-weight: 500;
+                                           transition: all 0.2s ease-in-out;
+                                       "
+                                                           onmouseover="this.style.backgroundColor='#f1f5f9'"
+                                                           onmouseout="this.style.backgroundColor='transparent'">
+                                                            <i class="fa-solid fa-angle-right me-2 text-primary"></i>
+                                                            {{ $row->name }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
                                 </li>
-                                <?php
-                                }
-                                ?>
                             </ul>
                         </li>
+
+                        <li>
+                            <a href="{{ url('work-permit') }}">
+                                Work Permit <span class="submenu-indicator"></span>
+                            </a>
+
+                            <ul class="nav-dropdown nav-submenu">
+                                <li>
+                                    <div class="row px-3 py-3" style="min-width: 360px;">
+                                            <?php
+                                            $rows2 = DB::table('b2c_manpower_country')
+                                                ->where('agent_id', @$c_info->agent_id)
+                                                ->orderBy('name')
+                                                ->get();
+
+                                            $half = ceil(count($rows2) / 2);
+                                            $chunks = $rows2->chunk($half);
+
+                                        foreach ($chunks as $column) {
+                                            ?>
+                                        <div class="col-6 px-2">
+                                            <ul class="list-unstyled mb-0">
+                                                @foreach ($column as $row)
+                                                    <li class="mb-1">
+                                                        <a href="{{ url('search-manpower?country=' . $row->name) }}"
+                                                           style="
+                                           display: block;
+                                           padding: 8px 12px;
+                                           border-radius: 6px;
+                                           color: #212529;
+                                           text-decoration: none;
+                                           font-weight: 500;
+                                           transition: all 0.2s ease-in-out;
+                                       "
+                                                           onmouseover="this.style.backgroundColor='#f1f5f9'"
+                                                           onmouseout="this.style.backgroundColor='transparent'">
+                                                            <i class="fa-solid fa-angle-right me-2 text-primary"></i>
+                                                            {{ $row->name }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+
                         <li><a href="{{url('hajj-umrah')}}">Hajj & Umrah </a></li>
                         <li><a href="{{url('about-us')}}">Study Abroad </a></li>
                         <li>

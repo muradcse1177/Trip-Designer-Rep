@@ -44,4 +44,26 @@ class VisitorLogController extends Controller
             ->paginate(25);
         return view('report.visitor_logs', compact('logs','topLinks','dailyHitCount', 'monthlyHitCount','dailyUniqueVisitors','monthlyUniqueVisitors'));
     }
+
+
+    public function loginHistory()
+    {
+        $histories = DB::table('login_histories')
+            ->join('users', 'login_histories.user_id', '=', 'users.id')
+            ->select(
+                'users.company_name',
+                'users.company_email',
+                DB::raw('DATE(login_histories.login_at) as login_date'),
+                DB::raw('COUNT(*) as total_logins'),
+                DB::raw('MAX(login_histories.login_at) as last_login_time'),
+                DB::raw('MAX(login_histories.ip_address) as last_ip')
+            )
+            ->groupBy('login_histories.user_id', DB::raw('DATE(login_histories.login_at)'), 'users.company_name', 'users.company_email')
+            ->orderBy('login_date', 'desc')
+            ->paginate(20);
+
+        return view('report.login_history', compact('histories'));
+    }
+
+
 }

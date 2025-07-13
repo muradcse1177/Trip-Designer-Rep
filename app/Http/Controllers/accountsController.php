@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -12,56 +13,25 @@ class accountsController extends Controller
         try{
             $rows1 = DB::table('accounts')
                 ->where('agent_id',Session::get('agent_id'))
-                ->orderBy('id','desc')
-                ->get();
+                ->orderBy('date','desc')
+                ->paginate(20);
             return view('accounts.transactions',['transactions' => $rows1]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
     public function officeExpenses(Request $request){
         try{
             $rows1 = DB::table('accounts')
                 ->where('agent_id',Session::get('agent_id'))
                 ->where('source','Office Accounts')
-                ->orderBy('id','desc')
-                ->get();
-            $rows2 = DB::table('accounts_head')
-                ->where('agent_id',Session::get('agent_id'))
-                ->orderBy('id','desc')
-                ->get();
-            return view('accounts.officeExpenses',['transactions' => $rows1,'heads' => $rows2]);
-        }
-        catch(\Illuminate\Database\QueryException $ex){
-            return back()->with('errorMessage', $ex->getMessage());
-        }
-    }
-    public function filterOfficeExpense(Request $request){
-        try{
-            $rows2 = DB::table('accounts_head')
-                ->where('agent_id',Session::get('agent_id'))
-                ->orderBy('id','desc')
-                ->get();
-            $rows1 = DB::table('accounts')
-                ->where('agent_id',Session::get('agent_id'))
-                ->where('source','Office Accounts')
-                ->where(function ($query) use($request) {
-                    if($request->acc_type  != '' )
-                        $query->where('transaction_type', '=', $request->acc_type);
-                    if($request->head  != '' )
-                        $query->where('head', '=', $request->head);
-                    if($request->from_issue_date  != '' and $request->to_issue_date  != ''){
-                        $query->whereBetween('date', [$request->from_issue_date, $request->to_issue_date]);
-                    }
-                    elseif($request->from_issue_date  != '' ){
-                        $query->where('date', $request->from_issue_date);
-                    }
-                    else {
-                        $query->where('date', $request->to_issue_date);
-                    }
-                })
                 ->orderBy('date','desc')
+                ->paginate(20);
+            $rows2 = DB::table('accounts_head')
+                ->where('agent_id',Session::get('agent_id'))
+                ->orderBy('id','desc')
                 ->get();
             return view('accounts.officeExpenses',['transactions' => $rows1,'heads' => $rows2]);
         }
@@ -69,6 +39,64 @@ class accountsController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
+    public function filterOfficeExpense(Request $request)
+    {
+        try {
+            // Load head types for dropdown
+            $heads = DB::table('accounts_head')
+                ->where('agent_id', Session::get('agent_id'))
+                ->orderBy('id', 'desc')
+                ->get();
+
+            // Build base query
+            $query = DB::table('accounts')
+                ->where('agent_id', Session::get('agent_id'))
+                ->where('source', 'Office Accounts');
+
+            // Apply filters
+            if (!empty($request->acc_type)) {
+                $query->where('transaction_type', $request->acc_type);
+            }
+
+            if (!empty($request->head)) {
+                $query->where('head', $request->head);
+            }
+
+            if (!empty($request->from_issue_date) && !empty($request->to_issue_date)) {
+                $query->whereBetween('date', [$request->from_issue_date, $request->to_issue_date]);
+            } elseif (!empty($request->from_issue_date)) {
+                $query->whereDate('date', $request->from_issue_date);
+            } elseif (!empty($request->to_issue_date)) {
+                $query->whereDate('date', $request->to_issue_date);
+            }
+
+            // If download requested, fetch all data (no pagination)
+            if ($request->has('download')) {
+                $downloadData = $query->orderBy('date', 'desc')->get();
+                $company = DB::table('users')->where('id', Session::get('agent_id'))->first();
+                $pdf = PDF::loadView('accounts.office_expense_report', [
+                    'transactions' => $downloadData,
+                    'from' => $request->from_issue_date,
+                    'to' => $request->to_issue_date,
+                    'company' => $company,
+                ]);
+
+                return $pdf->download('office_expense_report.pdf');
+            }
+
+            // Else, paginate for normal view
+            $transactions = $query->orderBy('date', 'desc')->paginate(20);
+
+            return view('accounts.officeExpenses', [
+                'transactions' => $transactions,
+                'heads' => $heads
+            ]);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return back()->with('errorMessage', $ex->getMessage());
+        }
+    }
+
     public function addOfficeExpense(Request $request){
         try{
             $type = $request->type;
@@ -301,27 +329,52 @@ class accountsController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function filterTransaction (Request $request){
-        try{
-            $rows1 = DB::table('accounts')
-                ->where('status','Approved')
-                ->where('agent_id',Session::get('agent_id'))
-                ->where(function ($query) use($request) {
-                    if($request->from_issue_date  != '')
-                        $query->where('date', '>=', $request->from_issue_date);
-                    if( $request->to_issue_date  != '')
-                        $query->where('date', '<=' , $request->to_issue_date);
-                    if($request->acc_type  != '' )
-                        $query->where('source', '=', $request->acc_type);
-                })
-                ->orderBy('id','desc')
-                ->get();
-            return view('accounts.transactions',['transactions' => $rows1,]);
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+    public function filterTransaction(Request $request)
+    {
+        try {
+            $query = DB::table('accounts')
+                ->where('status', 'Approved')
+                ->where('agent_id', Session::get('agent_id'));
+
+            // Filters (optional)
+            if ($request->filled('from_issue_date')) {
+                $query->whereDate('date', '>=', $request->from_issue_date);
+            }
+
+            if ($request->filled('to_issue_date')) {
+                $query->whereDate('date', '<=', $request->to_issue_date);
+            }
+
+            if ($request->filled('acc_type') && $request->acc_type !== 'All') {
+                $query->where('source', $request->acc_type);
+            }
+
+            // If Download PDF requested
+            if ($request->has('download')) {
+                $data = $query->orderBy('date', 'desc')->get();
+                $company = DB::table('users')->where('id', Session::get('agent_id'))->first(); // if needed
+
+                $pdf = PDF::loadView('accounts.pdf_ledger_report', [
+                    'transactions' => $data,
+                    'from' => $request->from_issue_date,
+                    'to' => $request->to_issue_date,
+                    'company' => $company,
+                ]);
+
+                return $pdf->download('transactions_report.pdf');
+            }
+
+            // Otherwise return normal view
+            $transactions = $query->orderBy('date', 'desc')->paginate(20);
+
+            return view('accounts.transactions', compact('transactions'));
+
+        } catch (\Exception $ex) {
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
+
     public function generalInvoice (Request $request){
         try{
             $rows1 = DB::table('g_invoice')->where('agent_id',Session::get('agent_id'))->orderBy('id','desc')->get();

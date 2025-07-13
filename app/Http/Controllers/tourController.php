@@ -44,63 +44,64 @@ class tourController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function createNewTourPackage(Request $request){
-        try{
-            if($request) {
-                //dd($request);
-                $result = DB::table('package_details')->insert([
-                    'agent_id' => Session::get('agent_id'),
-                    'p_countries' => $request->country,
-                    'title' => $request->title,
-                    'p_code' => $request->p_code,
-                    'night' => $request->night,
-                    'vendor' => $request->vendor,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'highlights' => json_encode($request->highlights),
-                    'traveler' => json_encode($request->pax_name),
-                    'day_title' => json_encode($request->d_title),
-                    'dat_itinary' => json_encode($request->description),
-                    'g_details' => $request->pax_number,
-                    'p_a_price' => $request->a_price,
-                    'p_c_details' => $request->c_price,
-                    'p_vat' => $request->vat,
-                    'p_ait' => $request->ait,
-                    'p_inclusions' => json_encode($request->p_inclusions),
-                    'p_exclusions' => json_encode($request->p_exclusions),
-                    'p_tnt' => json_encode($request->p_tnt),
-                    'payment_type' => $request->payment_type,
-                    'due' => $request->due,
-                    'pay_details' => $request->pay_details,
-                ]);
-                if ($result) {
-                    $id = DB::getPdo()->lastInsertId();
-                    $result1 = DB::table('accounts')->insert([
-                        'agent_id' => Session::get('agent_id'),
-                        'invoice_id' =>$id,
-                        'date' => date('Y-m-d'),
-                        'transaction_type' => 'Debit',
-                        'source' => 'Tour Package',
-                        'purpose' => 'Tour Package'.'---'.$request->title,
-                        'buying_price' => $request->a_price,
-                        'selling_price' =>$request->c_price + $request->vat + $request->ait,
-                    ]);
-                    if($result1){
-                        return redirect()->to('newTourPackage')->with('successMessage', 'New invoice created successfully!!');
-                    }
-                    else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                } else {
-                    return back()->with('errorMessage', 'Please try again!!');
-                }
 
+    public function createNewTourPackage(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Insert into package_details table
+            $packageId = DB::table('package_details')->insertGetId([
+                'agent_id'       => Session::get('agent_id'),
+                'p_countries'    => $request->country,
+                'title'          => $request->title,
+                'p_code'         => $request->p_code,
+                'night'          => $request->night,
+                'vendor'         => $request->vendor,
+                'start_date'     => $request->start_date,
+                'end_date'       => $request->end_date,
+                'highlights'     => json_encode($request->highlights),
+                'traveler'       => json_encode($request->pax_name),
+                'day_title'      => json_encode($request->d_title),
+                'dat_itinary'    => json_encode($request->description),
+                'g_details'      => $request->pax_number,
+                'p_a_price'      => $request->a_price,
+                'p_c_details'    => $request->c_price,
+                'p_vat'          => $request->vat,
+                'p_ait'          => $request->ait,
+                'p_inclusions'   => json_encode($request->p_inclusions),
+                'p_exclusions'   => json_encode($request->p_exclusions),
+                'p_tnt'          => json_encode($request->p_tnt),
+                'payment_type'   => $request->payment_type,
+                'due'            => $request->due,
+                'pay_details'    => $request->pay_details,
+            ]);
+
+            // Calculate total selling price
+            $sellingPrice = $request->c_price + $request->vat + $request->ait;
+
+            // Insert related financial record into accounts table
+            $accountInserted = DB::table('accounts')->insert([
+                'agent_id'         => Session::get('agent_id'),
+                'invoice_id'       => $packageId,
+                'date'             => now()->format('Y-m-d'),
+                'transaction_type' => 'Debit',
+                'source'           => 'Tour Package',
+                'purpose'          => 'Tour Package --- ' . $request->title,
+                'buying_price'     => $request->a_price,
+                'selling_price'    => $sellingPrice,
+            ]);
+
+            if ($accountInserted) {
+                DB::commit();
+                return redirect()->to('newTourPackage')->with('successMessage', 'New invoice created successfully!!');
+            } else {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Failed to create account record. Please try again!!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
-            }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            DB::rollBack();
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
@@ -126,96 +127,108 @@ class tourController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function updateTourPackage(Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $result =DB::table('package_details')
-                        ->where('id', $request->id)
-                        ->where('agent_id', Session::get('agent_id'))
-                        ->update([
-                            'p_countries' => $request->country,
-                            'title' => $request->title,
-                            'p_code' => $request->p_code,
-                            'night' => $request->night,
-                            'vendor' => $request->vendor,
-                            'start_date' => $request->start_date,
-                            'end_date' => $request->end_date,
-                            'highlights' => json_encode($request->highlights),
-                            //'traveler' => json_encode($request->pax_name),
-                            'day_title' => json_encode($request->d_title),
-                            'dat_itinary' => json_encode($request->description),
-                            //'g_details' => $request->pax_number,
-                            'p_a_price' => $request->a_price,
-                            'p_c_details' => $request->c_price,
-                            'p_vat' => $request->vat,
-                            'p_ait' => $request->ait,
-                            'p_inclusions' => json_encode($request->p_inclusions),
-                            'p_exclusions' => json_encode($request->p_exclusions),
-                            'p_tnt' => json_encode($request->p_tnt),
-                            'payment_type' => $request->payment_type,
-                            'due' => $request->due,
-                            'pay_details' => $request->pay_details,
-                            'updated_at' => date('Y-m-d H:i:s')
-
-                        ]);
-                    if ($result) {
-                        $result =DB::table('accounts')
-                            ->where('invoice_id', $request->id)
-                            ->where('agent_id', Session::get('agent_id'))
-                            ->update([
-                                'buying_price' =>$request->a_price,
-                                'selling_price' =>$request->c_price + $request->vat + $request->ait,
-                                'updated_at' => date('Y-m-d H:i:s')
-                            ]);
-                        if($result){
-                            return redirect()->to('newTourPackage')->with('successMessage', 'Data Updated successfully!!');
-                        }
-                        else {
-                            return back()->with('errorMessage', 'Please try again!!');
-                        }
-
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+    public function updateTourPackage(Request $request)
+    {
+        try {
+            if (!$request->id) {
+                return back()->with('errorMessage', 'Bad Request!!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
+
+            DB::beginTransaction();
+
+            // Update package_details table
+            $packageUpdated = DB::table('package_details')
+                ->where('id', $request->id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->update([
+                    'p_countries'    => $request->country,
+                    'title'          => $request->title,
+                    'p_code'         => $request->p_code,
+                    'night'          => $request->night,
+                    'vendor'         => $request->vendor,
+                    'start_date'     => $request->start_date,
+                    'end_date'       => $request->end_date,
+                    'highlights'     => json_encode($request->highlights),
+                    'day_title'      => json_encode($request->d_title),
+                    'dat_itinary'    => json_encode($request->description),
+                    'p_a_price'      => $request->a_price,
+                    'p_c_details'    => $request->c_price,
+                    'p_vat'          => $request->vat,
+                    'p_ait'          => $request->ait,
+                    'p_inclusions'   => json_encode($request->p_inclusions),
+                    'p_exclusions'   => json_encode($request->p_exclusions),
+                    'p_tnt'          => json_encode($request->p_tnt),
+                    'payment_type'   => $request->payment_type,
+                    'due'            => $request->due,
+                    'pay_details'    => $request->pay_details,
+                    'updated_at'     => now(),
+                ]);
+
+            if (!$packageUpdated) {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Failed to update package. Please try again!!');
             }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
-            return back()->with('errorMessage', $ex->getMessage());
+
+            // Calculate updated selling price
+            $sellingPrice = $request->c_price + $request->vat + $request->ait;
+
+            // Update accounts table
+            $accountUpdated = DB::table('accounts')
+                ->where('invoice_id', $request->id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->where('source', 'Tour Package')
+                ->update([
+                    'buying_price'  => $request->a_price,
+                    'selling_price' => $sellingPrice,
+                    'updated_at'    => now(),
+                ]);
+
+            if (!$accountUpdated) {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Failed to update account. Please try again!!');
+            }
+
+            DB::commit();
+            return redirect()->to('newTourPackage')->with('successMessage', 'Data updated successfully!!');
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            DB::rollBack();
+            return back()->with('errorMessage', 'Database Error: ' . $ex->getMessage());
         }
     }
-    public function deleteTourPackage(Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $result =DB::table('package_details')
-                        ->where('id', $request->id)
-                        ->update([
-                            'deleted' => 1,
-                        ]);
-                    if ($result) {
-                        return redirect()->to('newTourPackage')->with('successMessage', 'Data deleted successfully!!');
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+
+    public function deleteTourPackage(Request $request)
+    {
+        try {
+            if (!$request->id) {
+                return back()->with('errorMessage', 'Bad Request!!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
+
+            DB::beginTransaction();
+
+            // Soft delete corresponding account record
+            DB::table('accounts')
+                ->where('invoice_id', $request->id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->where('source', 'Tour Package')
+                ->delete();
+
+            // Soft delete from package_details table
+            $packageDeleted = DB::table('package_details')
+                ->where('id', $request->id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->delete();
+
+            if (!$packageDeleted) {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Failed to delete tour package. Please try again!!');
             }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
-            return back()->with('errorMessage', $ex->getMessage());
+            DB::commit();
+            return redirect()->to('newTourPackage')->with('successMessage', 'Data deleted successfully!!');
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            DB::rollBack();
+            return back()->with('errorMessage', 'Database Error: ' . $ex->getMessage());
         }
     }
     public function viewTourPackage(Request $request){

@@ -43,137 +43,171 @@
                             <div class="card-body">
                                 {{ Form::open(array('url' => 'filterTransaction',  'method' => 'get' ,'class' =>'form-horizontal')) }}
                                 {{ csrf_field() }}
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label>From Date</label>
-                                            <div class="input-group date" id="from_issue_date" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#from_issue_date" name="from_issue_date" placeholder="Enter from date" value="{{@$_GET['from_issue_date']}}" />
-                                                <div class="input-group-append" data-target="#from_issue_date" data-toggle="datetimepicker">
-                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                <div class="card">
+                                    <div class="card-header bg-info">
+                                        <h3 class="card-title text-white">Filter Accounts</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="{{ url('your-filter-route') }}" method="GET" class="form-horizontal">
+                                            <div class="row">
+                                                {{-- From Date --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="from_issue_date">From Date</label>
+                                                        <div class="input-group date" id="from_issue_date" data-target-input="nearest">
+                                                            <input type="text" name="from_issue_date" class="form-control datetimepicker-input"
+                                                                   data-target="#from_issue_date" placeholder="Enter from date"
+                                                                   value="{{ request('from_issue_date') }}" />
+                                                            <div class="input-group-append" data-target="#from_issue_date" data-toggle="datetimepicker">
+                                                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- To Date --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="to_issue_date">To Date</label>
+                                                        <div class="input-group date" id="to_issue_date" data-target-input="nearest">
+                                                            <input type="text" name="to_issue_date" class="form-control datetimepicker-input"
+                                                                   data-target="#to_issue_date" placeholder="Enter to date"
+                                                                   value="{{ request('to_issue_date') }}" />
+                                                            <div class="input-group-append" data-target="#to_issue_date" data-toggle="datetimepicker">
+                                                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Accounts Type --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="acc_type">Accounts Type</label>
+                                                        <select name="acc_type" id="acc_type" class="form-control select2bs4" style="width: 100%;">
+                                                            <option value="">-- Select Accounts Type --</option>
+                                                            <option value="All" {{ request('acc_type') == 'All' ? 'selected' : '' }}>All</option>
+                                                            <option value="Air Ticket" {{ request('acc_type') == 'Air Ticket' ? 'selected' : '' }}>Air Ticket</option>
+                                                            <option value="Visa" {{ request('acc_type') == 'Visa' ? 'selected' : '' }}>Visa Processing</option>
+                                                            <option value="Tour Package" {{ request('acc_type') == 'Tour Package' ? 'selected' : '' }}>Tour Package</option>
+                                                            <option value="Office Accounts" {{ request('acc_type') == 'Office Accounts' ? 'selected' : '' }}>Office Accounts</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label>To Date</label>
-                                            <div class="input-group date" id="to_issue_date" data-target-input="nearest"><input type="text" class="form-control datetimepicker-input" data-target="#to_issue_date" name="to_issue_date" placeholder="Enter to date" value="{{@$_GET['to_issue_date']}}" />
-                                                <div class="input-group-append" data-target="#to_issue_date" data-toggle="datetimepicker">
-                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            {{-- Submit --}}
+                                            <div class="row">
+                                                <div class="col-md-3 col-sm-6 mb-2">
+                                                    <button type="submit" class="btn btn-warning btn-block">
+                                                        <i class="fas fa-filter"></i> Filter
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-3 col-sm-6 mb-2">
+                                                    <button type="submit" name="download" value="1" class="btn btn-success btn-block">
+                                                        <i class="fas fa-download"></i> Download Report
+                                                    </button>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label>Accounts Type</label>
-                                            <select class="form-control" name="acc_type" id="acc_type" style="width: 100%;" >
-                                                <option value="">Select Accounts Type</option>
-                                                <option value="All" @if(@$_GET['acc_type'] == 'Issued') Selected @endif>All</option>
-                                                <option value="Air Ticket" @if(@$_GET['acc_type'] == 'Air Ticket') Selected @endif>Air Ticket</option>
-                                                <option value="Visa" @if(@$_GET['acc_type'] == 'Visa') Selected @endif>Visa Processing</option>
-                                                <option value="Tour Package" @if(@$_GET['acc_type'] == 'Tour Package') Selected @endif>Tour Package</option>
-                                                <option value="Office Accounts" @if(@$_GET['acc_type'] == 'Office Accounts') Selected @endif>Office Accounts</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12" align="right">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-warning float-right">Filter</button>
-                                        </div>
-                                    </div>
-                                </div><br>
+                                </div>
+                                <br>
                                 {{ Form::close() }}
-                                <table id="example11" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Date</th>
-                                        <th>Invoice</th>
-                                        <th>Source</th>
-                                        <th>Purpose</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Buying Price</th>
-                                        <th>Selling Price</th>
-                                        <th>Profit</th>
-                                        <th>Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                         $i = 1;
-                                         $debit = 0;
-                                         $credit = 0;
-                                         $b_price = 0;
-                                         $c_price = 0;
-                                         $profit = 0;
-                                    @endphp
-                                    @foreach($transactions as $transaction)
-                                        <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$transaction->date}}</td>
-                                            <td>{{$transaction->invoice_id}}</td>
-                                            <td>{{$transaction->source}}</td>
-                                            <td>{{$transaction->purpose}}</td>
-                                            @if($transaction->transaction_type	 == 'Debit')
-                                                <td>{{$transaction->buying_price}}</td>
-                                                @else
-                                                <td>0</td>
-                                                @php
-                                                    $debit = $debit + $transaction->buying_price;
-                                                @endphp
-                                            @endif
-                                            @if($transaction->transaction_type	 == 'Credit')
-                                                <td>{{$transaction->buying_price}}</td>
-                                                @else
-                                                <td>0</td>
-                                                @php
-                                                    $credit = $credit + $transaction->buying_price;
-                                                @endphp
-                                            @endif
-                                            <td>{{$transaction->buying_price}}</td>
-                                            <td>{{$transaction->selling_price}}</td>
-                                            <td>{{$transaction->selling_price - $transaction->buying_price}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-success">{{$transaction->status}}</button>
-                                            </td>
-                                        </tr>
+                                <div class="card">
+                                    <div class="card-header bg-primary">
+                                        <h3 class="card-title text-white">Transaction Summary</h3>
+                                    </div>
+                                    <div class="card-body table-responsive">
                                         @php
-                                            $i++;
-                                            $b_price = $b_price + $transaction->buying_price;
-                                            $c_price = $c_price + $transaction->selling_price;
-                                            $profit = $profit + ($transaction->selling_price - $transaction->buying_price);
+                                            $grouped = $transactions->getCollection()->groupBy(function ($item) {
+                                                return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+                                            });
+
+                                            $i = ($transactions->currentPage() - 1) * $transactions->perPage() + 1;
+
+                                            $debit = $credit = $b_price = $c_price = $profit = 0;
                                         @endphp
-                                    @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th align="center"></th>
-                                        <th align="left"></th>
-                                        <th align="left"></th>
-                                        <th align="left"></th>
-                                        <th align="left">
-                                            <div>Debit: {{$debit}} /-</div>
-                                        </th>
-                                        <th align="left">
-                                            <div>Credit: {{$credit}} /-</div>
-                                        </th>
-                                        <th align="left">
-                                            <div>B.Price: {{$b_price}} /-</div>
-                                        </th>
-                                        <th align="left">
-                                            <div>S.Price: {{$c_price}} /-</div>
-                                        </th>
-                                        <th align="left">
-                                            <div style="color: red;"><b>Profit:  {{$profit}} /-</b></div>
-                                        </th>
-                                        <th align="left"></th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
+
+                                        <table class="table table-bordered table-hover text-sm">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th>S.L</th>
+                                                <th>Invoice</th>
+                                                <th>Source</th>
+                                                <th>Purpose</th>
+                                                <th>Debit</th>
+                                                <th>Credit</th>
+                                                <th>Buying Price</th>
+                                                <th>Selling Price</th>
+                                                <th>Profit</th>
+                                                <th>Status</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($grouped as $date => $dailyTransactions)
+                                                <tr class="bg-light">
+                                                    <td colspan="10"><strong>Date: {{ \Carbon\Carbon::parse($date)->format('d M, Y') }}</strong></td>
+                                                </tr>
+
+                                                @foreach($dailyTransactions as $transaction)
+                                                    @php
+                                                        $rowProfit = $transaction->selling_price - $transaction->buying_price;
+                                                        $profit += $rowProfit;
+                                                        $b_price += $transaction->buying_price;
+                                                        $c_price += $transaction->selling_price;
+
+                                                        $debitVal = $transaction->transaction_type === 'Debit' ? $transaction->buying_price : 0;
+                                                        $creditVal = $transaction->transaction_type === 'Credit' ? $transaction->buying_price : 0;
+
+                                                        $debit += $debitVal;
+                                                        $credit += $creditVal;
+                                                    @endphp
+
+                                                    <tr>
+                                                        <td>{{ $i++ }}</td>
+                                                        <td>{{ $transaction->invoice_id }}</td>
+                                                        <td>{{ $transaction->source }}</td>
+                                                        <td>{{ $transaction->purpose }}</td>
+                                                        <td>{{ number_format($debitVal, 2) }}</td>
+                                                        <td>{{ number_format($creditVal, 2) }}</td>
+                                                        <td>{{ number_format($transaction->buying_price, 2) }}</td>
+                                                        <td>{{ number_format($transaction->selling_price, 2) }}</td>
+                                                        <td>
+                        <span class="badge {{ $rowProfit >= 0 ? 'badge-success' : 'badge-danger' }}">
+                            {{ number_format($rowProfit, 2) }}
+                        </span>
+                                                        </td>
+                                                        <td>
+                        <span class="badge badge-{{ $transaction->status == 'Approved' ? 'success' : 'warning' }}">
+                            {{ $transaction->status }}
+                        </span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endforeach
+                                            </tbody>
+
+                                            <tfoot>
+                                            <tr class="bg-light font-weight-bold">
+                                                <td colspan="4" class="text-right">Total:</td>
+                                                <td>{{ number_format($debit, 2) }}</td>
+                                                <td>{{ number_format($credit, 2) }}</td>
+                                                <td>{{ number_format($b_price, 2) }}</td>
+                                                <td>{{ number_format($c_price, 2) }}</td>
+                                                <td class="{{ $profit >= 0 ? 'text-success' : 'text-danger' }}">
+                                                    {{ number_format($profit, 2) }}
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex justify-content-center table-responsive">
+                                {!! $transactions->appends(request()->query())->links() !!}
                             </div>
                             <!-- /.card-body -->
                         </div>

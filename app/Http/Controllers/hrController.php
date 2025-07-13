@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use App\Mail\SalarySlipMail;
 
 class hrController extends Controller
 {
@@ -118,65 +121,64 @@ class hrController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function addNewEmployee(Request $request){
-        try{
-            if($request) {
-                $name = $request->name;
-                $username = $request->name;
-                $email = $request->email;
-                $phoneCode = '880';
-                $phone = $request->phone;
-                $password = Hash::make($request->password);
-                $address = $request->address;
-                $designation = $request->designation;
+    public function addNewEmployee(Request $request)
+    {
+        try {
 
-                $rows = DB::table('users')
-                    ->where('company_pnone', $request->phone)
-                    ->orwhere('company_email', $request->email)
-                    ->distinct()->get()->count();
-                if ($rows > 0) {
-                    return back()->with('errorMessage', 'Employee already exits!!');
-                } else {
-                    $result = DB::table('users')->insert([
-                        'company_name' => $username,
-                        'company_email' => $email,
-                        'phone_code' => $phoneCode,
-                        'company_pnone' => $phone,
-                        'password' => $password,
-                        'address' => $address,
-                        'status' => 'Active',
-                        'role' => 5,
-                        'updated_at' => date('Y-m-d H:i:s'),
-                    ]);
-                    if ($result) {
-                        $result = DB::table('employees')->insert([
-                            'agent_id' => Session::get('agent_id'),
-                            'name' => $name,
-                            'phone' => $phone,
-                            'email' => $email,
-                            'address' => $address,
-                            'designation' => $designation,
-                            'role' => 5,
-                            'updated_at' => date('Y-m-d H:i:s')
-                        ]);
-                        if ($result) {
-                            return redirect()->to('employees')->with('successMessage', 'New employee added successfully!!');
-                        } else {
-                            return back()->with('errorMessage', 'Please try again!!');
-                        }
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-            }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form');
-            }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
-            return back()->with('errorMessage', $ex->getMessage());
+            // Step 2: Wrap in DB Transaction
+            DB::transaction(function () use ($request) {
+
+                $name       = $request->name;
+                $email      = $request->email;
+                $phone      = $request->phone;
+                $password   = Hash::make($request->password);
+                $address    = $request->address;
+                $designation= $request->designation;
+                $phoneCode  = '880';
+                $agentId    = Session::get('agent_id');
+
+                // Insert into users table
+                DB::table('users')->insert([
+                    'company_name'   => $name,
+                    'company_email'  => $email,
+                    'phone_code'     => $phoneCode,
+                    'company_pnone'  => $phone,
+                    'password'       => $password,
+                    'address'        => $address,
+                    'status'         => 'Active',
+                    'role'           => 5,
+                    'created_at'     => now(),
+                    'updated_at'     => now(),
+                ]);
+
+                // Insert into employees table
+                DB::table('employees')->insert([
+                    'agent_id'              => $agentId,
+                    'name'                  => $name,
+                    'phone'                 => $phone,
+                    'email'                 => $email,
+                    'address'               => $address,
+                    'designation'           => $designation,
+                    'role'                  => 5,
+                    'join_date'                => $request->join_date,
+                    'salary'                => $request->salary,
+                    'next_salary_increase'  => $request->next_salary_increase,
+                    'created_at'            => now(),
+                    'updated_at'            => now(),
+                ]);
+
+            });
+
+            // All OK
+            return redirect()->to('employees')->with('successMessage', 'New employee added successfully!');
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return back()->with('errorMessage', 'Database Error: ' . $ex->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('errorMessage', 'Unexpected Error: ' . $e->getMessage());
         }
     }
+
     public function editEmployeePage(Request $request){
         try{
             $rows1 = DB::table('employees')->where('agent_id',Session::get('agent_id'))->where('id',$request->id)->first();
@@ -188,97 +190,66 @@ class hrController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function editEmployee(Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $rows = DB::table('employees')->where('id', $request->id)->first();
-                    $rows1 = DB::table('users')->where('company_email', $rows->email)->first();
-                    $name = $request->name;
-                    $username = $request->name;
-                    $email = $request->email;
-                    $phoneCode = '880';
-                    $phone = $request->phone;
-                    $password = Hash::make($request->password);
-                    $address = $request->address;
-                    $designation = $request->designation;
+    public function editEmployee(Request $request)
+    {
+        try {
+            // Step 2: Fetch employee & linked user
+            $employee = DB::table('employees')->where('id', $request->id)->first();
+            if (!$employee) {
+                return back()->with('errorMessage', 'Employee not found!');
+            }
 
-                    if($password){
-                        $password = Hash::make($request->password);
-                        $result =DB::table('users')
-                            ->where('id', $rows1->id)
-                            ->update([
-                                'company_name' => $username,
-                                'company_email' => $email,
-                                'phone_code' => $phoneCode,
-                                'company_pnone' => $phone,
-                                'password' => $password,
-                                'address' => $address,
-                                'updated_at' => date('Y-m-d H:i:s'),
-                            ]);
-                        if($result) {
-                            $result =DB::table('employees')
-                                ->where('id', $request->id)
-                                ->update([
-                                    'name' => $name,
-                                    'phone' => $phone,
-                                    'email' => $email,
-                                    'address' => $address,
-                                    'designation' => $designation,
-                                    'updated_at' => date('Y-m-d H:i:s')
-                                ]);
-                            if ($result) {
-                                return redirect()->to('employees')->with('successMessage', 'Data updated successfully!!');
-                            } else {
-                                return back()->with('errorMessage', 'Please try again!!');
-                            }
-                        } else {
-                            return back()->with('errorMessage', 'Please try again!!');
-                        }
-                    }else{
-                        $result =DB::table('users')
-                            ->where('id', $rows1->id)
-                            ->update([
-                                'company_name' => $username,
-                                'company_email' => $email,
-                                'phone_code' => $phoneCode,
-                                'company_pnone' => $phone,
-                                'address' => $address,
-                                'updated_at' => date('Y-m-d H:i:s'),
-                            ]);
-                        if($result) {
-                            $result =DB::table('employees')
-                                ->where('id', $request->id)
-                                ->update([
-                                    'name' => $name,
-                                    'phone' => $phone,
-                                    'email' => $email,
-                                    'address' => $address,
-                                    'designation' => $designation,
-                                    'updated_at' => date('Y-m-d H:i:s')
-                                ]);
-                            if ($result) {
-                                return redirect()->to('employees')->with('successMessage', 'Data updated successfully!!');
-                            } else {
-                                return back()->with('errorMessage', 'Please try again!!');
-                            }
-                        } else {
-                            return back()->with('errorMessage', 'Please try again!!');
-                        }
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+            $user = DB::table('users')->where('company_email', $employee->email)->first();
+            if (!$user) {
+                return back()->with('errorMessage', 'Linked user not found!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
-            }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
-            return back()->with('errorMessage', $ex->getMessage());
+
+            // Step 3: Wrap in transaction
+            DB::transaction(function () use ($request, $employee, $user) {
+
+                // Prepare user update array
+                $userUpdate = [
+                    'company_name'   => $request->name,
+                    'company_email'  => $request->email,
+                    'company_pnone'  => $request->phone,
+                    'phone_code'     => '880',
+                    'address'        => $request->address,
+                    'updated_at'     => now(),
+                ];
+
+                // Only update password if provided
+                if ($request->filled('password')) {
+                    $userUpdate['password'] = Hash::make($request->password);
+                }
+
+                DB::table('users')->where('id', $user->id)->update($userUpdate);
+
+                // Update employee
+                DB::table('employees')->where('id', $employee->id)->update([
+                    'name'                  => $request->name,
+                    'email'                 => $request->email,
+                    'phone'                 => $request->phone,
+                    'address'               => $request->address,
+                    'designation'           => $request->designation,
+                    'join_date'                => $request->join_date,
+                    'salary'                => $request->salary,
+                    'next_salary_increase'  => $request->next_salary_increase,
+                    'updated_at'            => now(),
+                ]);
+            });
+
+            // Step 4: Return success
+            return redirect()->to('employees')->with('successMessage', 'Employee updated successfully!');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        } catch (\Illuminate\Database\QueryException $ex) {
+            return back()->with('errorMessage', 'Database Error: ' . $ex->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('errorMessage', 'Unexpected Error: ' . $e->getMessage());
         }
     }
+
     public function deleteEmployee(Request $request){
         try{
             if($request) {
@@ -855,4 +826,388 @@ class hrController extends Controller
 
         return $pdf->download("Attendance_Report_{$employee->company_name}.pdf");
     }
+
+    public function generateSalary()
+    {
+        $agentId = Session::get('agent_id');
+        $summaries = DB::table('salaries')
+            ->select('year', 'month', DB::raw('SUM(salary) as total_salary'))
+            ->where('agent_id', $agentId)
+            ->where('final_update', 1)
+            ->groupBy('year', 'month')
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get();
+        return view('hr.salary.generate-salary', compact('summaries'));
+    }
+    public function salaryEntry(Request $request)
+    {
+        $request->validate([
+            'month' => 'required|integer|min:1|max:12',
+            'year'  => 'required|integer|min:2020',
+        ]);
+
+        $agentId = Session::get('agent_id');
+
+        // Prevent regeneration if already finalized
+
+        $existsFinal = DB::table('salaries')
+            ->where('agent_id', $agentId)
+            ->where('month', $request->month)
+            ->where('year', $request->year)
+            ->where('final_update', 1)
+            ->exists();
+
+        if ($existsFinal) {
+            return back()->with('errorMessage', 'Salary for this month has already been finalized. No changes allowed.');
+        }
+        // Step 1: Get employees under this agent
+        $employees = DB::table('employees')
+            ->where('agent_id', $agentId)
+            ->get();
+
+        // Step 2: Delete all existing salaries for this agent + month + year
+        DB::table('salaries')
+            ->where('agent_id', $agentId)
+            ->where('month', $request->month)
+            ->where('year', $request->year)
+            ->delete();
+
+        $insertData = [];
+
+        foreach ($employees as $emp) {
+            $salary = $emp->salary ?? 0;
+
+            if ($salary <= 0) continue; // skip if salary not set
+
+            $insertData[] = [
+                'agent_id'    => $agentId,
+                'emp_id'      => $emp->id,
+                'salary'      => $salary,
+                'basic'       => round($salary * 0.60, 2),
+                'house_rent'  => round($salary * 0.30, 2),
+                'medical'     => round($salary * 0.10, 2),
+                'commission'  => 0,
+                'transport'   => 0,
+                'ta_da'       => 0,
+                'month'       => $request->month,
+                'year'        => $request->year,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ];
+        }
+
+        if (!empty($insertData)) {
+            DB::table('salaries')->insert($insertData);
+
+            // Fetch updated salary list to show in view
+            $salaries = DB::table('salaries')
+                ->where('agent_id', $agentId)
+                ->where('month', $request->month)
+                ->where('year', $request->year)
+                ->get()
+                ->keyBy('emp_id');
+            $loans = DB::table('loan')
+                ->select('emp_id', DB::raw('SUM(loan_amount - paid_amount) as due'))
+                ->where('agent_id', $agentId)
+                ->whereColumn('loan_amount', '>', 'paid_amount')
+                ->groupBy('emp_id')
+                ->pluck('due', 'emp_id');
+
+            $summaries = DB::table('salaries')
+                ->select('year', 'month', DB::raw('SUM(salary) as total_salary'))
+                ->where('agent_id', $agentId)
+                ->where('final_update', 1)
+                ->groupBy('year', 'month')
+                ->orderByDesc('year')
+                ->orderByDesc('month')
+                ->get();
+            return view('hr.salary.generate-salary', [
+                'month' => $request->month,
+                'year' => $request->year,
+                'employees' => $employees,
+                'salaries' => $salaries,
+                'loans' => $loans,
+                'summaries' => $summaries,
+            ])->with('successMessage', 'Salaries generated successfully.');
+        } else {
+            return back()->with('errorMessage', 'No salary generated. Check if salaries are set for employees.');
+        }
+    }
+    public function updateBulkSalary(Request $request)
+    {
+        $request->validate([
+            'month'            => 'required|integer|min:1|max:12',
+            'year'             => 'required|integer|min:2020',
+            'emp_ids'          => 'required|array',
+            'basic'            => 'array',
+            'house_rent'       => 'array',
+            'medical'          => 'array',
+            'transport'        => 'array',
+            'commission'       => 'array',
+            'ta_da'            => 'array',
+            'attendance_day'   => 'array',
+            'advance'          => 'array',
+            'deduct'           => 'array',
+            'loan_due'         => 'array',
+            'net_salary'       => 'array',
+            'net_pay'          => 'array',
+        ]);
+
+        $agentId = Session::get('agent_id');
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->emp_ids as $index => $emp_id) {
+                // Fetch employee name
+                $employee = DB::table('employees')->where('id', $emp_id)->first();
+                $empName = $employee->name ?? 'Unknown';
+                $company = DB::table('users')->where('id', $employee->agent_id)->first();
+
+                // Extract salary data
+                $basic         = $request->basic[$index] ?? 0;
+                $house_rent    = $request->house_rent[$index] ?? 0;
+                $medical       = $request->medical[$index] ?? 0;
+                $transport     = $request->transport[$index] ?? 0;
+                $commission    = $request->commission[$index] ?? 0;
+                $ta_da         = $request->ta_da[$index] ?? 0;
+                $attendance    = $request->attendance_day[$index] ?? 0;
+                $advance       = $request->advance[$index] ?? 0;
+                $deduct        = $request->deduct[$index] ?? 0;
+                $loan_due      = $request->loan_due[$index] ?? 0;
+                $net_salary    = $request->net_salary[$index] ?? 0;
+                $net_pay       = $request->net_pay[$index] ?? 0;
+
+                // Full total (gross)
+                $totalSalary = $basic + $house_rent + $medical + $transport + $commission + $ta_da;
+
+                // Step 1: Update salary
+                DB::table('salaries')->updateOrInsert(
+                    [
+                        'agent_id' => $agentId,
+                        'emp_id'   => $emp_id,
+                        'month'    => $request->month,
+                        'year'     => $request->year,
+                    ],
+                    [
+                        'salary'       => $totalSalary,
+                        'basic'        => $basic,
+                        'house_rent'   => $house_rent,
+                        'medical'      => $medical,
+                        'transport'    => $transport,
+                        'commission'   => $commission,
+                        'ta_da'        => $ta_da,
+                        'attendance'   => $attendance,
+                        'advance'      => $advance,
+                        'deduct'       => $deduct,
+                        'net_salary'   => $net_salary,
+                        'net_pay'      => $net_pay,
+                        'final_update' => 1,
+                        'updated_at'   => now(),
+                    ]
+                );
+
+                // Step 2: Update loan repayment
+                if ($loan_due > 0) {
+                    $existingLoan = DB::table('loan')
+                        ->where('emp_id', $emp_id)
+                        ->whereColumn('loan_amount', '>', 'paid_amount')
+                        ->orderByDesc('id')
+                        ->first();
+
+                    if ($existingLoan) {
+                        $newPaidAmount = $existingLoan->paid_amount + $loan_due;
+                        if ($newPaidAmount > $existingLoan->loan_amount) {
+                            $newPaidAmount = $existingLoan->loan_amount;
+                        }
+
+                        $updateLoan = [
+                            'paid_amount' => $newPaidAmount,
+                            'updated_at'  => now(),
+                        ];
+
+                        if ($newPaidAmount == $existingLoan->loan_amount) {
+                            $updateLoan['status'] = 'Closed';
+                            $updateLoan['emp_paid_on'] = now();
+                        }
+
+                        DB::table('loan')->where('id', $existingLoan->id)->update($updateLoan);
+                    }
+                }
+
+                // Step 3: Add ledger to accounts
+                DB::table('accounts')->updateOrInsert(
+                    [
+                        'agent_id'   => $agentId,
+                        'invoice_id' => $emp_id,
+                        'source'     => 'Salary',
+                        'date'       => now()->format('Y-m-d'),
+                    ],
+                    [
+                        'transaction_type' => 'Debit',
+                        'purpose'          => 'Salary for ' . $empName . ' - ' . date("F", mktime(0, 0, 0, $request->month, 1)) . ' ' . $request->year,
+                        'buying_price'     => $net_salary,
+                        'selling_price'    => 0,
+                        'updated_at'       => now(),
+                    ]
+                );
+                if (!empty($employee->email)) {
+                    $salaryObject = (object)[
+                        'month'       => $request->month,
+                        'year'        => $request->year,
+                        'basic'       => $basic,
+                        'house_rent'  => $house_rent,
+                        'medical'     => $medical,
+                        'transport'   => $transport,
+                        'commission'  => $commission,
+                        'ta_da'       => $ta_da,
+                        'attendance'  => $attendance,
+                        'advance'     => $advance,
+                        'deduct'      => $deduct,
+                        'loan_due'    => $loan_due,
+                        'net_salary'  => $net_salary,
+                        'net_pay'     => $net_pay,
+                    ];
+
+                    try {
+                        Mail::to($employee->email)->queue(new SalarySlipMail(
+                            $employee,
+                            $salaryObject,
+                            $company
+                        ));
+                    } catch (\Exception $mailEx) {
+                        Log::error('Email failed for ' . $employee->email . ': ' . $mailEx->getMessage());
+                        // Optionally notify admin or continue silently
+                    }
+                }
+            }
+
+            DB::commit();
+            return back()->with('successMessage', 'Salary, loan, ledger and email updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('errorMessage', 'Error: ' . $e->getMessage());
+        }
+    }
+    public function salaryDetails($year, $month)
+    {
+        $agentId = Session::get('agent_id');
+
+        $salaries = DB::table('salaries')
+            ->join('employees', 'salaries.emp_id', '=', 'employees.id')
+            ->select(
+                'employees.name',
+                'salaries.emp_id',
+                'salaries.salary',
+                'salaries.basic',
+                'salaries.house_rent',
+                'salaries.medical',
+                'salaries.transport',
+                'salaries.commission',
+                'salaries.ta_da',
+                'salaries.attendance as attendance_day',
+                'salaries.net_salary',
+                'salaries.advance',
+                'salaries.deduct',
+                'salaries.net_pay'
+            )
+            ->where('salaries.agent_id', $agentId)
+            ->where('salaries.year', $year)
+            ->where('salaries.month', $month)
+            ->get();
+
+        // calculate working days for the given month
+        $workingDays = \Carbon\Carbon::create($year, $month, 1)->daysInMonth;
+
+        return view('hr.salary.salary-details', compact('salaries', 'month', 'year', 'workingDays'));
+    }
+
+
+    public function salaryPayslip($emp_id, $month, $year)
+    {
+        $agentId = Session::get('agent_id');
+
+        // Get company info
+        $company = DB::table('users')->where('id', $agentId)->first();
+
+        // Get salary + employee details
+        $salary = DB::table('salaries')
+            ->join('employees', 'salaries.emp_id', '=', 'employees.id')
+            ->select('employees.*', 'salaries.*')
+            ->where('salaries.agent_id', $agentId)
+            ->where('salaries.emp_id', $emp_id)
+            ->where('salaries.month', $month)
+            ->where('salaries.year', $year)
+            ->first();
+
+        // Handle missing salary record
+        if (!$salary) {
+            return back()->with('errorMessage', 'Salary data not found.');
+        }
+        $workingDays = \Carbon\Carbon::create($year, $month, 1)->daysInMonth;
+        // Generate PDF from view
+        $pdf = PDF::loadView('hr.salary.payslip-pdf', [
+            'salary'  => $salary,
+            'company' => $company,
+            'workingDays'  => $workingDays,
+
+        ])->setPaper('A4');
+
+        // Filename with employee name and date
+        $monthName = \Carbon\Carbon::create()->month($month)->format('F');
+        $fileName = 'PaySlip_' . str_replace(' ', '_', $salary->name) . '_' . $monthName . '_' . $year . '.pdf';
+
+        return $pdf->download($fileName);
+    }
+    public function downloadSalaryReport($year, $month)
+    {
+        $agentId = Session::get('agent_id');
+
+        // Fetch salaries with full breakdown
+        $salaries = DB::table('salaries')
+            ->join('employees', 'salaries.emp_id', '=', 'employees.id')
+            ->select(
+                'employees.name',
+                'salaries.emp_id',
+                'salaries.salary',
+                'salaries.basic',
+                'salaries.house_rent',
+                'salaries.medical',
+                'salaries.transport',
+                'salaries.commission',
+                'salaries.ta_da',
+                'salaries.attendance as attendance_day',
+                'salaries.net_salary',
+                'salaries.advance',
+                'salaries.deduct',
+                'salaries.net_pay'
+            )
+            ->where('salaries.agent_id', $agentId)
+            ->where('salaries.year', $year)
+            ->where('salaries.month', $month)
+            ->get();
+
+        // Fetch company info for branding
+        $company = DB::table('users')->where('id', $agentId)->first();
+
+        // Calculate total working days for that month/year
+        $workingDays = \Carbon\Carbon::create($year, $month, 1)->daysInMonth;
+
+        // Generate PDF
+        $pdf = PDF::loadView('hr.salary.salary-summary-pdf', [
+            'salaries'     => $salaries,
+            'month'        => $month,
+            'year'         => $year,
+            'company'      => $company,
+            'workingDays'  => $workingDays,
+        ])->setPaper('A4', 'landscape');
+
+        $monthName = \Carbon\Carbon::create()->month($month)->format('F');
+        $filename = 'Salary_Report_' . $monthName . '_' . $year . '.pdf';
+
+        return $pdf->download($filename);
+    }
+
+
 }

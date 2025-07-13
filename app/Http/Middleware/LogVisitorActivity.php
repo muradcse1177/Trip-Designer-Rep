@@ -64,6 +64,4 @@ class LogVisitorActivity
 
         return $next($request);
     }
-
-
 }

@@ -47,6 +47,12 @@
                                     <p>Visitors Log</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('login.history') }}" class="nav-link  @yield('login')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Login History</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
@@ -282,6 +288,18 @@
                                 <a href="{{url('leaves')}}" class="nav-link  @yield('leaves')">
                                     <i class="far fa-arrow-alt-circle-right nav-icon"></i>
                                     <p>Leave Management</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{url('loan')}}" class="nav-link  @yield('loan')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Loan Management</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{url('generate-salary')}}" class="nav-link  @yield('salary')">
+                                    <i class="far fa-arrow-alt-circle-right nav-icon"></i>
+                                    <p>Salary Management</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -765,18 +783,6 @@
                                         </p>
                                     </a>
                                     <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{url('designation')}}" class="nav-link  @yield('designation')">
-                                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
-                                                <p>Designation</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{url('employees')}}" class="nav-link  @yield('employees')">
-                                                <i class="far fa-arrow-alt-circle-right nav-icon"></i>
-                                                <p>Employee Management</p>
-                                            </a>
-                                        </li>
                                         <li class="nav-item">
                                             <a href="{{url('leaves')}}" class="nav-link  @yield('leaves')">
                                                 <i class="far fa-arrow-alt-circle-right nav-icon"></i>

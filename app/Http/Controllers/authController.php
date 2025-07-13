@@ -31,7 +31,7 @@ class authController extends Controller
     }
     public function domainCheck(){
         try{
-            //$c_domain = $_SERVER['SERVER_NAME'];
+//            $c_domain = $_SERVER['SERVER_NAME'];
             $c_domain = 'tripdesigner.net';
             $rows = DB::table('domain')->where('name',$c_domain)->first();
             $row['domain'] = @$rows->name;
@@ -440,8 +440,10 @@ class authController extends Controller
                     case 5: return redirect()->to('attendance');     // Employee
                 }
 
-                return redirect()->route('home');
+                return redirect()->to('home');
             }
+
+//            dd('ok');
 
             // Login attempt
             $email = $request->email;
@@ -466,6 +468,15 @@ class authController extends Controller
             Session::put('user_role', $user->role);
             Session::put('user_info', collect((array) $user)->except('password')); // Avoid storing password
             Cookie::queue('user', $user->id, time() + 31556926, '/'); // Optional
+
+            DB::table('login_histories')->insert([
+                'user_id'    => $user->id,
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'user_agent' => $request->header('User-Agent'),
+                'login_at'   => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
             switch ($user->role) {
                 case 1: // Super Admin

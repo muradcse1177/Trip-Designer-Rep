@@ -67,14 +67,14 @@
                         <form method="POST" action="{{ route('course.enroll', $course->id) }}">
                             @csrf
 
-                            <!-- Name -->
+                            <!-- Full Name -->
                             <div class="mb-3">
                                 <label class="form-label">Full Name</label>
                                 <input type="text" name="name" class="form-control"
                                        value="{{ old('name', $user['company_name'] ?? '') }}" required>
                             </div>
 
-                            <!-- Country Code + Phone -->
+                            <!-- Country Code & Phone -->
                             <div class="row">
                                 <div class="col-4">
                                     <div class="mb-3">
@@ -82,7 +82,6 @@
                                         <input type="text" name="country_code" class="form-control" value="+88" readonly>
                                     </div>
                                 </div>
-
                                 <div class="col-8">
                                     <div class="mb-3">
                                         <label class="form-label">Phone</label>
@@ -105,20 +104,51 @@
                                        placeholder="e.g. example@gmail.com"
                                        required>
                             </div>
+
+                            <!-- Course Price -->
                             <div class="mb-3">
                                 <label class="form-label">Course Price</label>
                                 <input type="text"
                                        class="form-control fw-bold"
                                        value="{{ $c_info->currency }} {{ number_format($course->d_c_price, 2) }}"
-                                       readonly
-                                       disabled>
+                                       readonly disabled>
                             </div>
-                            <!-- Footer -->
+
+                            <!-- Payment Gateway Selection -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold d-block">Select Payment Gateway <span class="text-danger">*</span></label>
+
+                                <div class="row text-center">
+                                    <!-- bKash -->
+                                    <div class="col-6">
+                                        <div id="bkash-wrapper" class="border rounded p-2 h-100" style="transition: 0.3s;">
+                                            <input class="form-check-input d-none" type="radio" name="payment_gateway" id="bkash" value="bkash" required checked onchange="selectGateway('bkash')">
+                                            <label for="bkash" class="d-block" style="cursor: pointer;">
+                                                <img src="{{ url('public/bkash.png') }}" alt="bKash" class="img-fluid" style="max-height: 50px;">
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- SSLCommerz -->
+                                    <div class="col-6">
+                                        <div id="sslcommerz-wrapper" class="border rounded p-2 h-100" style="transition: 0.3s;">
+                                            <input class="form-check-input d-none" type="radio" name="payment_gateway" id="sslcommerz" value="sslcommerz" required onchange="selectGateway('sslcommerz')">
+                                            <label for="sslcommerz" class="d-block" style="cursor: pointer;">
+                                                <img src="{{ url('public/sslcommerz.png') }}" alt="SSLCommerz" class="img-fluid" style="max-height: 50px;">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal Footer -->
                             <div class="modal-footer p-0 pt-3">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary">Make Payment</button>
                             </div>
                         </form>
+
+
                     </div>
 
                 </div>
@@ -514,5 +544,25 @@
             $("#minutes").text(minutes);
             $("#seconds").text(seconds);
         }, 1000);
+
+
+        function selectGateway(selectedId) {
+            // Reset styles
+            document.getElementById('bkash-wrapper').style.border = '1px solid #dee2e6';
+            document.getElementById('bkash-wrapper').style.backgroundColor = 'transparent';
+
+            document.getElementById('sslcommerz-wrapper').style.border = '1px solid #dee2e6';
+            document.getElementById('sslcommerz-wrapper').style.backgroundColor = 'transparent';
+
+            // Highlight selected
+            const selectedWrapper = document.getElementById(selectedId + '-wrapper');
+            selectedWrapper.style.border = '2px solid #0d6efd';
+            selectedWrapper.style.backgroundColor = '#f0f8ff';
+        }
+
+        // Auto highlight bKash on page load
+        window.onload = function () {
+            selectGateway('bkash');
+        };
     </script>
 @endsection

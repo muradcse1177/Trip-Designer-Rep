@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -44,56 +45,64 @@ class visaController extends Controller
             $rows5 = DB::table('visa_invoice')
                 ->where('deleted',0)
                 ->where('agent_id',Session::get('agent_id'))
-                ->orderBy('updated_at','desc')
-                ->paginate(10);
+                ->orderBy('date','desc')
+                ->paginate(20);
             return view('visa.newVisaProcess',['vendors' => $rows,'employees' => $rows1,'passengers' => $rows2,'payment_types' => $rows3,'countries' => $rows4,'visas' => $rows5]);
         }
         catch(\Illuminate\Database\QueryException $ex){
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function createNewVisa(Request $request){
-        try{
-            $result = DB::table('visa_invoice')->insert([
-                'agent_id' => Session::get('agent_id'),
-                'visa_country' => $request->c_name,
-                'date' => $request->date,
-                'vendor' => $request->vendor,
-                'issued_by' => $request->issued_by,
-                'v_details' => $request->s_details,
-                'pax_number' => $request->pax_number,
-                'p_details' => json_encode($request->pax_name),
-                'pass_number' => json_encode($request->pass_number),
-                'v_a_price' => $request->a_price,
-                'v_c_price' => $request->c_price,
-                'v_vat' => $request->vat,
-                'v_ait' => $request->ait,
-                'v_p_type' => $request->payment_type,
-                'v_due' => $request->due,
-                'v_p_details' => $request->p_details,
-                'status' => $request->status,
+    public function createNewVisa(Request $request)
+    {
+        try {
+            // Insert into visa_invoice table
+            $inserted = DB::table('visa_invoice')->insert([
+                'agent_id'      => Session::get('agent_id'),
+                'visa_country'  => $request->c_name,
+                'date'          => $request->date,
+                'vendor'        => $request->vendor,
+                'issued_by'     => $request->issued_by,
+                'v_details'     => $request->s_details,
+                'pax_number'    => $request->pax_number,
+                'p_details'     => json_encode($request->pax_name),
+                'pass_number'   => json_encode($request->pass_number),
+                'v_a_price'     => $request->a_price,
+                'v_c_price'     => $request->c_price,
+                'v_vat'         => $request->vat,
+                'v_ait'         => $request->ait,
+                'v_p_type'      => $request->payment_type,
+                'v_due'         => $request->due,
+                'v_p_details'   => $request->p_details,
+                'status'        => $request->status,
             ]);
-            if ($result) {
-                $id = DB::getPdo()->lastInsertId();
-                $result1 = DB::table('accounts')->insert([
-                    'agent_id' => Session::get('agent_id'),
-                    'invoice_id' =>$id,
-                    'date' => $request->date,
-                    'transaction_type' => 'Debit',
-                    'source' => 'Visa',
-                    'purpose' => 'Visa Processing'.'---'.$request->c_name,
-                    'buying_price' => $request->a_price,
-                    'selling_price' =>$request->c_price + $request->vat + $request->ait,
+
+            // If visa invoice inserted successfully
+            if ($inserted) {
+                $invoiceId = DB::getPdo()->lastInsertId();
+
+                // Insert into accounts table
+                DB::table('accounts')->insert([
+                    'agent_id'        => Session::get('agent_id'),
+                    'invoice_id'      => $invoiceId,
+                    'date'            => $request->date,
+                    'transaction_type'=> 'Debit',
+                    'source'          => 'Visa',
+                    'purpose'         => 'Visa Processing --- ' . $request->c_name,
+                    'buying_price'    => $request->a_price,
+                    'selling_price'   => $request->c_price + $request->vat + $request->ait,
                 ]);
+
                 return redirect()->to('newVisaProcess')->with('successMessage', 'New visa added successfully!!');
             } else {
                 return back()->with('errorMessage', 'Please try again!!');
             }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+
+        } catch (\Illuminate\Database\QueryException $ex) {
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
     public function editVisaPage(Request $request){
         try{
             $rows = DB::table('vendors')
@@ -121,75 +130,101 @@ class visaController extends Controller
         }
     }
 
-    public function editVisa (Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $result =DB::table('visa_invoice')
-                        ->where('id', $request->id)
-                        ->update([
-                            'visa_country' => $request->c_name,
-                            'date' => $request->date,
-                            'vendor' => $request->vendor,
-                            'issued_by' => $request->issued_by,
-                            'v_details' => $request->s_details,
-                            'pax_number' => $request->pax_number,
-                            'p_details' => json_encode($request->pax_name),
-                            'pass_number' => json_encode($request->pass_number),
-                            'v_a_price' => $request->a_price,
-                            'v_c_price' => $request->c_price,
-                            'v_vat' => $request->vat,
-                            'v_ait' => $request->ait,
-                            'v_p_type' => $request->payment_type,
-                            'v_due' => $request->due,
-                            'v_p_details' => $request->p_details,
-                            'status' => $request->status,
-                        ]);
-                    if ($result) {
-                        return redirect()->to('newVisaProcess')->with('successMessage', ' Visa Update successfully!!');
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+    public function editVisa(Request $request)
+    {
+        try {
+            if (!$request || !$request->id) {
+                return back()->with('errorMessage', 'Invalid request!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
+
+            // Update visa_invoice
+            $updated = DB::table('visa_invoice')
+                ->where('id', $request->id)
+                ->where('agent_id',Session::get('agent_id'))
+                ->update([
+                    'visa_country'  => $request->c_name,
+                    'date'          => $request->date,
+                    'vendor'        => $request->vendor,
+                    'issued_by'     => $request->issued_by,
+                    'v_details'     => $request->s_details,
+                    'pax_number'    => $request->pax_number,
+                    'p_details'     => json_encode($request->pax_name),
+                    'pass_number'   => json_encode($request->pass_number),
+                    'v_a_price'     => $request->a_price,
+                    'v_c_price'     => $request->c_price,
+                    'v_vat'         => $request->vat,
+                    'v_ait'         => $request->ait,
+                    'v_p_type'      => $request->payment_type,
+                    'v_due'         => $request->due,
+                    'v_p_details'   => $request->p_details,
+                    'status'        => $request->status,
+                ]);
+
+            if ($updated) {
+                $visa = DB::table('visa_invoice')
+                    ->join('accounts', function ($join) {
+                        $join->on('visa_invoice.id', '=', 'accounts.invoice_id')
+                        ->where('accounts.source', '=', 'Visa');
+                    })
+                    ->where('visa_invoice.id', $request->id)
+                    ->first();
+                // Update accounts entry linked to this visa_invoice
+                DB::table('accounts')
+                    ->where('agent_id',Session::get('agent_id'))
+                    ->where('invoice_id', $visa->invoice_id)
+                    ->where('source', 'Visa')
+                    ->update([
+                        'date'           => $request->date,
+                        'purpose'        => 'Visa Processing --- ' . $request->c_name,
+                        'buying_price'   => $request->a_price,
+                        'selling_price'  => $request->c_price + $request->vat + $request->ait,
+                    ]);
+
+                return redirect()->to('newVisaProcess')->with('successMessage', 'Visa updated successfully!');
+            } else {
+                return back()->with('errorMessage', 'No changes were made. Please try again!');
             }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+        } catch (\Illuminate\Database\QueryException $ex) {
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function deleteVisa(Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $result =DB::table('visa_invoice')
-                        ->where('id', $request->id)
-                        ->update([
-                            'deleted' => 1,
-                        ]);
-                    if ($result) {
-                        return redirect()->to('newVisaProcess')->with('successMessage', 'Data deleted successfully!!');
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+
+    public function deleteVisa(Request $request)
+    {
+        try {
+            if (!$request || !$request->id) {
+                return back()->with('errorMessage', 'Invalid request!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
+            $visa = DB::table('visa_invoice')
+                ->leftJoin('accounts', function ($join) {
+                    $join->on('visa_invoice.id', '=', 'accounts.invoice_id')
+                        ->where('accounts.source', '=', 'Visa');
+                })
+                ->where('visa_invoice.id', $request->id)
+                ->first();
+//             Soft delete visa_invoice
+            $deleted = DB::table('visa_invoice')
+                ->where('agent_id',Session::get('agent_id'))
+                ->where('id', $request->id)
+                ->delete();
+
+            if ($deleted) {
+                // Hard delete related account entry
+                DB::table('accounts')
+                    ->where('agent_id',Session::get('agent_id'))
+                    ->where('invoice_id', $visa->invoice_id)
+                    ->where('source', 'Visa')
+                    ->delete();
+                return redirect()->to('newVisaProcess')->with('successMessage', 'Visa data deleted successfully!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!');
             }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+
+        } catch (\Illuminate\Database\QueryException $ex) {
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
     public function viewVisa(Request $request){
         try{
             $rows1 = DB::table('users')
@@ -261,6 +296,7 @@ class visaController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
     public function filterVisa(Request $request)
     {
         $agentId = Session::get('agent_id');
@@ -704,4 +740,37 @@ class visaController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+    public function downloadInvoice(Request $request)
+    {
+        $visaId = $request->id;
+
+        // Visa Info
+        $visa = DB::table('visa_invoice')->where('id', $visaId)->first();
+
+        if (!$visa) {
+            abort(404, 'Visa Invoice Not Found');
+        }
+
+        // Company Info
+        $company =  DB::table('users')
+            ->where('id',Session::get('agent_id'))
+            ->first();
+
+        // Decode passenger IDs and get passenger data
+        $passenger_ids = json_decode($visa->p_details);
+        $passengers = DB::table('passengers')
+            ->whereIn('id', $passenger_ids)
+            ->where('upload_by', Session::get('agent_id'))
+            ->get();
+
+        // Load PDF view
+        $pdf = Pdf::loadView('visa.visa_pdf', [
+            'visa' => $visa,
+            'company' => $company,
+            'passengers' => $passengers
+        ]);
+
+        return $pdf->download('Visa-Invoice-TV-' . $visa->id . '.pdf');
+    }
+
 }

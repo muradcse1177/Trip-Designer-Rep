@@ -47,7 +47,7 @@ class airTicketController extends Controller
             $tickets = DB::table('air_ticket_invoice')
                 ->where('agent_id', $agentId)
                 ->where('deleted', 0)
-                ->orderByDesc('id')
+                ->orderByDesc('issue_date')
                 ->paginate(10);
 
             $payment_types  = DB::table('payment_type')->get();
@@ -198,7 +198,6 @@ class airTicketController extends Controller
                 ->where('id', $request->id)
                 ->where('deleted', 0)
                 ->first();
-
             if (!$invoice) {
                 return back()->with('errorMessage', 'Invoice not found.');
             }
@@ -233,6 +232,7 @@ class airTicketController extends Controller
                 $sourceLabel = 'Cancel Ticket';
             }
 
+
             // If Reissue, Refund, or Cancel
             if ($status) {
                 $newInvoiceId = DB::table('air_ticket_invoice')->insertGetId([
@@ -264,19 +264,18 @@ class airTicketController extends Controller
                     'status'         => $status,
                 ]);
 
-                DB::table('accounts')
-                    ->where('invoice_id', $request->id)
-                    ->where('agent_id', $agentId)
-                    ->update([
-                        'date'             => $issueDate,
-                        'transaction_type' => 'Debit',
-                        'source'           => $sourceLabel,
-                        'purpose'          => "$sourceLabel --- $reservationPNR --- $airlinePNR",
-                        'buying_price'     => $aPrice,
-                        'selling_price'    => $cPrice + $vat + $ait,
-                        'updated_at'       => now()
-                    ]);
-
+                DB::table('accounts')->insert([
+                    'agent_id'         => $agentId,
+                    'invoice_id'       => $request->id,
+                    'date'             => $issueDate,
+                    'transaction_type' => 'Debit',
+                    'source'           => $sourceLabel,
+                    'purpose'          => "$sourceLabel --- $reservationPNR --- $airlinePNR",
+                    'buying_price'     => $aPrice,
+                    'selling_price'    => $cPrice + $vat + $ait,
+                    'created_at'       => now(),
+                    'updated_at'       => now()
+                ]);
                 return redirect()->to($redirectPath)->with('successMessage', 'Ticket updated successfully!');
             }
 
@@ -310,6 +309,7 @@ class airTicketController extends Controller
             DB::table('accounts')
                 ->where('invoice_id', $request->id)
                 ->where('agent_id', $agentId)
+                ->where('source', 'Air Ticket')
                 ->update([
                     'buying_price'  => $aPrice,
                     'selling_price' => $cPrice + $vat + $ait,
@@ -322,30 +322,40 @@ class airTicketController extends Controller
         }
     }
 
-    public function deleteAirTicket(Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $result =DB::table('air_ticket_invoice')
-                        ->where('id', $request->id)
-                        ->update([
-                            'deleted' => 1,
-                        ]);
-                    if ($result) {
-                        return redirect()->to('newAirTicket')->with('successMessage', 'Data deleted successfully!!');
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+    public function deleteAirTicket(Request $request)
+    {
+        try {
+            if (!$request || !$request->id) {
+                return back()->with('errorMessage', 'Invalid request!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
+            $ticket = DB::table('air_ticket_invoice')
+                ->leftJoin('accounts', function ($join) {
+                    $join->on('air_ticket_invoice.id', '=', 'accounts.invoice_id')
+                        ->where('accounts.source', '=', 'Air Ticket');
+                })
+                ->where('air_ticket_invoice.id', $request->id)
+                ->first();
+
+            // Soft delete from air_ticket_invoice
+            $deleted = DB::table('air_ticket_invoice')
+                ->where('id', $request->id)
+                ->update([
+                    'deleted' => 1,
+                ]);
+
+            if ($deleted) {
+                // Delete corresponding accounts record (hard delete)
+                DB::table('accounts')
+                    ->where('agent_id',Session::get('agent_id'))
+                    ->where('invoice_id', $ticket->invoice_id)
+                    ->where('source', 'Air Ticket')
+                    ->delete();
+
+                return redirect()->to('newAirTicket')->with('successMessage', 'Data deleted successfully!!');
+            } else {
+                return back()->with('errorMessage', 'Please try again!!');
             }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+        } catch (\Illuminate\Database\QueryException $ex) {
             return back()->with('errorMessage', $ex->getMessage());
         }
     }

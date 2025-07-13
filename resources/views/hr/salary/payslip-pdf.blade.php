@@ -12,7 +12,7 @@
             margin: 20px;
         }
         .header-section {
-            border-bottom: 2px solid #007BFF;
+            border-bottom: 2px solid #060e57;
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
@@ -27,7 +27,7 @@
         .title {
             text-align: center;
             font-size: 20px;
-            color: #007BFF;
+            color: #06069a;
             margin-bottom: 20px;
         }
         .info-table, .salary-table {
@@ -45,7 +45,7 @@
             font-weight: bold;
         }
         .salary-table th {
-            background-color: #007BFF;
+            background-color: #19196e;
             color: white;
         }
         .salary-table td {
@@ -64,6 +64,19 @@
             margin-top: 40px;
             color: #777;
         }
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 60px;
+            color: #cccccc;
+            opacity: 0.2;
+            z-index: -1;
+            white-space: nowrap;
+            pointer-events: none;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -74,7 +87,7 @@
         <tr>
             <td style="width: 60%;">
                 @if($company->logo)
-                    <img src="{{ public_path($company->logo) }}" class="logo" alt="Logo">
+                    <img src="{{ url($company->logo) }}" class="logo" alt="Logo">
                 @else
                     <strong style="font-size: 20px;">{{ $company->company_name }}</strong>
                 @endif
@@ -88,7 +101,7 @@
         </tr>
     </table>
 </div>
-
+<div class="watermark">{{ $company->company_name }}</div>
 <!-- Title -->
 <div class="title">
     Employee Pay Slip - {{ DateTime::createFromFormat('!m', $salary->month)->format('F') }} {{ $salary->year }}
@@ -98,7 +111,7 @@
 <table class="info-table">
     <tr><td>Employee Name</td><td>{{ $salary->name }}</td></tr>
     <tr><td>Designation</td><td>{{ $salary->designation }}</td></tr>
-    <tr><td>Phone</td><td>{{ $salary->phone }}</td></tr>
+    <tr><td>Phone</td><td>{{ '880'.$salary->phone }}</td></tr>
     <tr><td>Email</td><td>{{ $salary->email }}</td></tr>
 </table>
 
@@ -106,8 +119,8 @@
 <table class="salary-table">
     <thead>
     <tr>
-        <th>Component</th>
-        <th>Amount (৳)</th>
+        <th>Salary Details</th>
+        <th>Amount (BDT)</th>
     </tr>
     </thead>
     <tbody>
@@ -117,13 +130,15 @@
     <tr><td>Transport</td><td>{{ number_format($salary->transport, 2) }}</td></tr>
     <tr><td>Commission</td><td>{{ number_format($salary->commission, 2) }}</td></tr>
     <tr><td>TA/DA</td><td>{{ number_format($salary->ta_da, 2) }}</td></tr>
-    <tr class="total-row"><td>Total Salary</td><td>{{ number_format($salary->salary, 2) }}</td></tr>
+    <tr><td>Working Days</td><td>{{ $workingDays }} Days</td></tr>
+    <tr><td>Attendance Days</td><td>{{ $salary->attendance }} Days</td></tr>
+    <tr class="total-row"><td>Total Salary</td><td>{{ number_format($salary->net_salary, 2) }}</td></tr>
     </tbody>
 </table>
 
 <!-- Footer -->
 <div class="footer">
-    Generated on: {{ date('d M Y') }}
+    This pay slip generated and verified by <b>{{$company->company_name}} </b>.
 </div>
 
 </body>

@@ -57,12 +57,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Date</label>
-                                            <div class="input-group date" id="dob" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#dob" value="{{@$visa->date}}" name="date" placeholder="Enter Date" required/>
-                                                <div class="input-group-append" data-target="#dob" data-toggle="datetimepicker">
-                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                                </div>
-                                            </div>
+                                            <input type="date" class="form-control" id="from_date" name="from_date" value="{{ $visa->date }}">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">

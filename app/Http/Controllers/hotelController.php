@@ -23,62 +23,63 @@ class hotelController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function createNewHotelBooking(Request $request){
-        try{
-            if($request) {
-                //dd($request);
-                $result = DB::table('hotel_invoice')->insert([
-                    'agent_id' => Session::get('agent_id'),
-                    'h_name' => $request->h_name,
-                    'h_address' => $request->h_address,
-                    'h_phone' => $request->h_phone,
-                    'reservation' => $request->reservation,
-                    'check_in' => $request->check_in,
-                    'check_out' => $request->check_out,
-                    'b_date' => $request->b_date,
-                    'vendor' => $request->vendor,
-                    'pax_number' => $request->pax_number,
-                    'pax' => json_encode($request->pax),
-                    'h_details' => json_encode($request->h_details),
-                    'a_price' => $request->a_price,
-                    'c_price' => $request->c_price,
-                    'vat' => $request->vat,
-                    'ait' => $request->ait,
-                    'p_type' => $request->p_type,
-                    'p_details' => $request->p_details,
-                    'due_amount' => $request->due_amount,
-                ]);
-                if ($result) {
-                    $id = DB::getPdo()->lastInsertId();
-                    $result1 = DB::table('accounts')->insert([
-                        'agent_id' => Session::get('agent_id'),
-                        'invoice_id' =>$id,
-                        'date' => date('Y-m-d'),
-                        'transaction_type' => 'Debit',
-                        'source' => 'Hotel Booking',
-                        'purpose' => 'Hotel Booking'.'---'.$request->reservation,
-                        'buying_price' => $request->a_price,
-                        'selling_price' =>$request->c_price + $request->vat + $request->ait,
-                    ]);
-                    if($result1){
-                        return redirect()->to('hotelBooking')->with('successMessage', 'New invoice created successfully!!');
-                    }
-                    else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                } else {
-                    return back()->with('errorMessage', 'Please try again!!');
-                }
+    public function createNewHotelBooking(Request $request)
+    {
+        try {
+            DB::beginTransaction();
 
+            // Insert hotel booking into hotel_invoice table
+            $invoiceId = DB::table('hotel_invoice')->insertGetId([
+                'agent_id'    => Session::get('agent_id'),
+                'h_name'      => $request->h_name,
+                'h_address'   => $request->h_address,
+                'h_phone'     => $request->h_phone,
+                'reservation' => $request->reservation,
+                'check_in'    => $request->check_in,
+                'check_out'   => $request->check_out,
+                'b_date'      => $request->b_date,
+                'vendor'      => $request->vendor,
+                'pax_number'  => $request->pax_number,
+                'pax'         => json_encode($request->pax),
+                'h_details'   => json_encode($request->h_details),
+                'a_price'     => $request->a_price,
+                'c_price'     => $request->c_price,
+                'vat'         => $request->vat,
+                'ait'         => $request->ait,
+                'p_type'      => $request->p_type,
+                'p_details'   => $request->p_details,
+                'due_amount'  => $request->due_amount,
+            ]);
+
+            // Calculate total selling price
+            $sellingPrice = $request->c_price + $request->vat + $request->ait;
+
+            // Insert financial record into accounts table
+            $accountInserted = DB::table('accounts')->insert([
+                'agent_id'         => Session::get('agent_id'),
+                'invoice_id'       => $invoiceId,
+                'date'             => date('Y-m-d'),
+                'transaction_type' => 'Debit',
+                'source'           => 'Hotel Booking',
+                'purpose'          => 'Hotel Booking --- ' . $request->reservation,
+                'buying_price'     => $request->a_price,
+                'selling_price'    => $sellingPrice,
+            ]);
+
+            if ($accountInserted) {
+                DB::commit();
+                return redirect()->to('hotelBooking')->with('successMessage', 'New invoice created successfully!!');
+            } else {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Please try again!!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
-            }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            DB::rollBack();
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
+
     public function viewHotelBooking(Request $request){
         try{
             $rows1 = DB::table('hotel_invoice')
@@ -115,88 +116,110 @@ class hotelController extends Controller
             return back()->with('errorMessage', $ex->getMessage());
         }
     }
-    public function updateHotelBooking(Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $result =DB::table('hotel_invoice')
-                        ->where('id', $request->id)
-                        ->where('agent_id', Session::get('agent_id'))
-                        ->update([
-                            'h_name' => $request->h_name,
-                            'h_address' => $request->h_address,
-                            'h_phone' => $request->h_phone,
-                            'reservation' => $request->reservation,
-                            'check_in' => $request->check_in,
-                            'check_out' => $request->check_out,
-                            'b_date' => $request->b_date,
-                            'vendor' => $request->vendor,
-                            'pax_number' => $request->pax_number,
-                            'pax' => json_encode($request->pax),
-                            'h_details' => json_encode($request->h_details),
-                            'a_price' => $request->a_price,
-                            'c_price' => $request->c_price,
-                            'vat' => $request->vat,
-                            'ait' => $request->ait,
-                            'p_type' => $request->p_type,
-                            'p_details' => $request->p_details,
-                            'due_amount' => $request->due_amount,
-                        ]);
-                    if ($result) {
-                        $result =DB::table('accounts')
-                            ->where('invoice_id', $request->id)
-                            ->where('agent_id', Session::get('agent_id'))
-                            ->update([
-                                'buying_price' =>$request->a_price,
-                                'selling_price' =>$request->c_price + $request->vat + $request->ait,
-                                'updated_at' => date('Y-m-d H:i:s')
-                            ]);
-                        if($result){
-                            return redirect()->to('hotelBooking')->with('successMessage', 'Data Updated successfully!!');
-                        }
-                        else {
-                            return back()->with('errorMessage', 'Please try again!!');
-                        }
+    public function updateHotelBooking(Request $request)
+    {
+        try {
+            if (!$request->id) {
+                return back()->with('errorMessage', 'Bad Request!!');
+            }
 
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+            DB::beginTransaction();
+
+            // Update hotel_invoice table
+            $invoiceUpdated = DB::table('hotel_invoice')
+                ->where('id', $request->id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->update([
+                    'h_name'      => $request->h_name,
+                    'h_address'   => $request->h_address,
+                    'h_phone'     => $request->h_phone,
+                    'reservation' => $request->reservation,
+                    'check_in'    => $request->check_in,
+                    'check_out'   => $request->check_out,
+                    'b_date'      => $request->b_date,
+                    'vendor'      => $request->vendor,
+                    'pax_number'  => $request->pax_number,
+                    'pax'         => json_encode($request->pax),
+                    'h_details'   => json_encode($request->h_details),
+                    'a_price'     => $request->a_price,
+                    'c_price'     => $request->c_price,
+                    'vat'         => $request->vat,
+                    'ait'         => $request->ait,
+                    'p_type'      => $request->p_type,
+                    'p_details'   => $request->p_details,
+                    'due_amount'  => $request->due_amount,
+                ]);
+
+            if (!$invoiceUpdated) {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Failed to update hotel invoice. Please try again!!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
+
+            // Calculate total selling price
+            $sellingPrice = $request->c_price + $request->vat + $request->ait;
+
+            // Update accounts table
+            $accountUpdated = DB::table('accounts')
+                ->where('invoice_id', $request->id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->where('source', 'Hotel Booking')
+                ->update([
+                    'buying_price'  => $request->a_price,
+                    'selling_price' => $sellingPrice,
+                    'updated_at'    => now(),
+                ]);
+
+            if (!$accountUpdated) {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Failed to update accounts. Please try again!!');
             }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
-            return back()->with('errorMessage', $ex->getMessage());
+
+            DB::commit();
+            return redirect()->to('hotelBooking')->with('successMessage', 'Data updated successfully!!');
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            DB::rollBack();
+            return back()->with('errorMessage', 'Database Error: ' . $ex->getMessage());
         }
     }
+    public function deleteHotelBooking(Request $request)
+    {
+        try {
+            if (!$request->id) {
+                return back()->with('errorMessage', 'Bad Request!!');
+            }
 
-    public function deleteHotelBooking(Request $request){
-        try{
-            if($request) {
-                if($request->id) {
-                    $result =DB::table('hotel_invoice')
-                        ->where('id', $request->id)
-                        ->delete();
-                    if ($result) {
-                        return redirect()->to('hotelBooking')->with('successMessage', 'Data deleted successfully!!');
-                    } else {
-                        return back()->with('errorMessage', 'Please try again!!');
-                    }
-                }
-                else {
-                    return back()->with('errorMessage', 'Bad Request!!');
-                }
+            DB::beginTransaction();
+            $hotel = DB::table('hotel_invoice')
+                ->leftJoin('accounts', function ($join) {
+                    $join->on('hotel_invoice.id', '=', 'accounts.invoice_id')
+                        ->where('accounts.source', '=', 'Hotel Booking');
+                })
+                ->where('hotel_invoice.id', $request->id)
+                ->first();
+            // Delete from hotel_invoice
+            $invoiceDeleted = DB::table('hotel_invoice')
+                ->where('id', $request->id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->delete();
+
+            if (!$invoiceDeleted) {
+                DB::rollBack();
+                return back()->with('errorMessage', 'Failed to delete hotel invoice. Please try again!!');
             }
-            else{
-                return back()->with('errorMessage', 'Please fill up the form!!');
-            }
-        }
-        catch(\Illuminate\Database\QueryException $ex){
+
+            // Delete related accounts entry
+            DB::table('accounts')
+                ->where('invoice_id', $hotel->invoice_id)
+                ->where('agent_id', Session::get('agent_id'))
+                ->where('source', 'Hotel Booking')
+                ->delete();
+
+            DB::commit();
+            return redirect()->to('hotelBooking')->with('successMessage', 'Data deleted successfully!!');
+
+        } catch (\Illuminate\Database\QueryException $ex) {
+            DB::rollBack();
             return back()->with('errorMessage', $ex->getMessage());
         }
     }

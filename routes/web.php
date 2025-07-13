@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\BkashController;
 use App\Http\Controllers\courseController;
 use App\Http\Controllers\customerController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\hrController;
+use App\Http\Controllers\loanController;
 use App\Http\Controllers\paymentController;
 use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\visaController;
+use App\Http\Controllers\VisitorLogController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -14,7 +18,6 @@ use Illuminate\Support\Facades\Session;
 Route::get('/register', function () {
     return view('userAuth.register');
 });
-Route::get('visitor-logs', [\App\Http\Controllers\VisitorLogController::class, 'index']);
 
 Route::get('flightScrap', 'App\Http\Controllers\homeController@flightScrap');
 
@@ -60,7 +63,6 @@ Route::get('blog/{slug}', 'App\Http\Controllers\homeController@searchBlogBySlug'
 Route::get('blogs', 'App\Http\Controllers\homeController@blogs');
 Route::get('course/{slug}', 'App\Http\Controllers\homeController@searchCourseBySlug');
 Route::get('course-enroll', 'App\Http\Controllers\homeController@courseEnroll');
-Route::post('/course/enroll/{id}', [paymentController::class, 'enroll'])->name('course.enroll');
 
 Route::get('order-request', 'App\Http\Controllers\homeController@orderRequest');
 Route::post('tour-client-details', 'App\Http\Controllers\homeController@tourClientDetails');
@@ -82,6 +84,12 @@ Route::post('verifyUsers', 'App\Http\Controllers\authController@verifyUsers');
 Route::get('report-dashboard', 'App\Http\Controllers\authController@dashboard');
 Route::get('main-dashboard', 'App\Http\Controllers\authController@mainDashboard');
 
+//Payment Gateway
+Route::post('/course/enroll/{id}', [paymentController::class, 'enroll'])->name('course.enroll');
+
+//Bkash Gateway
+Route::match(['get', 'post'], '/bkash-create', [BkashController::class, 'createPayment'])->name('bkash.create');
+Route::get('/bkash-callback', [BkashController::class, 'callback'])->name('url-callback');
 
 //SSL Course Payment
 Route::match(['get', 'post'], '/success', [paymentController::class, 'success']);
@@ -115,9 +123,16 @@ Route::get('payment-success-message', [paymentController::class, 'paymentSuccess
 Route::middleware(['role'])->group(function () {
     //Number Export
     Route::get('/numbers/{slug}', 'App\Http\Controllers\senderController@allPaxNumber');
+
     //Dashboard----------------------------------------------------------
     Route::get('/report-dashboard', 'App\Http\Controllers\authController@dashboard');
     Route::get('salesDataGraph', 'App\Http\Controllers\airTicketController@salesDataGraph');
+
+
+    //Report--------------------------------------------
+    Route::get('visitor-logs', [\App\Http\Controllers\VisitorLogController::class, 'index']);
+    Route::get('login-history', [VisitorLogController::class, 'loginHistory'])->name('login.history');
+
     //General Invoice
     Route::get('g_invoice', 'App\Http\Controllers\accountsController@generalInvoice');
     Route::post('insertGInvoice', 'App\Http\Controllers\accountsController@insertGInvoice');
@@ -186,6 +201,7 @@ Route::middleware(['role'])->group(function () {
     Route::post('book-visa-package-b2b', 'App\Http\Controllers\visaController@bookVisaPackageB2b');
     Route::get('download-b2b-visa-package', 'App\Http\Controllers\visaController@downloadB2bVisaPackage');
     Route::get('print-b2b-visa', 'App\Http\Controllers\visaController@prinB2bVisa');
+    Route::get('/downloadVisaInvoice', [visaController::class, 'downloadInvoice']);
     //----------------------------------------------------------
 
     //Tour Package----------------------------------------------------------
@@ -321,6 +337,17 @@ Route::middleware(['role'])->group(function () {
     Route::get('rejectLeave', 'App\Http\Controllers\hrController@rejectLeave');
     Route::post('requestEarnedLeave', [hrController::class, 'requestEarnedLeave']);
     Route::get('approveEarnedLeave', [hrController::class, 'approveEarnedLeave']);
+
+    Route::resource('loan', loanController::class);
+    Route::post('loan/{id}/status', [loanController::class, 'updateStatus'])->name('loan.updateStatus');
+    Route::post('loan/{id}/pay', [loanController::class, 'addPayment'])->name('loan.payment');
+
+    Route::get('/generate-salary', [hrController::class, 'generateSalary'])->name('salary.create');
+    Route::post('/generate-salary', [hrController::class, 'salaryEntry'])->name('salary.store');
+    Route::post('/generate-salary/update', [hrController::class, 'updateBulkSalary'])->name('salary.update.bulk');
+    Route::get('/salary/details/{year}/{month}', [hrController::class, 'salaryDetails'])->name('salary.details');
+    Route::get('/salary/payslip/{emp_id}/{month}/{year}', [hrController::class, 'salaryPayslip'])->name('salary.payslip');
+    Route::get('/salary/details/download/{year}/{month}', [hrController::class, 'downloadSalaryReport'])->name('salary.details.download');
 
     Route::get('attendance', 'App\Http\Controllers\hrController@attendance');
     Route::get('entry-attendance', 'App\Http\Controllers\hrController@entryAttendance');

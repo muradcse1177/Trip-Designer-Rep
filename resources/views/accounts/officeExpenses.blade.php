@@ -151,7 +151,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label>Accounts Head Type</label>
-                                            <select class="form-control select2bs4" name="head" id="head" style="width: 100%;" required>
+                                            <select class="form-control select2bs4" name="head" id="head" style="width: 100%;">
                                                 <option value="">Select Head Type</option>
                                                 @foreach($heads as $head)
                                                     <option value="{{$head->head}}" @if(@$_GET['head'] == $head->head) Selected @endif>{{$head->head}}</option>
@@ -160,69 +160,82 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-warning btn-block float-right">Filter</button>
-                                        </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <button type="submit" class="btn btn-warning btn-block">
+                                            <i class="fas fa-filter"></i> Filter
+                                        </button>
                                     </div>
-                                </div><hr>
+                                    <div class="col-md-3 col-sm-6 mb-2">
+                                        <button type="submit" name="download" value="1" class="btn btn-success btn-block">
+                                            <i class="fas fa-download"></i> Download Report
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr>
                                 {{ Form::close() }}
-                                <table id="example11" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>S.L</th>
-                                        <th>Date</th>
-                                        <th>Expense Type</th>
-                                        <th>Invoice</th>
-                                        <th>Purpose</th>
-                                        <th>Expanse Amount</th>
-                                        <th>Income Amount</th>
-                                        <th>Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php
-                                        $i = 1;
-                                         $b_price = 0;
-                                         $c_price = 0;
-                                    @endphp
-                                    @foreach($transactions as $transaction)
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
                                         <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$transaction->date}}</td>
-                                            <td>{{$transaction->transaction_type}}</td>
-                                            <td>{{$transaction->invoice_id}}</td>
-                                            <td>{{$transaction->purpose}}</td>
-                                            <td>{{$transaction->buying_price}}</td>
-                                            <td>{{$transaction->selling_price}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-success">{{$transaction->status}}</button>
-                                            </td>
+                                            <th>S.L</th>
+                                            <th>Date</th>
+                                            <th>Expense Type</th>
+                                            <th>Invoice</th>
+                                            <th>Purpose</th>
+                                            <th>Expanse Amount</th>
+                                            <th>Income Amount</th>
+                                            <th>Status</th>
                                         </tr>
+                                        </thead>
+                                        <tbody>
                                         @php
-                                            $i++;
-                                            $b_price = $b_price + $transaction->buying_price;
-                                            $c_price = $c_price + $transaction->selling_price;
+                                            $b_price = 0;
+                                            $c_price = 0;
                                         @endphp
-                                    @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th align="center"></th>
-                                        <th align="left"></th>
-                                        <th align="left"></th>
-                                        <th align="left"></th>
-                                        <th align="left">
-                                            <div>Expense: {{$b_price}} /-</div>
-                                        </th>
-                                        <th align="left">
-                                            <div>Income: {{$c_price}} /-</div>
-                                        </th>
-                                        <th align="left"></th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
+
+                                        @forelse($transactions as $key => $transaction)
+                                            <tr>
+                                                <td>{{ $transactions->firstItem() + $key }}</td>
+                                                <td>{{ $transaction->date }}</td>
+                                                <td>{{ $transaction->transaction_type }}</td>
+                                                <td>{{ $transaction->invoice_id }}</td>
+                                                <td>{{ $transaction->purpose }}</td>
+                                                <td>{{ number_format($transaction->buying_price, 2) }}</td>
+                                                <td>{{ number_format($transaction->selling_price, 2) }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-success">{{ $transaction->status }}</button>
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $b_price += $transaction->buying_price;
+                                                $c_price += $transaction->selling_price;
+                                            @endphp
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center">No transactions found.</td>
+                                            </tr>
+                                        @endforelse
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th colspan="5" class="text-right">Total:</th>
+                                            <th>{{ number_format($b_price, 2) }} /-</th>
+                                            <th>{{ number_format($c_price, 2) }} /-</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <br>
+                                {{-- Pagination Links --}}
+
+                                    <div class="d-flex justify-content-center">
+                                        {!! $transactions->appends(request()->query())->links() !!}
+                                    </div>
+
                             </div>
                             <!-- /.card-body -->
                         </div>
